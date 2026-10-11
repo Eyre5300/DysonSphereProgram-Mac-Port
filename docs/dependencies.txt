@@ -1,0 +1,24 @@
+开发机已使用的依赖（没有附带第三方二进制）
+
+Unity Editor 2022.3.62f3c1： https://unity.com/releases/editor/archive
+安装适用的 Mac 构建支持并自行激活许可。工具不会接受许可或代替登录。
+AssetRipper 2.0.0： https://github.com/AssetRipper/AssetRipper
+使用 GUI.Free 的本机可执行文件；本工具调用 headless 本机 API 自动导出。
+SPIRV-Cross： https://github.com/KhronosGroup/SPIRV-Cross
+验证提交 aa217aeb6c9f0ace7a0ab233b28807edf45eb165；按上游 CMake 说明构建 CLI。
+vkd3d 2.1： https://gitlab.winehq.org/wine/vkd3d
+所需程序 vkd3d-compiler。开发机使用静态构建：
+./configure --disable-demos --disable-tests --disable-doxygen-doc --disable-shared --without-ncurses --without-opengl --without-xcb 'CPPFLAGS=-I../SPIRV-Headers/include -I../Vulkan-Headers/include'
+随后按上游说明 make。需要上游列出的构建依赖（包括适用的 bison、pkg-config）。
+SPIRV-Headers： https://github.com/KhronosGroup/SPIRV-Headers
+验证提交 86f980c731e62ae4eaf383d320449d71687936bf。
+Vulkan-Headers： https://github.com/KhronosGroup/Vulkan-Headers
+验证提交 c46850864f4661461b0f6cb9922c058ffea4915e。
+Python 3.12；UnityPy 1.25.4 / PyYAML 6.0.3 固定在 requirements.txt。
+
+依赖在另一台 Mac 的安装流程仍需实测。不自动下载、安装或公开这些第三方内容；遵守各自上游许可。
+emu（后续 iPad 路线评估）： https://github.com/brolnickij/emu
+
+Apple Command Line Tools 或完整 Xcode：提供 xcrun、clang、macOS SDK。缺失时可执行 xcode-select --install；安装和条款由用户本人确认。prepare 会在私有工程中从随工具提供的原创 C 文件编译 GameController 键盘适配库，不捆绑预编译游戏内容。
+
+向导、doctor、convert和build均提前检查指定Unity版本与Mac构建组件；通过检查仍需本人完成Unity许可激活。此检查读取本机安装信息，不会启动编辑器。

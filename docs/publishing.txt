@@ -1,0 +1,25 @@
+分享与发布（开发者预览）
+
+对外产物
+只发布port-tools目录及由它生成的干净工具ZIP。它包含原创转换脚本、平台辅助代码、测试和文档；每位使用者自行提供购买的支持版本Windows游戏。
+不要提交上层local-private、恢复游戏C#/着色器、DLL/EXE/App/IPA、原资源、个人存档/蓝图、机器路径或依赖二进制。工具公开不代表生成的游戏文件也属于这些原创代码的授权范围。
+
+Mac App 与工具的区别
+桌面的“戴森球计划 Mac.app”是本机入口链接，复制链接不会把实际游戏一起复制。
+完整本地App位于 ~/Library/Application Support/DSPPortConverter/Run/，包含Unity运行时、托管程序集、图形资源和外部数据。当前App没有指向开发工作目录的文件链接；原生输入桥仅依赖系统framework。理论上完整App不需要接收者安装Unity编辑器才能运行，但没有在其他Mac完成分发验收，也未制作Developer ID/Apple公证发行包。
+本项目分享方案是转换工具：需要Apple Silicon Mac、Python3.12、固定Unity编辑器和适用许可、AssetRipper/SPIRV-Cross/vkd3d及Command Line Tools，首次依赖准备仍需人工操作。start.command逐步提示，成功阶段可续跑；不是现成游戏的一步安装器。详情见用户操作指南.txt和dependencies.txt。
+本机使用ad-hoc签名，只确认本机包一致性；不要把它称为Apple公证或保证其他机器无需确认的安装包。程序不绕过接收者的系统安全检查。
+
+发布前的具体状态
+转换和已发现Mac问题的修复均已接入prepare/recover/build及平台helper；基本运行、旧存档、蓝图和若干复杂功能已在开发机验证，详细差异见behavior-parity.txt。
+新机器完整流程、全部武器/太空战斗、大型复杂网络、多小时稳定性未全面验证。Steam服务未实现；iPad/emu仍是未验证路线。发布说明应标明开发者预览和固定输入版本，不能宣传Windows完全等效或已验证iPad。
+项目拥有者已明确选择MIT，原创工具许可证见根目录LICENSE；游戏文件和外部依赖不纳入这份许可。第三方工具各自保留上游许可，未捆绑第三方二进制；仍应核对来源，转换工具不会自行上传用户游戏或私人数据。
+GitHub官方许可说明：https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository
+
+发布检查
+运行 python3 tools/check_release.py，检查实际文件（含未追踪文件），并人工检查来源。它不上传任何内容。97/99等历史计数不能替代发布时的实际结果。
+在新机器用干净工具包从自己的完整Windows输入走一遍向导；保留失败日志与自己的修改，执行基础自检并试玩存档/蓝图。确认后在GitHub只以port-tools为仓库根，避免把整个桌面项目加入仓库。转换向导本身不会创建或推送仓库。
+
+分辨率
+Mac启动时读取游戏窗口所在屏幕的尺寸/刷新率，覆盖上次保存的窗口尺寸为全屏；这次运行中仍可正常选择窗口模式，下一次启动再次检测屏幕。主场景启动后通过原版设置Apply执行，首次引擎窗口建立过程可能短暂采用既存配置。
+iOS代码分支读取设备报告的横向尺寸，设置原生全屏，不按预设名称猜测设备。iPadOS窗口管理和emu宿主提供的屏幕由实际部署路线决定；仅有此代码不能证明emu移植或iPad全屏真机适配已完成。

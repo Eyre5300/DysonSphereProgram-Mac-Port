@@ -1,0 +1,12 @@
+Apple 官方屏幕像素，横向（2026-10-10核对）：
+iPad mini 7 / A17 Pro：2266×1488 https://www.apple.com/ipad-mini/specs/
+iPad Air 11英寸：2360×1640 https://www.apple.com/ipad-air/specs/
+iPad Air 13英寸：2732×2048 https://www.apple.com/ipad-air/specs/
+iPad Pro 11英寸（M4/M5）：2420×1668 https://www.apple.com/ipad-pro/specs/
+iPad Pro 13英寸（M4/M5）：2752×2064 https://www.apple.com/ipad-pro/specs/
+Mac 窗口预设用于布局与性能验证；iPad 原生全屏自动跟随当前屏幕。
+旧款11英寸iPad Pro可能采用不同像素数；自动适应应读取实际屏幕，而非按名称硬编码。
+Mac测试通过不代表iPad设备已验证。
+
+启动策略：读取已保存选项后、原版Start/Apply前，Mac检测游戏主窗口所在屏幕尺寸/刷新率并采用无边框全屏；本次运行手动设置不反复覆盖。下一次打开再次检测。新转换引擎默认也设为原生尺寸/全屏。Mac3840×2160→设置2266×1488窗口→恢复3840×2160→存读/四UI/正常退出验证通过。iOS读取设备横向尺寸；未安装或测试真机，不保证emu宿主报告的屏幕信息。
+依据Unity2022.3接口文档：https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Screen-mainWindowDisplayInfo.html 及 https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Screen.SetResolution.html
