@@ -69,7 +69,7 @@ def safe_private(path, game=None):
             raise ValueError('输出与原始 Windows 游戏目录必须互不包含。')
 
 def instructions():
-    print('''戴森球计划 → Mac 本地转换向导（开发版）
+    print('''戴森球计划 Mac 版迁移工具（开发者预览）
 只读取你购买的 Windows 游戏；不会上传文件，也不会收集密码。
 目前仅验证 DSP 0.10.35.29104 / Apple Silicon Mac。iPad 部署不在本向导内。
 需要你操作时会说明步骤；完成后回车重新检查。输入 q 可暂停，重新运行继续。

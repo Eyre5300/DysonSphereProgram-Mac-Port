@@ -1,4 +1,4 @@
-# Dyson Sphere Program → Apple Silicon Mac
+# 戴森球计划 Mac 版迁移工具
 
 用自己购买的 Windows 版《戴森球计划》，在本机生成 macOS App。此仓库只提供 **MIT 许可的原创转换工具与平台适配代码**，不提供原游戏、恢复后的游戏代码、资产、游戏 App、存档或蓝图。
 
