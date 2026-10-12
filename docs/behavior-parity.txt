@@ -117,3 +117,8 @@ required material-binding call. Original full resource payload/quality retained.
 31.3 FINAL: combined world/icon/input/files batch passed; 604veins/22active models,
 29visible globe icons,20files/31keyboard/25mouse, errors0 and originalexit0.
 Camera before/after equality verified; screenshots reviewed. Scope limits above remain.
+
+2026-10-12 键鼠36：电力显示与用户指定的HUD差异
+Windows原版H仅展开细节菜单，电力子按钮切换powerGraphOn；断电/缺电状态由原PowerSystem生成。本次不改按键、开关回调、功率和判定阈值。修复四个恢复后的着色器中Metal优化造成的角点位转换错误，仍使用原DrawProceduralNow与全部原始材质。Pro五阶段GPU数据与截图证明覆盖/供电点/警告恢复；未验证全部发电设施、复杂工厂和所有视角。
+按用户要求删除键鼠版额外屏幕Esc，实体Esc关闭顺序不变；常驻原版FPS/UPS属于用户指定的显示差异。新增App物理内存为iPadOS phys_footprint，每秒更新，GiB单位，不是托管堆或GPU与Unity统计之和；不宣称性能改善。原始游戏图标从本人文件私有提取，公开仅包含提取工具，名称“戴森球计划”。
+36同一批次完成电力/世界/20文件/31键盘/25鼠标自动验证、无错误、正常退出。真实键鼠无限相对位移、实际云文件传输、全场景视觉等价与长时间性能仍未验证。Mac已验收正式版不动，Touch29.3保留，mini不再部署。

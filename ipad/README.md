@@ -1,10 +1,10 @@
-触控开发分支：保留 Pro27 源码/安装包/存档备份；当前 DSP Touch 支持自动键鼠/触控选择，触控与键鼠版共用系统 Files/iCloud 手动导入导出。操作、构建与测试范围见 [TOUCH.txt](TOUCH.txt)。
+当前只维护 iPad Pro 键鼠版；触控开发暂停，已安装 Touch29.3 保留。两种版本已有的系统 Files/iCloud 手动导入导出保持可用；历史触控预览范围见 [TOUCH.txt](TOUCH.txt)。
 
 # iPad Pro 迁移：开发者预览
 
 本目录提供原创的平台适配、构建和验证工具。使用者必须自行准备已购买的 Windows 游戏、Unity 工具链和自己的 Apple 签名。仓库不包含游戏源码、资产、SDK 对象、App/IPA、测试存档或蓝图。
 
-当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。Pro27 已完成限定综合自动测试，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
+当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。键鼠36已完成限定综合自动测试，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
 
 这是一套开发者复现入口，**不是向导式一键 iPad 安装器**。公开入口已做源码准备、编译和本地资源检查；从空白新机器到最终安装的全过程仍需验证。Mac 的 `start.command` 不会自动完成 iPad 部署。
 
@@ -35,7 +35,7 @@ python3 ipad/source/prepare_ipad_project.py \
   --report "$WORK/reports/source-preparation.json"
 ```
 
-脚本校验游戏程序集版本，安装原生输入桥接的托管端、快速按键队列、右上角 Esc、窗口层级、HDR/DoF 和文本流适配。所有游戏原方法仍从本人的导出读取；仓库不提供恢复后的方法或生成式源码配方。未知锚点、不同版本或已有其他修改必须先审查，不能直接删掉断言。
+脚本校验游戏程序集版本，安装原生输入桥接的托管端、快速按键队列、窗口层级、HDR/DoF、文本流和电力提示着色器适配。键鼠版隐藏额外的屏幕 Esc，并常驻原版 FPS/UPS 与整个 App 的物理内存占用；触控预览保留其 Esc。所有游戏原方法仍从本人的导出读取；仓库不提供恢复后的方法或生成式源码配方。未知锚点、不同版本或已有其他修改必须先审查，不能直接删掉断言。
 
 ## 2. 导出两个平台
 
@@ -102,7 +102,17 @@ python3 ipad/source/run_bc_device_probe.py \
 
 脚本不会自动安装。先确认签名与报告成功，再用自己的设备和 Bundle ID 安装。手机上只出现图标不等于游戏运行成功。
 
+### 图标、名称和增量资源
+
+键鼠 App 的名称为“戴森球计划”。可向 `build_bridge.py` 添加 `--original-exe "$WINDOWS_EXE"`，从本人原始游戏可执行文件中提取默认图标；此可选步骤需 `pefile` 和 `Pillow`。图标仅写入私有 Xcode 资源目录，不进入工具仓库。
+
+电力覆盖与建筑提示修复需要重新编译四个着色器。`prepare_ipad_project.py` 已添加对应 Metal 编译保护；之后执行正常 Unity iOS 导出。只替换托管 DLL、继续使用旧 shader 资源不会生效。不要将诊断纯色程序或实验绘制路径用于正式构建。
+
+常驻 `App 内存` 使用 iPadOS `phys_footprint`，单位 GiB，每秒更新一次；它不是 Unity 托管堆，也不将 GPU/Unity 统计简单相加。FPS/UPS 使用游戏原有计算，不代表已完成性能优化。
+
 ## 5. 集中回归与试玩
+
+键鼠电力/世界/文件/输入合并批次可向 `run_device_batch.py` 同时传入 `--world-audit --power-audit`。数据断言通过后仍需审阅本次电力阶段截图；不能将旧截图、仅菜单或正常退出视为视觉验收。
 
 ```sh
 python3 ipad/source/run_device_batch.py \

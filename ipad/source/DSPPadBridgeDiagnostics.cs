@@ -53,6 +53,7 @@ public sealed class DSPPadBridgeDiagnostics:MonoBehaviour {
   limit=Time.realtimeSinceStartup+240;while(!(GameMain.isRunning&&!DSPGame.IsMenuDemo&&GameMain.data!=null&&GameMain.data.guideComplete&&GameMain.localPlanet!=null&&GameMain.localPlanet.factoryLoaded&&GameMain.gameTick>120)&&Time.realtimeSinceStartup<limit)yield return new WaitForSecondsRealtime(1);
   if(!GameMain.isRunning||GameMain.localPlanet==null||!GameMain.localPlanet.factoryLoaded||GameMain.gameTick<=120){Stage("new_game_timeout");busy=false;DSPGame.ExitProgram();yield break;}
   Stage("new_game_running");yield return Capture("emu-full-game-newgame.png");
+  if(DSPPadDiagnosticLaunch.PowerAuditRequested){Stage("power_audit");yield return DSPPadPowerAudit.Run();if(!DSPPadPowerAudit.Passed)r.errors.Add("Power overlay audit failed");if(!DSPPadDiagnosticLaunch.WorldAuditRequested){r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;}}
   if(DSPPadDiagnosticLaunch.WorldAuditRequested){Stage("world_audit");yield return DSPPadWorldAudit.Run();if(!DSPPadWorldAudit.Passed)r.errors.Add("World rendering/input audit failed");}
   if(DSPTouchControls.Enabled||DSPPadDiagnosticLaunch.InputFilesRequested||DSPPadDiagnosticLaunch.WorldAuditRequested){
    Stage("input_files_regression");yield return DSPPadIntegrationRegression.Run();if(!DSPPadIntegrationRegression.Passed)r.errors.Add("Input/files integration failed");

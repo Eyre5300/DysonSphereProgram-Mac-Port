@@ -113,6 +113,7 @@ public static class DSPPadInput {
   if(frame==Time.frameCount)return;frame=Time.frameCount;previous=buttons;delta=Vector2.zero;wheel=0;
 #if DSP_EMU_IPAD
   DSPPadKeyboard.Poll();
+  DSPPadPerformanceHUD.EnsureInstalled();
   DSPPadEscapeButton.EnsureInstalled();
   DSPPadStarmapTouch.EnsureInstalled();
   DSPPadEventSystemInput.EnsureInstalled();

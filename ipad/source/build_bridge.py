@@ -11,6 +11,7 @@ def main():
     for n in ['project','engine','unity','upstream','work','derived','bc-archive']:p.add_argument('--'+n,type=Path,required=True)
     for n in ['bc-manifest','source-data','bc-sample-report']:p.add_argument('--'+n,type=Path)
     p.add_argument('--bc-probe-package',action='store_true',help='First native BC probe package; keeps exported resources until samples pass')
+    p.add_argument('--original-exe',type=Path,help='Optional owned Windows executable from which to derive the private original app icon')
     for n in ['team','bundle','device','identity','version']:p.add_argument('--'+n,required=True)
     a=p.parse_args();src=Path(__file__).resolve().parent;work=private_output(a.work);derived=private_output(a.derived);project=private_output(a.project);engine=private_output(a.engine)
     if not a.bc_probe_package and not all([a.bc_manifest,a.source_data,a.bc_sample_report]):p.error('Final package requires manifest, original Data and passing Unity BC sample report')
@@ -23,10 +24,11 @@ def main():
     def tool(name,*args):run(name,[sys.executable,src/name,*args])
     aot=work/'aot';tool('rebuild_mobile_audio_bindings.py','--project',project,'--output',aot,'--unity',a.unity)
     mac=work/'MacAOT.app';framework=mac/'Contents/Frameworks';framework.mkdir(parents=True);shutil.copy2(aot/'GameAssembly.dylib',framework/'GameAssembly.dylib');shutil.copytree(aot/'data',mac/'Contents/Resources/Data/il2cpp_data')
-    info=engine/'Info.plist';data=plistlib.loads(info.read_bytes());data['CFBundleVersion']=a.version;data['CFBundleDisplayName']='DSP Touch' if '.touch.' in a.bundle else 'DSP Keyboard';info.write_bytes(plistlib.dumps(data))
+    info=engine/'Info.plist';data=plistlib.loads(info.read_bytes());data['CFBundleVersion']=a.version;data['CFBundleDisplayName']='DSP Touch' if '.touch.' in a.bundle else '戴森球计划';info.write_bytes(plistlib.dumps(data))
     tool('prepare_engine_bridge.py','--project',engine,'--mac-app',mac,'--upstream',a.upstream,'--output-reports',reports/'prepare','--team',a.team,'--bundle',a.bundle,'--resource-clone','--bc-archive',a.bc_archive)
     sdk=a.unity.resolve().parent/'PlaybackEngines/iOSSupport/Trampoline/Libraries/libiPhone-lib.a'
     tool('augment_engine_icalls.py','--cpp',aot/'cpp','--registration',engine/'Il2CppOutputProject/Source/il2cppOutput/UnityICallRegistration.cpp','--ios-library',sdk,'--report',reports/'icalls.json')
+    if a.original_exe:tool('configure_ipad_branding.py','--exe',a.original_exe,'--catalog',engine/'Unity-iPhone/Images.xcassets/AppIcon.appiconset')
     run('xcode',['xcodebuild','-project',engine/'Unity-iPhone.xcodeproj','-scheme','Unity-iPhone','-configuration','Release','-sdk','iphoneos','-destination','id='+a.device,'-derivedDataPath',derived,'COPY_PHASE_STRIP=NO','STRIP_INSTALLED_PRODUCT=NO','-allowProvisioningUpdates','-allowProvisioningDeviceRegistration','build'])
     for script in ['apply_hdr_tiers.py','apply_shadow_tiers.py']:tool(script,'--target',engine/'Data/globalgamemanagers','--report',reports/(script+'.json'))
     resources=engine/'Data'

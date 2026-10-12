@@ -90,3 +90,26 @@ def world_audit_failures(state, report):
     if len(inputs)!=4 or not inputs[0].startswith('Normal zoom limit: Normal distance=1') or inputs[-1]!='Globe zoom transition: Starmap star=True':
         result.append('Original zoom path evidence missing')
     return result
+
+
+def power_audit_failures(state, report):
+    """Data/input gates; screenshots still require separate visual review."""
+    if not report or report.get('batchIdentifier') != state.get('batchIdentifier') or str(report.get('buildVersion')) != state.get('expectedVersion'):
+        return ['Power audit missing or stale']
+    result = []
+    if not report.get('completed') or not report.get('fixturesRemoved') or report.get('errors'):
+        result.append('Power audit incomplete, failed, or fixtures not removed')
+    states = report.get('states', [])
+    if [s.get('phase') for s in states] != ['off', 'on-no-power', 'off-again', 'low-power', 'powered']:
+        return result + ['Power stages missing']
+    if [s.get('graph') for s in states] != [False, True, False, True, True]:
+        result.append('Original power toggle did not follow expected states')
+    for index, s in enumerate(states):
+        signs = s.get('signs', [])
+        if len(signs) != 2 or signs[1] != 1 or (index < 3 and signs[0] != 2) or (index == 3 and signs[0] != 3) or (index == 4 and signs[0] in [1, 2, 3]):
+            result.append('Original power warning state mismatch')
+        if s.get('escVisible') is not False or s.get('fpsVisible') is not True or s.get('appMemory', 0) <= 0:
+            result.append('Performance/ESC status mismatch')
+        if s.get('gpuSignsMatch') is not True or s.get('coverBufferMatches') is not True:
+            result.append('Power GPU data mismatch')
+    return result

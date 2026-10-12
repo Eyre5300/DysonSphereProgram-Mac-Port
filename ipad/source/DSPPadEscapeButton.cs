@@ -24,7 +24,7 @@ public sealed class DSPPadEscapeButton:MonoBehaviour {
  // production VFInput Poll path installs this idempotently without a test driver.
  public static void EnsureInstalled(){
 #if DSP_EMU_IPAD
-  if(instance)return;
+  if(!DSPTouchControls.Enabled||instance)return;
   UnityEngine.Input.simulateMouseWithTouches=false;
   var go=new GameObject("iPad touch shortcuts");DontDestroyOnLoad(go);instance=go.AddComponent<DSPPadEscapeButton>();
 #endif
