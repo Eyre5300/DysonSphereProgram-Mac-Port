@@ -20,3 +20,21 @@ Logs/
 *.dxbc
 *.spv
 *.trace/
+
+# Generated iPad/Unity/signing material remains private
+*.o
+*.a
+*.dylib
+*.pdb
+*.bin
+*.metallib
+*.mobileprovision
+*.p12
+*.pem
+*.prefab
+*.unity
+*.mat
+*.meta
+*.bundle
+DerivedData/
+Vendor/

@@ -1,0 +1,2 @@
+UnityPy==1.25.4
+texture2ddecoder==1.0.6

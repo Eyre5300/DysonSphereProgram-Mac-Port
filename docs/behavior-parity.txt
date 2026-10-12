@@ -21,7 +21,7 @@ Mac Caps Lock 已通过 GCKeyboard 物理按下事件接入原版曲速逻辑。
 2. 新机器完整转换流程未验证；本机已完成自有输入的独立重建与部分功能回归。
 3. 跨恒星物流已在独立世界验证两趟曲速运输、途中保存重载和返航；已在预置资源/框架下验证实际火箭/太阳帆发射、到达/吸收，以及自然地面敌人的炮塔战斗。大型网络、完整战斗、全资源建造链及长期稳定性尚未全面验收。
 4. 大型存档的帧率和内存仍有瓶颈。只确认特定测试中的改进，不代表所有场景。
-5. iPad/emu 路线未恢复验证。当前是 Unity 重建 Mac 版，不是已完成的 iPad 兼容性证明。
+5. iPad Pro 27 已完成限定综合实机验证；具体范围及未验收项见 ipad/VALIDATION.md，不能推广为完整 Windows 等价。
 
 这些条目不是全部潜在问题的清单；每项实际修复都需要相应运行证据。
 
@@ -42,3 +42,13 @@ GameCamera对称投影仅在AppleMetalOSX由引擎计算，60组原主/GPU矩阵
 以上均已进入最终生产包；不能把普通自检或有限批次扩展成全部Windows功能/新机器/多小时/iPad证明。
 
 用户要求的启动显示变化：Mac每次启动按当前屏幕尺寸/刷新率选择无边框全屏，覆盖上次保存的窗口设置；之后本次运行中正常手动修改保留，按键/画质/游戏规则不变。与Windows原版沿用保存的启动显示设置存在明确差异。iOS横向原生分支未真机验证。Mac3840×2160、原设置切窗口/恢复、多UI与保存重载通过。
+
+
+iPad Pro developer preview (2026-10-12)
+Pro only; mini deployment and its named resolution preset are retired. Build27 completed 14 functional stages, 31 keyboard and 25 mouse programmatic checks, large-save captures and normal exit; see ipad/VALIDATION.md. Production Mac remains unchanged.
+Original Windows bindings, modifiers and close order are retained. Left/Right Control are independent from Command. Platform queues keep quick down/up transitions until original Update publication and Fixed sampling. Synthetic packets do not prove physical Universal Control/USB/Bluetooth behavior.
+Walking: long routes passed except the original landing-capsule collision; the previously reported unknown location remains unreproduced.
+Graphics: HDR Bloom/DoF, shadow tiers and exact original BC blocks adapted.2234 compatible textures restored;361 differing normal encodings excluded. DIN Chinese fallback uses bundled STXihei, not pixel-identical OS font fallback. Dynamic lighting/animation time is not fully controlled; no all-scene pixel parity claim.
+Animation: Pro retains original VertaBuffer loading/upload. The unfinished mini lazy/chunked upload experiment is excluded from the public production path; legacy report counters are zero compatibility fields.
+Bounded tests cover supplied large saves, production/logistics/science/blueprints, sphere/launch, warp/interstellar logistics, limited ground combat and five-minute stability. Not all weapons, space combat, maximum factories, real hardware input or multi-hour play.
+Public files contain authored tools and adapters only. Users supply their own game, Unity SDK and signing. Public entry points undergo source preparation/compile and local archive/manifest checks; a clean new-machine end-to-end installation is still unverified. This is not a ready-made game or guaranteed one-click installer. See ipad/README.md.

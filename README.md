@@ -1,8 +1,8 @@
-# 戴森球计划 Mac 版迁移工具
+# Dyson Sphere Program - Mac / iPad Pro Port Tools
 
-用自己购买的 Windows 版《戴森球计划》，在本机生成 macOS App。此仓库只提供 **MIT 许可的原创转换工具与平台适配代码**，不提供原游戏、恢复后的游戏代码、资产、游戏 App、存档或蓝图。
+用自己购买的 Windows 版《戴森球计划》，在本机生成 macOS App；iPad Pro 开发者路线见 [迁移指南](ipad/README.md)。此仓库只提供 **MIT 许可的原创转换工具与平台适配代码**，不提供原游戏、恢复后的游戏代码、资产、游戏 App、存档或蓝图。
 
-**状态：开发者预览。** 已在开发机完成转换与多批次实际游戏验证；新机器完整流程尚未验收。Steam 服务未接入，iPad/emu 部署未验证。
+**状态：开发者预览。** Mac 已阶段性交付，iPad Pro 27 已完成限定综合实机测试，详见 [验证记录](ipad/VALIDATION.md)。新机器完整流程尚未验收，Steam 服务未接入。
 
 ## 开始使用
 
@@ -30,7 +30,7 @@
 | 画面和资源 | 着色器/compute/光照/几何适配；原始纹理字节和 UI Sprite 元数据恢复；分拣器实体遮挡 |
 | 内存和稳定性 | 初始及运行中工厂加载合并重复上传、四 UI 的 MSAA 存储、小地图缓冲回收、传送带全零预留延后分配 |
 | 操作和界面 | 实体 Caps Lock；保留 C/Esc/Tab 原规则；H 弹窗层级；Finder 打开存档/蓝图目录 |
-| 显示 | 每次启动检测当前屏幕并全屏，运行中仍可手动切窗口；五种 iPad 比例预设；等价对称相机投影 |
+| 显示 | 每次启动检测当前屏幕并全屏，运行中仍可手动切窗口；四种 iPad 比例预设；等价对称相机投影 |
 
 修复脚本已接入 `prepare/recover-shaders/build`，不是需要用户另行手工粘贴的补丁。不以删减模型、有效游戏数据、精度、画质或模拟功能来优化。
 
@@ -42,7 +42,7 @@
 
 最大测试存档约 4.87 GB，保留 159 工厂与 537 万实体；物理计费从此前约 40 GB 降至太空约 25.7–26.6 GB、繁忙地面约 27.8 GB。主要数组优化延后分配约 13.01 GB 原版全零尾部，编辑路径前恢复所需容量。不同计量不可直接相加；没有永久内存上限或全游戏 FPS 提升保证。历史性能对照固定 2752×2064、8×MSAA，不能直接推广至 4K。
 
-以下尚未全面验收：新机器全流程、全部武器/太空战斗、复杂最大物流网络、多小时稳定性、全部偶发画面，以及 iPad/emu。当前路线是 Unity 重建 Mac；仅有 iOS 原生尺寸代码分支不等于 iPad 移植已完成。
+以下尚未全面验收：新机器全流程、全部武器/太空战斗、复杂最大物流网络、多小时稳定性及全部偶发画面。Mac 向导与 iPad 开发者构建是不同入口，iPad 结果和实体输入限制见 [验证记录](ipad/VALIDATION.md)。
 
 详见 [行为差异](docs/behavior-parity.txt)、[性能证据与统计口径](docs/performance.txt)、[分享和安装区别](docs/publishing.txt)。不声称 Windows 完全等效或没有 bug。
 
@@ -56,3 +56,7 @@ python3 tools/check_release.py
 边界检查包含未追踪文件；发布前仍应人工核对来源。不要把私有工作目录、生成 App 或原游戏文件加入仓库。
 
 原创工具使用 [MIT](LICENSE)。外部依赖保留其各自许可；原游戏和生成的游戏内容不属于这份工具许可证。
+
+## iPad Pro developer workflow
+
+See the [iPad build, installation and regression guide](ipad/README.md). Use your own Windows game, fixed Unity/iOS toolchain and Apple signing. No game App/IPA, SDK binaries or personal saves are distributed. Mini support is retired; keyboard/mouse is the supported control scope.

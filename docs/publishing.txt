@@ -1,3 +1,5 @@
+2026-10-12 update: iPad Pro status, public reproduction scope and limitations are maintained in ipad/README.md and ipad/VALIDATION.md; these supersede historical iPad status below. Only authored tools are published, not generated games or SDK files.
+
 分享与发布（开发者预览）
 
 对外产物

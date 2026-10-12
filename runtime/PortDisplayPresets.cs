@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class PortDisplayPresets {
  public struct Preset { public string name; public int width,height; public Preset(string n,int w,int h){name=n;width=w;height=h;} }
- public static readonly Preset[] Devices={new Preset("iPad mini 7",2266,1488),new Preset("iPad Air 11\"",2360,1640),new Preset("iPad Air 13\"",2732,2048),new Preset("iPad Pro 11\"",2420,1668),new Preset("iPad Pro 13\"",2752,2064)};
+ public static readonly Preset[] Devices={new Preset("iPad Air 11\"",2360,1640),new Preset("iPad Air 13\"",2732,2048),new Preset("iPad Pro 11\"",2420,1668),new Preset("iPad Pro 13\"",2752,2064)};
  public static bool StartupConfigured { get; private set; }
  public static Resolution StartupResolution { get; private set; }
  static bool startupPending;

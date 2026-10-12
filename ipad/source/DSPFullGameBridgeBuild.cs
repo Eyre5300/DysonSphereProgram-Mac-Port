@@ -1,0 +1,16 @@
+using System;using System.IO;using UnityEngine;using UnityEditor;using UnityEditor.Build.Reporting;
+// Builds the owned, previously fixed game in a separate private project.
+public static class DSPFullGameBridgeBuild {
+ static void Check(BuildReport r,string report){File.WriteAllText(report,r.summary.result+" errors="+r.summary.totalErrors+" bytes="+r.summary.totalSize);if(r.summary.result!=BuildResult.Succeeded)throw new Exception("Bridge export failed");}
+ public static void BuildMacAOT(){
+ PlayerSettings.companyName="LocalDSPPort";PlayerSettings.productName="DSP emu iPad";
+ PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone,"local.dsp.emu.macaot");PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone,"DSP_EMU_IPAD");PlayerSettings.SetScriptingBackend(BuildTargetGroup.Standalone,ScriptingImplementation.IL2CPP);PlayerSettings.SetArchitecture(BuildTargetGroup.Standalone,2);PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.Standalone,ManagedStrippingLevel.Low);PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.Standalone,ApiCompatibilityLevel.NET_Unity_4_8);PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.StandaloneOSX,false);PlayerSettings.SetGraphicsAPIs(BuildTarget.StandaloneOSX,new[]{UnityEngine.Rendering.GraphicsDeviceType.Metal});
+ string output=Environment.GetEnvironmentVariable("DSP_MAC_AOT_OUTPUT");if(string.IsNullOrEmpty(output))throw new Exception("DSP_MAC_AOT_OUTPUT required");
+ Check(BuildPipeline.BuildPlayer(new[]{"Assets/Scenes/level0.unity"},output,BuildTarget.StandaloneOSX,BuildOptions.None),"../full-mac-aot-result.txt");
+ }
+ public static void ExportIOS(){
+ PlayerSettings.companyName="LocalDSPPort";PlayerSettings.productName="DSP emu iPad";PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS,Environment.GetEnvironmentVariable("DSP_IOS_BUNDLE_ID")??"local.dsp.emuprobe");PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS,"DSP_EMU_IPAD");PlayerSettings.SetScriptingBackend(BuildTargetGroup.iOS,ScriptingImplementation.IL2CPP);PlayerSettings.SetManagedStrippingLevel(BuildTargetGroup.iOS,ManagedStrippingLevel.Low);PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.iOS,ApiCompatibilityLevel.NET_Unity_4_8);PlayerSettings.iOS.targetOSVersionString="17.0";PlayerSettings.iOS.targetDevice=iOSTargetDevice.iPadOnly;PlayerSettings.iOS.sdkVersion=iOSSdkVersion.DeviceSDK;PlayerSettings.iOS.buildNumber=Environment.GetEnvironmentVariable("DSP_IOS_BUILD_NUMBER")??"27";PlayerSettings.defaultInterfaceOrientation=UIOrientation.LandscapeLeft;PlayerSettings.allowedAutorotateToLandscapeLeft=true;PlayerSettings.allowedAutorotateToLandscapeRight=true;PlayerSettings.allowedAutorotateToPortrait=false;PlayerSettings.allowedAutorotateToPortraitUpsideDown=false;PlayerSettings.SetArchitecture(BuildTargetGroup.iOS,1);PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.iOS,false);PlayerSettings.SetGraphicsAPIs(BuildTarget.iOS,new[]{UnityEngine.Rendering.GraphicsDeviceType.Metal});
+ string output=Environment.GetEnvironmentVariable("DSP_IOS_BRIDGE_OUTPUT");if(string.IsNullOrEmpty(output))throw new Exception("DSP_IOS_BRIDGE_OUTPUT required");
+ Check(BuildPipeline.BuildPlayer(new[]{"Assets/Scenes/level0.unity"},output,BuildTarget.iOS,BuildOptions.None),"../full-ios-engine-export-result.txt");
+ }
+}

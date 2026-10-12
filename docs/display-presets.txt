@@ -1,5 +1,6 @@
+2026-10-12：用户终止 mini 部署；当前调试设备为 iPad Pro。已移除 mini 命名分辨率预设及其低分辨率诊断开关。Pro24已完成限定范围综合自动测试，未等同于实体键鼠/所有画面/多小时最终验收。下面历史Mac测试记录不代表当前支持列表。
+
 Apple 官方屏幕像素，横向（2026-10-10核对）：
-iPad mini 7 / A17 Pro：2266×1488 https://www.apple.com/ipad-mini/specs/
 iPad Air 11英寸：2360×1640 https://www.apple.com/ipad-air/specs/
 iPad Air 13英寸：2732×2048 https://www.apple.com/ipad-air/specs/
 iPad Pro 11英寸（M4/M5）：2420×1668 https://www.apple.com/ipad-pro/specs/

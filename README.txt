@@ -1,3 +1,5 @@
+2026-10-12: iPad Pro developer tools added. See ipad/README.md and ipad/VALIDATION.md. Mini support is retired. Historical iPad status below is superseded by these documents.
+
 戴森球计划 Mac 版迁移工具（本轮已验证工具；新机器验收待进行）
 
 本目录只包含作者编写的转换脚本和平台辅助代码。使用者须提供自己购买的 Windows 游戏；所有游戏代码、着色器、模型和纹理均在本机生成。公开时只分享本目录。仅对 port-tools 建仓库，不要添加上层的 local-private 或游戏 App。

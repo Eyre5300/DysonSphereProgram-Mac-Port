@@ -1,0 +1,475 @@
+{
+  "scope": "Original tools and platform adapters only. Game source/assets, SDK objects, private evidence and generated source are excluded.",
+  "files": [
+    {
+      "file": "source/DSPAOTDeviceInput.mm",
+      "sha256": "cde77fddb6ef2888301dd4fd2f3341bd7eac35b8a2ff42de957f3262999271d1",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPBCTextureFormats.mm",
+      "sha256": "8b3140532d1e4b55c3bf685ebab0001d116a179bd26376938468c4e0425cd6bb",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPFullGameBridgeBuild.cs",
+      "sha256": "d4ab5a5f17a38d2ed3787c8a175835fcbd97306728a9965be08efd6efe88832f",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPMetalCensus.m",
+      "sha256": "e9aefd7e4547e02a83a240fe45435b451b71d473a65f0807a4ad2fdef1980469",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadBCBootstrap.cs",
+      "sha256": "8146240e2124f169419c5aa96dd2cc959db7b8098a3941ebe25bf49f47de4263",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadBatchFixture.cs",
+      "sha256": "14eccce83449c630d15cf03609b0878a544225a1243926d38a025fd7f8c38d52",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadBridgeDiagnostics.cs",
+      "sha256": "bb27055dccf45ece4742fe006b0450f9295126f46da880883ce5d72756abd8bd",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadCursorBridge.cs",
+      "sha256": "81f8647e4627ebceeeca349f2ea6577a48a1d3a42b915361f2576023664863cd",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadDiagnosticLaunch.cs",
+      "sha256": "cba24212fc24dd7ea6e12019388ce0cefa575402552c9b6c65361b982727a7a1",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadEscapeButton.cs",
+      "sha256": "b26c0f5fec454fab40785b5aaeab77144c6209378c583ecb7e17f1fda49c5876",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadEventSystemInput.cs",
+      "sha256": "d5d829bf88156ed78f36f109de1641c08ed4eb3002d25ed54033fa95d6e40960",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadFontAudit.cs",
+      "sha256": "fb4ecb437ef6d22fa140e6584772182a4e76bd39349cf6810c6a9364f55c4989",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadFunctionalBatch.cs",
+      "sha256": "e4f32b872d8b5a0c3243b749f745d2ed207caa6826f02d29e0029142ef0d03f3",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadInput.cs",
+      "sha256": "88101da73497d71e18fe8bfc64cea238bd4d39b655d82377a4cac029658cbb77",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadKeyEdges.cs",
+      "sha256": "5dced8a446bd933bb95ddccce170e0bd3eb5ed4cfbf64408f92bf2a8719c69f9",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadKeyQueue.cs",
+      "sha256": "25af74ba589ad4e9635fbb6555d24c57ee68aa0b50ec46ab42e70d983ec8676d",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadKeyboard.cs",
+      "sha256": "e7092905e522e5cd8333f1efc1faea3531f5a8f40526f9bd316bfd82a20cd2ea",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadKeyboardRegression.cs",
+      "sha256": "742c80bf2a7f660738d1a12e57b62b31f5b204a55e6f9d18e04a53cc617ae437",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadManagedInputTrace.cs",
+      "sha256": "228a104e236af5d771c20fe910693385f422551da4e978e098e228397833c1be",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadMatchedRenderRegression.cs",
+      "sha256": "e4c70f8df933a0d9f6e47e704a2ba3dc4c55e017daa560c2feb51a0277197200",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadMemoryInventory.cs",
+      "sha256": "ae10bdc6bdb6fd95d92347f8055b325c40910ca0026a0d5252b09f8c455d1e17",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadMemoryPressureProbe.cs",
+      "sha256": "610a5227e72b275be86fd7c3e9ae86bc98ea16c509e8ba636cf06b48fe2c3fd3",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadMouseRegression.cs",
+      "sha256": "5d9cb0c1eb916b58a52c5f7551cda510f8f3bf794ed6fd548706c66701ded95d",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadRenderDiagnostics.cs",
+      "sha256": "5e36c74a25885b89fef7ec667b4752701752e0316f4bc3e3400f2d466b612ad5",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadRenderFormats.cs",
+      "sha256": "8b74bcad303f1f322215f326908cefd01e1344d75b015e16dba72193456dd8f0",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadShadowRegression.cs",
+      "sha256": "87629599d2d16be0dceae0064100afb91bd70750abb1026137f16a50f87e43f1",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadStarmapTouch.cs",
+      "sha256": "7b502c7706fb4c98081a6c108d8ff2a2f31d598692ec89b2930041381f02b577",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadTapGesture.cs",
+      "sha256": "eca964b3f3c2668c5a5ab7d5a1c11808d53c8dfebea30f14af09f6746ae14a3a",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadTextAssetStream.cs",
+      "sha256": "e36cf3df54f3a7b54283ccce1ca77ca1fcabbcadd055016aa6fd72b541576f58",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadVertaBacking.cs",
+      "sha256": "0f8dc9c3e74704edfb281df89e9586d1c45d18ef7980ec4375cd702a913949d0",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/DSPPointerState.hpp",
+      "sha256": "417416a5c6658ff5a19572041abbb52ebc49957b2d1fdbcb8dae9e9d7cb33a3b",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPRayReceiverAudit.cs",
+      "sha256": "00dd594adb3487c82fb785c2d1582bc5eaef07605d1da961b2a1fb61ef38c632",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPSmartTouchControls.h",
+      "sha256": "aad9963e9344c7a30ff2325e1b1a0ccdbafb9ec1316a71b66f771c794edbc050",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPSmartTouchControls.m",
+      "sha256": "13b4e79335fe2f88ddcc4a577c33bd5a8ffb3ea353c831e867edd8c95f4ab6c6",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPSmartTouchFrame.cs",
+      "sha256": "7a49302a3dd621ba2c41302d4ec1fd9d5530e570d207701389ad5d2853b93afa",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortBlueprintAudit.cs",
+      "sha256": "1a4a26e1ecb4bf997c752357f1ea0bae9933f0f68586ef832028ab04e7eb47a5",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortCameraProjection.cs",
+      "sha256": "5163e195080f92f04661d8e87b500dac292c21b050a7f1fa9677cd4fb0af1f41",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortCargoImportedPoints.cs",
+      "sha256": "8b334618fab26b4b52e38376cba15762539b745459b242a50a3536f166312cd8",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortCombatAudit.cs",
+      "sha256": "a6bac1b19797da37016e07d22efa57e9027d783f4c026f65c61ae02e3b5b7e12",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortDisplayPresets.cs",
+      "sha256": "2d6cd7b4f8cd29ebd6d5d12b9ed9cad8be4d68c95dd87b710d959f51203556a4",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortFolderBrowser.cs",
+      "sha256": "20bc62aa0838537932459b1896bee1a93e439ab68edd7048732246f4f0a1c2c5",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortHUDPopupBounds.cs",
+      "sha256": "a4863f88c7bbbe40c4f110bc94bb09117eeafaa448e7d0361aeca409cdfe9944",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortInitialInstanceUploads.cs",
+      "sha256": "a3809a3b78402e1569313debce3dfdeb5d45c48f2731912cf840f84ac3c4bab2",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortInserterOcclusion.cs",
+      "sha256": "8af553e0f5b42849dd36e8c929a13133f27e335e8328b776efd5be062ed1fe58",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortInterstellarAudit.cs",
+      "sha256": "0edaa7da181b873bff3b644d63092591977b3880de1c9c37434e68187d2094eb",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortLaunchAudit.cs",
+      "sha256": "43de695b621f3ab6af1985544f5656f3c20987ee70224395a3c1e12c2ba632c2",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortMacInput.cs",
+      "sha256": "00914ee925c22ef47a371e28da2c1e9dadf703a8dcc86cfe8af37a54996b64ff",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortMacShutdown.cs",
+      "sha256": "fea290f0ec6e60a23e0b586c501da093b5e3f0460ff17c2d83e47a23753b0202",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortMemorylessUI.cs",
+      "sha256": "ad1f8a09cf2b9ad2e340b3ec194f177dffe3ee1c4d70ef8880ebef21d6d32b13",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortMetalBuffers.cs",
+      "sha256": "b1b776bc6243a8acca33ddc3ee784c505845b2a398b01c9fd6a3e7bbe70e7274",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortMiniBlockBuffers.cs",
+      "sha256": "1b4cef5a943346a7b67a1ab1362f1f6215b7900718c2a8cecbd856085d62a557",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortProductionChainAudit.cs",
+      "sha256": "a36037635efd3b35d4d68e4c62d5f9f31883dcfb993f81a0ce6674b906029f7f",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortScienceLogisticsAudit.cs",
+      "sha256": "255928c1101274d3a1123b2e60a8ecf11988ac0c0cb3bac0319449d0f2a2aa02",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortShellMesh.cs",
+      "sha256": "f08b073c6ff06237a8ac1c08f449ddab7c2f7dc0b242d594c681f269f63d8dc6",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortSphereAudit.cs",
+      "sha256": "72f9e5a6bb98d7ec66aab222de5ae153ab86b5d494756db517f1a6bdfb855bb3",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/PortSunShafts.cs",
+      "sha256": "b059c5d50ed897e210142c2c0f63008ccd776e379825fa8587b7e62083a71e99",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/PortUIRenderTargets.cs",
+      "sha256": "1b4b577e9eceb19792f251d63bf2e8d2a2e70071f5300228ca9a9a6e2994afaf",
+      "origin": "Original platform helper; reviewed platform-only variant of already public runtime helper"
+    },
+    {
+      "file": "source/UnityBCSampleNative.mm",
+      "sha256": "8bfe4a5d8035629d62f13f9eb82b7a2d5f0da4daca2ca44879f821bab4f360aa",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/UnityBCSampleProbe.cs",
+      "sha256": "4c72486fe48c8f66c3195e03d99be33d0202cdca2547d7b68a73233f92181958",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_cursor_bridge.py",
+      "sha256": "6525a45e40fdfd0b38e9f78b6640e6d79d74d77a3f47d239ff3e01dd6d46a159",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_din_cjk_fallback.py",
+      "sha256": "96093bb9aa01f381b70d934d7e91f13a6ef8cd3327730a32d93b9c6f6dfea33b",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_dof_alpha_patch.py",
+      "sha256": "c8f081f81833364ee621f8749306dc41489efee42416e4491c757776abbdbadd",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_hdr_tiers.py",
+      "sha256": "8a7c9188b41f2d92b8b44556bb0c33b618e2d81e6dcfadfb0789958d1d4c45aa",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_input_publication.py",
+      "sha256": "f008e073f687ab3c95e2f39ad60e65e7a4e32d18a83d25fa40ab5bed1ff5c06b",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_managed_input_trace.py",
+      "sha256": "a1a38ea494f94863df5c1b8fb2f811c0cccca3743726dc362c549e08140154f9",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_milkyway_memoryless.py",
+      "sha256": "6221a7f9284caef4adcc3411f178dced720c1be6329c37f6fb0dd8c45964bc9c",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_mouse_input_patch.py",
+      "sha256": "5e2e0d923bb14db4520f5e18b05d7396d2d986a8a8f3c4605dcc7d83e4a4e5f0",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_pointer_view.py",
+      "sha256": "2a38706058c3281c58675c48cff0164f8af7d326ddd7e2219da9211ead390c7e",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_scene_lifecycle.py",
+      "sha256": "1ade9fd9cec54e5d60f176b11bda5f6fb25291363e66d875898104ba26e97c4d",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_shadow_tiers.py",
+      "sha256": "ff7ff14c6803024911967f5a5b1d06e34ceb1ee7164da88d4fd2b45a950ec78f",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_starmap_touch_patch.py",
+      "sha256": "26463c4c5633f3127951078f389f34ec10a926f01d858b865815cf2d39d10ccb",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_textasset_stream.py",
+      "sha256": "185f9066e257f8a820c92a797812f3fd442473f849cca022495f4cfcfd6d581a",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_touch11_patch.py",
+      "sha256": "37dbebc0ed0f4598a64d681d6da6bbe8030f87d4d25b368bb7c087afdea5fb0c",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/apply_touch_escape_patch.py",
+      "sha256": "af7357ef4236c9c8f41587b9b5a6f75c67bf25eedf6ebd66c0a9ddbd433f3dab",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/audit_mac.py",
+      "sha256": "37466e4944f32833c1d1e32429116334f45dad85c90f673b88021c0c67872caf",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/augment_engine_icalls.py",
+      "sha256": "3cb43061eb66a6991161d1ece82430b9504452febf34803bc4991da29c05806c",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/batch_result.py",
+      "sha256": "a1d2c15ca23c2e596422f1234300c87d18ee152004f52a2a397cd2d52c146b58",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/build_bridge.py",
+      "sha256": "e763ea870b645018e62b45939192e42bcfff4a84e09636602bc1df46ecac086b",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/create_bc_manifest.py",
+      "sha256": "e097ba2f3915d6846c3909d031cbb6c4d2c30ec56faaa42d29c3921c90b5bf76",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/device_report_identity.py",
+      "sha256": "2304a56e72f80736421a7d4156db76e1e29dfc85609f9add5170c312eb8e0819",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/finalize_resource_clone.py",
+      "sha256": "24569685110953a3029ed3e7328522e2616fc968bf585d9991a330d6a02c7963",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/prepare_bc_archive.py",
+      "sha256": "b91b3c807ad3da0f8739333ae34b722726e23ee0defcd1f1fdcbf2f9b245be97",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/prepare_bc_object.py",
+      "sha256": "90e2f4fbc42c93af58afa71b1192543ca7342dc1d212200226d3f9031a7a5b53",
+      "origin": "Project-authored SDK metadata or local sample tool; complete source reviewed, contains no SDK object or texture payload"
+    },
+    {
+      "file": "source/prepare_engine_bridge.py",
+      "sha256": "bae09c898bc50566a51dd3c83f2f5fa29f8588c302922335179e7a25d5b1fc06",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/prepare_ipad_project.py",
+      "sha256": "c17bc29f3f54c948e457a82a1c526c2668742dc03f87ae4fdf349c3a232484f7",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/prepare_unity_bc_samples.py",
+      "sha256": "7e85fbf58a1f66269cb64b2ee3e646dd8e82f12c76f612fe3dcb004f59bc343b",
+      "origin": "Project-authored SDK metadata or local sample tool; complete source reviewed, contains no SDK object or texture payload"
+    },
+    {
+      "file": "source/private_paths.py",
+      "sha256": "ea8972d1191c8b11e2fb0125ffb34fdc3d22f64808e98d50a1dfb3c07f40d10a",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/rebuild_mobile_audio_bindings.py",
+      "sha256": "b45ca95e4c392b5e6157f9102008bf167f1de9fdaf832560a51702b80339b526",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/restore_manifest_bc.py",
+      "sha256": "8b626bf23a8143c6d010956e79b3cb5e4f75299f3b8d616db042921600a24ff2",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/retarget_mono.py",
+      "sha256": "afce522717f993a90923dbe4f1164faa3c085f555b71be78c5d812bab7372eac",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/run_bc_device_probe.py",
+      "sha256": "c9a7675d428ef17ac798004761283feee50eac84af53d35c80fb9c5dce2c03ff",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/run_device_batch.py",
+      "sha256": "0d2c676ab82da281892a49545017495a22f88b70215918fc003666e108a4f337",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/test_device_report_identity.py",
+      "sha256": "47d92bf4528feca16667a8ac1989932fc35891ccd04946cd45db8bcecddb07ad",
+      "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/test_release_guards.py",
+      "sha256": "5082956df42b357c9b4347a7dffd24b9019d41fdbd2a75d2d9b56070a50b3a22",
+      "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    }
+  ]
+}

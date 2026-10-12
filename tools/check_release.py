@@ -1,7 +1,7 @@
 """Conservative release boundary check, including untracked files. No uploads."""
 from pathlib import Path
 import sys
-ALLOWED={'.command','.py','.cs','.c','.h','.sh','.json','.md','.txt','.toml','.yml','.yaml'}
+ALLOWED={'.command','.py','.cs','.c','.h','.mm','.m','.hpp','.cpp','.sh','.json','.md','.txt','.toml','.yml','.yaml'}
 PRIVATE={'local-private','Assembly-CSharp','Library','StreamingAssets','Resources','private-fixtures'}
 def check_release(root):
  root=Path(root); paths=[]; failures=[]

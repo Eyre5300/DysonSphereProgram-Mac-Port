@@ -65,14 +65,14 @@ public sealed class PortConverterSmoke : MonoBehaviour {
   int width=Screen.width,height=Screen.height;var mode=Screen.fullScreenMode;var savedOption=DSPGame.globalOption;
   try{
    yield return CheckUIPages("initial");
-   var windowed=savedOption;windowed.resolution.width=2266;windowed.resolution.height=1488;
+   var windowed=savedOption;windowed.resolution.width=2420;windowed.resolution.height=1668;
    windowed.resolution.refreshRateRatio=GameResolutions.DoubleToRefreshRate(60);windowed.displayMode=EOptionDisplayMode.Windowed;
    DSPGame.globalOption=windowed;DSPGame.globalOption.Apply();yield return new WaitForSecondsRealtime(3);
    if(Application.platform==RuntimePlatform.IPhonePlayer){
     var native=PortDisplayPresets.StartupResolution;
     if(Screen.width!=native.width||Screen.height!=native.height||Screen.fullScreenMode!=FullScreenMode.FullScreenWindow)
      throw new Exception("iOS settings did not retain the native fullscreen surface");
-   }else if(Screen.width!=2266||Screen.height!=1488||Screen.fullScreenMode!=FullScreenMode.Windowed)
+   }else if(Screen.width!=2420||Screen.height!=1668||Screen.fullScreenMode!=FullScreenMode.Windowed)
     throw new Exception("Original user windowed option did not apply after startup");
    yield return CheckUIPages("resized");
   }finally{DSPGame.globalOption=savedOption;DSPGame.globalOption.Apply();}
