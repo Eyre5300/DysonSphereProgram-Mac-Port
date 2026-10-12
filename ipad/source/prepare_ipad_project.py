@@ -10,9 +10,35 @@ def once(text,old,new):
     if new in text:return text
     if text.count(old)!=1:raise ValueError('Unsupported source anchor: '+old[:80])
     return text.replace(old,new,1)
+def input_foundation(s):
+    # The shared prepare stage already installs PortMacInput.Poll. Sample the
+    # iPad transport before original axes/modifiers, as in the accepted build.
+    head='\tpublic static void OnUpdate()\n\t{'
+    s=once(s,head,head+'\n#if DSP_EMU_IPAD\n\t\tDSPPadInput.Poll();\n#endif')
+    anchor='\t\tUpdateGameStates();\n\t\tPortMacInput.Poll();\n\t\tint frameCount = Time.frameCount;'
+    s=once(s,anchor,anchor.replace('\n\t\tPortMacInput.Poll();',
+        '\n#if DSP_EMU_IPAD\n\t\tDSPSmartTouchFrame.Sample(GameMain.isRunning && !DSPGame.IsMenuDemo && !GameMain.isPaused && !inFullscreenGUI && !inputing && !inScreenshotMode);\n\t\tmouseMoveAxis += DSPSmartTouchFrame.Look;\n#endif\n\t\tPortMacInput.Poll();'))
+    s=insert_method_tail(s,'OnUpdate','DSPPadInput.UpdateInputPublished()')
+    return insert_method_tail(s,'OnFixedUpdate','DSPPadInput.FixedInputSampled()')
+def bootstrap_defines(text):
+    # Unity compiles scripts before invoking -executeMethod. A fresh project
+    # must already expose the iPad diagnostic types during that first import.
+    pattern=r'(?m)^  scriptingDefineSymbols:(?: \{\})?\n(?:    [^\n]*\n)*'
+    match=re.search(pattern,text)
+    if not match:raise ValueError('Unknown scriptingDefineSymbols serialization')
+    block=match[0].replace('scriptingDefineSymbols: {}','scriptingDefineSymbols:')
+    for group in ('Standalone','iPhone'):
+        line=re.search(r'(?m)^    '+group+r': (.*)$',block)
+        if line:
+            defines=line[1].strip().strip('"').split(';')
+            if 'DSP_EMU_IPAD' not in defines:defines.append('DSP_EMU_IPAD')
+            block=block[:line.start()]+'    '+group+': '+';'.join(filter(None,defines))+block[line.end():]
+        else:block+='    '+group+': DSP_EMU_IPAD\n'
+    return text[:match.start()]+block+text[match.end():]
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     for n in ['project','original-export','game-assembly','report']:p.add_argument('--'+n,type=Path,required=True)
+    p.add_argument('--render-probes',action='store_true',help='Include optional private shader compiler probes for --scene-audit; ordinary gameplay does not need them')
     a=p.parse_args();project=private_output(a.project);original=a.original_export.resolve();private_output(a.report,[original]);source=Path(__file__).resolve().parent
     if project==original or original in project.parents or project in original.parents:raise ValueError('Do not edit the untouched export')
     # Use the authoritative version pin already maintained by the Mac converter.
@@ -21,6 +47,8 @@ def main():
     if not match:raise ValueError('Missing shared Windows version pin')
     if hashlib.sha256(a.game_assembly.read_bytes()).hexdigest()!=match.group(1):raise ValueError('Unsupported Windows game assembly')
     a.report.parent.mkdir(parents=True,exist_ok=True)
+    settings=project/'ProjectSettings/ProjectSettings.asset'
+    settings.write_text(bootstrap_defines(settings.read_text()))
     assets=project/'Assets';game=assets/'Scripts/Assembly-CSharp';before={}
     def edit(name,fn):
         q=game/name;s=q.read_text();t=fn(s);before[name]=hashlib.sha256(s.encode()).hexdigest();q.write_text(t)
@@ -30,12 +58,12 @@ def main():
         if re.search(r'(?<![\w.])Input\.(GetKey(?:Down|Up)?|GetMouseButton(?:Down|Up)?|GetAxis|ResetInputAxes|mousePosition|mouseScrollDelta|anyKey(?:Down)?)\b',s) and 'using Input = DSPPadInput;' not in s:
             if re.search(r'using\s+Input\s*=',s):raise ValueError('Conflicting Input alias')
             q.write_text(alias+s)
-    def vf(s):
-        s=once(s,'\t\tUpdateGameStates();\n\t\tint frameCount = Time.frameCount;','\t\tUpdateGameStates();\n#if DSP_EMU_IPAD\n\t\tDSPPadInput.Poll();\n\t\tDSPSmartTouchFrame.Sample(GameMain.isRunning && !DSPGame.IsMenuDemo && !GameMain.isPaused && !inFullscreenGUI && !inputing && !inScreenshotMode);\n\t\tmouseMoveAxis += DSPSmartTouchFrame.Look;\n#endif\n\t\tPortMacInput.Poll();\n\t\tint frameCount = Time.frameCount;')
-        s=insert_method_tail(s,'OnUpdate','DSPPadInput.UpdateInputPublished()')
-        return insert_method_tail(s,'OnFixedUpdate','DSPPadInput.FixedInputSampled()')
-    edit('VFInput.cs',vf)
-    edit('DSPGame.cs',lambda s:once(s,'globalOption.LoadGlobal();','globalOption.LoadGlobal();\n\t\tPortDisplayPresets.ConfigureStartup(ref globalOption);'))
+    edit('VFInput.cs',input_foundation)
+    # Shared preparation installs the display hook after version overrides and
+    # immediately before Apply. Do not add a second, earlier hook at LoadGlobal.
+    startup=game/'DSPGame.cs'
+    if startup.read_text().count('PortDisplayPresets.ConfigureStartup(ref globalOption);')!=1:
+        raise ValueError('Shared startup display adapter missing or duplicated')
     edit('VFPreload.cs',lambda s:once(s,'private IEnumerator PreloadThread()\n\t{','private IEnumerator PreloadThread()\n\t{\n#if DSP_EMU_IPAD\n\t\tif(DSPPadDiagnosticLaunch.BCProbeRequested){yield return DSPPadBCBootstrap.Run();yield break;}\n#endif'))
     for q in (source.parents[1]/'runtime').glob('*.cs'):
         shutil.copy2(q,assets/q.name)
@@ -59,6 +87,9 @@ def main():
     run('apply_verta_binding.py','--project',project)
     run('apply_performance_hud.py','--project',project)
     run('apply_power_shader_safety.py','--project',project)
+    run('apply_remaining_adapters.py','--project',project)
+    if a.render_probes:run('prepare_scene_shader_probe.py','--project',project,'--report',a.report.with_name('scene-shader-probe.json'))
+    run('apply_milkyway_memoryless.py','--original',original/'Assets/Scripts/Assembly-CSharp/UIMilkyWay.cs','--target',game/'UIMilkyWay.cs','--report',a.report.with_name('milkyway-adapter.json'))
     run('apply_textasset_stream.py','--original',original/'Assets/Scripts/Assembly-CSharp/HashSystem.cs','--target',game/'HashSystem.cs','--report',a.report.with_name('hash-adapter.json'))
     bloom=game/'UnityEngine/PostProcessing/BloomComponent.cs';s=bloom.read_text();anchor='RenderTextureFormat format = (Application.isMobilePlatform ? RenderTextureFormat.Default : RenderTextureFormat.DefaultHDR);';bloom.write_text(once(s,anchor,anchor+'\n#if DSP_EMU_IPAD\n            if (DSPPadRenderFormats.DesktopBloomCandidate) format = RenderTextureFormat.ARGBHalf;\n#endif'))
     # Avoid carrying Mac's optional lazy-target experiment into the iPad build.

@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "fd5c9a16f12b22d54d574a6606789c69f8da4b16e03cde190378486bf6036853",
+      "sha256": "db80304c48caadfbfa2cef4812e042c0530540a86b15548b28a3896eb48ff001",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -33,7 +33,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "67dac86e551ec707b601c49e02800accbd64a39136338e0d14d685ef6545a69d",
+      "sha256": "30f953b166532aa15cf986799260edebfc9a7697471cb22a1a5a91503608781d",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,18 +43,18 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "4c51c0d7769f48074f666e0a2f29201bf2449aea95a7279932746d17adc7c0f6",
+      "sha256": "df00cf3a7da50ffa272d1af65364b714ea481bb2648dc7736c2fda2b6af094a2",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/DSPPadDocuments.cs",
-      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
-      "sha256": "eee2a1c9d54af3533e787b95eddd8215d0f17d22cd7b576e723f562867b6baea"
+      "sha256": "3b9dcbb9b9396850a50bf3d1440efdb760d3a16cb90c93b45a8f285f755d0089",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets"
     },
     {
       "file": "source/DSPPadDocuments.mm",
-      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
-      "sha256": "dd5f69c74c3cfc2685808752a2e781f394f19b8057db34ffe4c69352501374f6"
+      "sha256": "dd5f69c74c3cfc2685808752a2e781f394f19b8057db34ffe4c69352501374f6",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets"
     },
     {
       "file": "source/DSPPadEscapeButton.cs",
@@ -83,13 +83,13 @@
     },
     {
       "file": "source/DSPPadInputMode.cs",
-      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
-      "sha256": "551c3b65e2898eda0237d43637538f07de1eb64e90547797987fdf64fec52956"
+      "sha256": "551c3b65e2898eda0237d43637538f07de1eb64e90547797987fdf64fec52956",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets"
     },
     {
       "file": "source/DSPPadIntegrationRegression.cs",
-      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
-      "sha256": "3e829c23ef4a8eea581c52a07686f414ead0e0e9b72214554e70d2d16ffda0c1"
+      "sha256": "d3f9c455905c4e5c2540237ec88c39dfb031aea68043754040a5ed43c39792f6",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets"
     },
     {
       "file": "source/DSPPadKeyEdges.cs",
@@ -138,23 +138,28 @@
     },
     {
       "file": "source/DSPPadPerformanceHUD.cs",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "2d288e178d135ba37e81b02a31dfa78f5922493bcdd59a715310741245591ff9"
+      "sha256": "2d288e178d135ba37e81b02a31dfa78f5922493bcdd59a715310741245591ff9",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
     },
     {
       "file": "source/DSPPadPowerAudit.cs",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "df61247d1165dca36c6ca3e7e899fee3e92a40d2678c34709f0eea1469208418"
+      "sha256": "df61247d1165dca36c6ca3e7e899fee3e92a40d2678c34709f0eea1469208418",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
     },
     {
       "file": "source/DSPPadRenderDiagnostics.cs",
-      "sha256": "5e36c74a25885b89fef7ec667b4752701752e0316f4bc3e3400f2d466b612ad5",
+      "sha256": "e023f2a53cb11464fcdaacbff4ec195420de3945b5115f7324bab25debed45b3",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/DSPPadRenderFormats.cs",
       "sha256": "8b74bcad303f1f322215f326908cefd01e1344d75b015e16dba72193456dd8f0",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadSceneAudit.cs",
+      "origin": "Project-authored platform adapter, conversion tool or opt-in diagnostic; no recovered game code or assets",
+      "sha256": "4a63dd2f5607006f0bcb535ebde322b6535a6eccee6486f5a667ca359e376901"
     },
     {
       "file": "source/DSPPadShadowRegression.cs",
@@ -183,8 +188,8 @@
     },
     {
       "file": "source/DSPPadWorldAudit.cs",
-      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
-      "sha256": "01bd0ba8b7d7731a8f29fa4daf9060a6e09a80865eb74d37db7e583d10736300"
+      "sha256": "01bd0ba8b7d7731a8f29fa4daf9060a6e09a80865eb74d37db7e583d10736300",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation"
     },
     {
       "file": "source/DSPPointerState.hpp",
@@ -348,7 +353,7 @@
     },
     {
       "file": "source/apply_din_cjk_fallback.py",
-      "sha256": "96093bb9aa01f381b70d934d7e91f13a6ef8cd3327730a32d93b9c6f6dfea33b",
+      "sha256": "034affc903f6b7a1983af324be8bfd13fc23b235b36d2c06aa4005790e741f75",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -383,8 +388,8 @@
     },
     {
       "file": "source/apply_performance_hud.py",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "6682c6594a0bdafbeec955c85dd7e7e309863b6be82b83fca6cd5007a987ae00"
+      "sha256": "6682c6594a0bdafbeec955c85dd7e7e309863b6be82b83fca6cd5007a987ae00",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
     },
     {
       "file": "source/apply_pointer_view.py",
@@ -393,8 +398,13 @@
     },
     {
       "file": "source/apply_power_shader_safety.py",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "00fd83689c0811ee2b8d268e0570993ace94e42611ce53d36fbf67b5779e9888"
+      "sha256": "00fd83689c0811ee2b8d268e0570993ace94e42611ce53d36fbf67b5779e9888",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
+    },
+    {
+      "file": "source/apply_remaining_adapters.py",
+      "sha256": "978f92de03da88d0e6191cdd3c534584f9925caacab9b18e9e96800eb07dce80",
+      "origin": "Project-authored independent preparation, platform-hook installer or synthetic regression check; no recovered game implementation or assets included"
     },
     {
       "file": "source/apply_scene_lifecycle.py",
@@ -428,8 +438,8 @@
     },
     {
       "file": "source/apply_verta_binding.py",
-      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
-      "sha256": "5fd3d605b4c821f1005ae7bb0d2bee701aa0547483e1375fc2a65445f720343f"
+      "sha256": "5fd3d605b4c821f1005ae7bb0d2bee701aa0547483e1375fc2a65445f720343f",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation"
     },
     {
       "file": "source/audit_mac.py",
@@ -443,18 +453,18 @@
     },
     {
       "file": "source/batch_result.py",
-      "sha256": "8df593cd0bd9467218a91f4d1624630bb765d000a1a8b141eed4056db2e1acf9",
+      "sha256": "e879b2c44840bae106cce36fef391891b766f4920c9283045bcbdc1c896ddc62",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
       "file": "source/build_bridge.py",
-      "sha256": "d5d126555a76fc1f8f164e209936e2bbc9a8a305d8cd4ec60c3d9063b8414af8",
+      "sha256": "61da015972a792e960d20e607a9f64d69ddf2939130875ba50d21e322974e214",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
       "file": "source/configure_ipad_branding.py",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "d6cce8b86b58a9e2cf9cafe31736cf79177cc26a1eb523fc3f200d5da7f9cf3c"
+      "sha256": "d6cce8b86b58a9e2cf9cafe31736cf79177cc26a1eb523fc3f200d5da7f9cf3c",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
     },
     {
       "file": "source/create_bc_manifest.py",
@@ -463,7 +473,7 @@
     },
     {
       "file": "source/device_report_identity.py",
-      "sha256": "e7012f5ed98400b2b3bde3de47b46b2f2b93756574aa959391ed7571207ec8df",
+      "sha256": "dda288b16e06560d9c40c0ee980ca84b1f182beacd265f0b91f98a088e698ef4",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -487,9 +497,19 @@
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
+      "file": "source/prepare_from_windows.py",
+      "sha256": "185e0fb16a184f543081e7be426ba0df731c4c1efc50a49b1335e1dd95295642",
+      "origin": "Project-authored independent preparation, platform-hook installer or synthetic regression check; no recovered game implementation or assets included"
+    },
+    {
       "file": "source/prepare_ipad_project.py",
-      "sha256": "a11846dd8a15189cc54f286992b9d1bd55f658b2f73fdb055952fe17acb59393",
+      "sha256": "d2660ac8c00d279489887b108408da86be045e371131bd106590a75207eaa7cf",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/prepare_scene_shader_probe.py",
+      "origin": "Project-authored platform adapter, conversion tool or opt-in diagnostic; no recovered game code or assets",
+      "sha256": "9428d094e47ff54efd6244c53fb960f60dd0af530b943decc1190129cfdfe0ef"
     },
     {
       "file": "source/prepare_unity_bc_samples.py",
@@ -512,6 +532,11 @@
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
+      "file": "source/restore_original_normals.py",
+      "origin": "Project-authored platform adapter, conversion tool or opt-in diagnostic; no recovered game code or assets",
+      "sha256": "10f9c789d2589526bb31a90a95df688e1a8505e629c544169492f7bf368f43d6"
+    },
+    {
       "file": "source/retarget_mono.py",
       "sha256": "afce522717f993a90923dbe4f1164faa3c085f555b71be78c5d812bab7372eac",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
@@ -523,7 +548,7 @@
     },
     {
       "file": "source/run_device_batch.py",
-      "sha256": "a4a333ffa38b929ed535699aa07baeb1124883a51d7f5210e0d12d8a6ef5812e",
+      "sha256": "518a8ae546ad35990ba22dce9a16afa9b2b81bb71c8173977a7130077cb7d69f",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -532,9 +557,24 @@
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
+      "file": "source/test_focused_audit.py",
+      "origin": "Project-authored platform adapter, conversion tool or opt-in diagnostic; no recovered game code or assets",
+      "sha256": "76ee450f38ce08867cfc756d9f2ba05bd9a693bb2298b5fffde95c151ed6a274"
+    },
+    {
+      "file": "source/test_font_identity.py",
+      "origin": "Project-authored platform adapter, conversion tool or opt-in diagnostic; no recovered game code or assets",
+      "sha256": "44f1d0cf104399e70717efd9d56d7b8806360af83e636e4457aa1f56257b7b1d"
+    },
+    {
       "file": "source/test_power_audit.py",
-      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "a3c6bf2dd1c93bc35632ae107e169e11623bdce057c38f059896a0275cc154e2"
+      "sha256": "a3c6bf2dd1c93bc35632ae107e169e11623bdce057c38f059896a0275cc154e2",
+      "origin": "Project-authored adapter, narrow source transformation, private icon extractor, or synthetic diagnostic; no recovered game implementation/assets"
+    },
+    {
+      "file": "source/test_project_preparation.py",
+      "sha256": "573b5426811b3e77f526a0e1e1839e573e947ad54b1c7fa79f33ff6c6ec90ee1",
+      "origin": "Project-authored independent preparation, platform-hook installer or synthetic regression check; no recovered game implementation or assets included"
     },
     {
       "file": "source/test_release_guards.py",
@@ -543,8 +583,8 @@
     },
     {
       "file": "source/test_verta_binding.py",
-      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
-      "sha256": "bf69943e4d986c2cb3fdf13adbfd058d613eabf483fd40b9a9ab01c1b15f6b74"
+      "sha256": "bf69943e4d986c2cb3fdf13adbfd058d613eabf483fd40b9a9ab01c1b15f6b74",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation"
     }
   ]
 }

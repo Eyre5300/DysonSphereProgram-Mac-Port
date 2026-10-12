@@ -1,8 +1,10 @@
 # Dyson Sphere Program - Mac / iPad Pro Port Tools
 
+> 2026-10-13 阶段收尾：本分支为 iPad Pro 键鼠迁移工具，最终已安装版本42；性能尚未达到60FPS。Mac正式版保持原阶段交付，独立复现验证延期。详见 [iPad验证范围](ipad/VALIDATION.md)。
+
 用自己购买的 Windows 版《戴森球计划》，在本机生成 macOS App；iPad Pro 开发者路线见 [迁移指南](ipad/README.md)。此仓库只提供 **MIT 许可的原创转换工具与平台适配代码**，不提供原游戏、恢复后的游戏代码、资产、游戏 App、存档或蓝图。
 
-**状态：开发者预览。** Mac 已阶段性交付，iPad Pro 27 已完成限定综合实机测试，详见 [验证记录](ipad/VALIDATION.md)。新机器完整流程尚未验收，Steam 服务未接入。
+**状态：开发者预览。** Mac 已阶段性交付，iPad Pro 独立迁移及后续专项已完成限定实机测试，最终保留键鼠42，详见 [验证记录](ipad/VALIDATION.md)。新机器完整流程尚未验收，Steam 服务未接入。
 
 ## 开始使用
 

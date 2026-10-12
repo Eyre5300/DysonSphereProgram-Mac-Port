@@ -113,3 +113,13 @@ def power_audit_failures(state, report):
         if s.get('gpuSignsMatch') is not True or s.get('coverBufferMatches') is not True:
             result.append('Power GPU data mismatch')
     return result
+
+
+def file_layout_failures(state, report):
+    required={window+' file buttons '+check for window in ('load','save') for check in ('use original style','clear original controls')}
+    if not report or report.get('batchIdentifier')!=state.get('batchIdentifier') or str(report.get('buildVersion'))!=state.get('expectedVersion'):
+        return ['File layout report missing or stale']
+    checks=report.get('checks',[])
+    if not report.get('completed') or report.get('phase')!='passed' or report.get('errors') or {c.get('name') for c in checks}!=required or len(checks)!=4 or any(c.get('passed') is not True for c in checks):
+        return ['Changed file-button layout incomplete or failed']
+    return []

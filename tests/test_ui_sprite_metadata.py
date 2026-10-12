@@ -1,4 +1,4 @@
-import copy,importlib.util,unittest,sys,types
+import copy,importlib.util,unittest,sys,types,tempfile
 from unittest.mock import patch
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -16,4 +16,16 @@ class SpriteMetadata(unittest.TestCase):
   for name in ['Icarus','funcircle-4','land','sphere']:self.assertFalse(module.eligible(name))
  def test_private_artifacts_rejected_under_public_symlink_or_directory(self):
   with self.assertRaises(ValueError):module.private(ROOT/'forbidden.app')
+ def test_data_entry_rejects_original_or_overlapping_target(self):
+  with tempfile.TemporaryDirectory() as folder:
+   source=Path(folder)/'owned/Data'
+   for target in [source,source/'nested',source.parent]:
+    with self.assertRaises(ValueError):module.restore_data_in_place(source,target,Path(folder)/'report.json')
+ def test_existing_mac_entry_delegates_to_same_resource_operation(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder).resolve();game=root/'owned';app=root/'generated.app';report=root/'report.json'
+   (game/'DSPGAME_Data').mkdir(parents=True);(app/'Contents/Resources/Data').mkdir(parents=True)
+   with patch.object(module,'restore_data_in_place',return_value={'restored':[]}) as operation:
+    self.assertEqual(module.restore_in_place(game,app,report),{'restored':[]})
+    operation.assert_called_once_with(game/'DSPGAME_Data',app/'Contents/Resources/Data',report)
 if __name__=='__main__':unittest.main()

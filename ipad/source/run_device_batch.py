@@ -8,7 +8,7 @@ import argparse,json,subprocess,time,uuid
 from device_report_identity import ReportIdentity
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--device',required=True);p.add_argument('--bundle',required=True);p.add_argument('--version',required=True)
-p.add_argument('--power-audit',action='store_true',help='Include power overlays, original H clicks, warning states and performance HUD; requires --world-audit');p.add_argument('--world-audit',action='store_true',help='Validate vein GPU binding and original zoom/drag behavior, then shared files and keyboard/mouse');p.add_argument('--integration',action='store_true',help='Validate shared files, mode switching and keyboard/mouse, plus touch when applicable');p.add_argument('--touch',action='store_true',help='Validate the separate touch App first-phase report');p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
+p.add_argument('--performance-audit',action='store_true',help='Only live simulation/render profiling; no repeated functional/UI suites');p.add_argument('--scene-audit',action='store_true',help='Focused scene/performance and changed file-button layout only; requires supplied scene-audit-fixture.dsv');p.add_argument('--power-audit',action='store_true',help='Include power overlays, original H clicks, warning states and performance HUD; requires --world-audit');p.add_argument('--world-audit',action='store_true',help='Validate vein GPU binding and original zoom/drag behavior, then shared files and keyboard/mouse');p.add_argument('--integration',action='store_true',help='Validate shared files, mode switching and keyboard/mouse, plus touch when applicable');p.add_argument('--touch',action='store_true',help='Validate the separate touch App first-phase report');p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
 if a.power_audit and not a.world_audit:p.error('--power-audit requires --world-audit for a combined regression')
 out=a.output_dir or Path(__file__).resolve().parents[1]/'local-private/outputs/full-game-bridge'
 from private_paths import private_output
@@ -35,7 +35,9 @@ input_files_flag=a.integration and '.touch.' not in a.bundle
 if input_files_flag:args+=['--dsp-input-files-test']
 if a.world_audit:args+=['--dsp-world-audit']
 if a.power_audit:args+=['--dsp-power-audit']
-expected_flags=3|(64 if a.memory_pressure_probe else 0)|(128 if input_files_flag else 0)|(256 if a.world_audit else 0)|(512 if a.power_audit else 0)
+if a.scene_audit:args+=['--dsp-scene-audit']
+if a.performance_audit:args+=['--dsp-performance-audit']
+expected_flags=3|(64 if a.memory_pressure_probe else 0)|(128 if input_files_flag else 0)|(256 if a.world_audit else 0)|(512 if a.power_audit else 0)|(1024 if a.scene_audit else 0)|(2048 if a.performance_audit else 0)
 state['command']=args;write();begin=time.monotonic();last_phase=None
 with (out/('console-'+version+'.log')).open('w') as console:
  child=subprocess.Popen(args,stdout=console,stderr=subprocess.STDOUT)
@@ -88,6 +90,13 @@ with (out/('console-'+version+'.log')).open('w') as console:
     from batch_result import world_audit_failures
     state['worldReport']=read_remote('world-audit.json')
     state['validationFailures']=world_audit_failures(state,state['worldReport'])
+  elif a.performance_audit:
+   from batch_result import process_failures
+   state['validationFailures']=process_failures(state)
+  elif a.scene_audit:
+   from batch_result import process_failures,file_layout_failures
+   state['layoutReport']=read_remote('file-layout-audit.json')
+   state['validationFailures']=process_failures(state)+file_layout_failures(state,state['layoutReport'])
   elif a.touch:
    from batch_result import touch_failures
    state['touchReport']=read_remote('touch-regression.json')
@@ -97,6 +106,10 @@ with (out/('console-'+version+'.log')).open('w') as console:
    from batch_result import power_audit_failures
    state['powerReport']=read_remote('power-audit.json')
    state['validationFailures']+=power_audit_failures(state,state['powerReport'])
+  if a.scene_audit or a.performance_audit:
+   scene=read_remote('scene-audit.json');state['sceneReport']=scene
+   if not scene or scene.get('batchIdentifier')!=batch_id or scene.get('buildVersion')!=version or not all(scene.get(k) for k in ('completed','sourceUnchanged','savePathRestored')) or scene.get('errors') or len(scene.get('samples',[]))<3:
+    state['validationFailures'].append('Scene audit missing, stale, incomplete, or source/isolation verification failed')
   state['passed']=not state['validationFailures']
   write();print('Console finished:',child.returncode,'worldEntered:',state['enteredWorld'],flush=True)
   if not state['passed']:raise SystemExit(child.returncode or 1)

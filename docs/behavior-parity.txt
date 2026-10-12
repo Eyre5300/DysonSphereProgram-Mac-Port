@@ -1,3 +1,7 @@
+2026-10-13 收尾状态：用户停止优化，键鼠42为最终已安装版本；43未验收实验撤回。372张原始法线编码恢复及文件按钮布局在39通过限定实机检查。40-42正常模拟性能诊断证实原生分辨率约19-21FPS；1376x1032/MSAA2约57.23FPS，未达到60FPS，诊断降分辨率/关闭效果配置未采用。当前启动仍采用既有原生分辨率策略；43的保存分辨率保持实验未验收，不宣称已修复。Mac独立迁移验证延期。历史“进行中/后续”全部停止，未经用户新指令不继续。真实物理键鼠、真实云传输、全场景渲染/战斗及长期稳定性未全面验证。
+
+2026-10-12 历史问题记录：iPad普通地面约24FPS/48UPS、行星视角左侧大片异常暗区及用户黑雾位置暗地表。独立重建37.1同样可见，不能因功能回归通过而称画质一致。顶部实际UPS与性能页“理论逻辑帧”口径不同，同版本Windows源码已核对；低FPS根因尚未确定。专项定量诊断进行中。
+
 Windows 原版行为对齐记录（持续更新，非完整验收报告）
 
 修改准则
@@ -122,3 +126,5 @@ Camera before/after equality verified; screenshots reviewed. Scope limits above 
 Windows原版H仅展开细节菜单，电力子按钮切换powerGraphOn；断电/缺电状态由原PowerSystem生成。本次不改按键、开关回调、功率和判定阈值。修复四个恢复后的着色器中Metal优化造成的角点位转换错误，仍使用原DrawProceduralNow与全部原始材质。Pro五阶段GPU数据与截图证明覆盖/供电点/警告恢复；未验证全部发电设施、复杂工厂和所有视角。
 按用户要求删除键鼠版额外屏幕Esc，实体Esc关闭顺序不变；常驻原版FPS/UPS属于用户指定的显示差异。新增App物理内存为iPadOS phys_footprint，每秒更新，GiB单位，不是托管堆或GPU与Unity统计之和；不宣称性能改善。原始游戏图标从本人文件私有提取，公开仅包含提取工具，名称“戴森球计划”。
 36同一批次完成电力/世界/20文件/31键盘/25鼠标自动验证、无错误、正常退出。真实键鼠无限相对位移、实际云文件传输、全场景视觉等价与长时间性能仍未验证。Mac已验收正式版不动，Touch29.3保留，mini不再部署。
+
+2026-10-13 focused audit: Reuse accepted input/power/files tests unless affected.372 original normal maps were previously converted AG->RG on iOS while recovered shaders decode AG.Original payload+encoding restoration implemented and byte-verified; build39 limited globe/fog-base visual checks passed; full-scene parity unverified.38 native~20FPS versus temporary half-width/height~54FPS points to rendering bottleneck, not proof of measuredGPUtime.38 fog closeups and parent-only file-button overlap gate INVALID; targeted diagnostics corrected.

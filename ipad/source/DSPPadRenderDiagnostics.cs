@@ -9,7 +9,7 @@ using UnityEngine.PostProcessing;
 
 // Every probe preserves and restores the original game rendering configuration.
 public static class DSPPadRenderDiagnostics {
- [Serializable] sealed class CameraInfo {public string name,path,target,matrix,components,profile,commandBuffers;public int mask,depthMode;public float depth,near,far;public bool enabled,hdr;public Vector3 position,rotation;}
+ [Serializable] sealed class CameraInfo {public string name,path,target,matrix,components,profile,commandBuffers;public int mask,depthMode;public float depth,near,far;public bool enabled,active,hdr;public Vector3 position,rotation;}
  [Serializable] sealed class LightInfo {public string name,type;public float intensity;public Color color;public bool enabled;public int mask;}
  [Serializable] sealed class Audit {public string graphics,mainCamera,uiGrid;public int shaderLevel;public List<CameraInfo> cameras=new List<CameraInfo>();public List<LightInfo> lights=new List<LightInfo>();public List<string> unsupportedShaders=new List<string>();}
  [Serializable] sealed class FrameInfo {public string label,components;public float centerMean,centerBlackFraction;public int width,height;public long tick;public bool dofEnabled,bloomEnabled,lutEnabled,colorGradingEnabled,alphaHDRCandidate,desktopBloomCandidate;public DSPPadRenderFormats.TextureInfo[] textures;public DSPPadRenderFormats.PixelInfo[] pixels;}
@@ -19,7 +19,7 @@ public static class DSPPadRenderDiagnostics {
  public static void AuditNow(){
   var a=new Audit{graphics=SystemInfo.graphicsDeviceName,shaderLevel=SystemInfo.graphicsShaderLevel,mainCamera=Camera.main?PathOf(Camera.main.transform):"null"};
   foreach(var c in Resources.FindObjectsOfTypeAll<Camera>()){
-   var x=new CameraInfo{name=c.name,path=PathOf(c.transform),target=c.targetTexture?c.targetTexture.name+":"+c.targetTexture.graphicsFormat+":"+c.targetTexture.width+"x"+c.targetTexture.height:"screen",mask=c.cullingMask,depthMode=(int)c.depthTextureMode,depth=c.depth,near=c.nearClipPlane,far=c.farClipPlane,enabled=c.enabled,hdr=c.allowHDR,position=c.transform.position,rotation=c.transform.eulerAngles,matrix=c.projectionMatrix.ToString("F5"),components=Components(c)};
+   var x=new CameraInfo{name=c.name,path=PathOf(c.transform),target=c.targetTexture?c.targetTexture.name+":"+c.targetTexture.graphicsFormat+":"+c.targetTexture.width+"x"+c.targetTexture.height:"screen",mask=c.cullingMask,depthMode=(int)c.depthTextureMode,depth=c.depth,near=c.nearClipPlane,far=c.farClipPlane,enabled=c.enabled,active=c.gameObject.activeInHierarchy,hdr=c.allowHDR,position=c.transform.position,rotation=c.transform.eulerAngles,matrix=c.projectionMatrix.ToString("F5"),components=Components(c)};
    var p=c.GetComponent<PostProcessingBehaviour>();if(p&&p.profile)x.profile=JsonUtility.ToJson(p.profile);
    foreach(CameraEvent e in Enum.GetValues(typeof(CameraEvent)))foreach(var b in c.GetCommandBuffers(e))x.commandBuffers+=e+":"+b.name+";";
    if(c.targetTexture)DSPPadRenderFormats.Note("camera-target-"+x.path,c.targetTexture);a.cameras.Add(x);

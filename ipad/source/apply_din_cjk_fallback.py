@@ -8,9 +8,23 @@ import argparse,copy,hashlib,json,os
 from pathlib import Path
 import UnityPy
 
-PINNED = {1551: ('DIN','3fe23bed841463c41f9fa854215540c85f5cefc1db6019e4b95f30ca941af88a'),
-          1549: ('STXIHEI','f4ccbf1caf92f38ee8f8d63edf7cf78856fdf964982d719632ef3f6960ab9fea'),
-          1547: ('YC-DSP-PSYM','0aeeb78503fa5aa67de4d9161d2c464fd3005078b89ff15c4495f86aab62e2f1')}
+PINNED = {'DIN':'3fe23bed841463c41f9fa854215540c85f5cefc1db6019e4b95f30ca941af88a',
+          'STXIHEI':'f4ccbf1caf92f38ee8f8d63edf7cf78856fdf964982d719632ef3f6960ab9fea',
+          'YC-DSP-PSYM':'0aeeb78503fa5aa67de4d9161d2c464fd3005078b89ff15c4495f86aab62e2f1'}
+def resolve_fonts(objects):
+ # Unity assigns new path IDs on clean exports. Identity is the original font
+ # name plus exact owned font bytes, never a developer build's object number.
+ found={}
+ for o in objects:
+  if o.type.name!='Font':continue
+  d=o.read_typetree();name=d['m_Name']
+  if name not in PINNED:continue
+  check(name not in found,'Ambiguous font '+name)
+  check(sha(bytes(d['m_FontData']))==PINNED[name],'Original font bytes mismatch: '+name)
+  found[name]=o
+ check(set(found)==set(PINNED),'Required original fonts missing')
+ return found
+
 def sha(b):return hashlib.sha256(b).hexdigest()
 def check(c,m):
  if not c:raise ValueError(m)
@@ -20,16 +34,15 @@ def main():
  file=a.asset.resolve();check(file.name=='sharedassets0.assets','Expected audited scene assets');check(UnityPy.__version__=='1.25.4','Requires audited UnityPy1.25.4')
  if a.apply:check('local-private' in file.parts and any(x.startswith(('full-game-bc-data-','full-game-font-data-')) for x in file.parts),'Apply only to a fresh private package Data candidate')
  env=UnityPy.load(str(file));asset=env.file;before={o.path_id:sha(o.get_raw_data()) for o in env.objects};references=refs(asset);originalSHA=sha(file.read_bytes())
- for pid,(name,digest) in PINNED.items():
-  o=asset.objects[pid];d=o.read_typetree();check(o.type.name=='Font' and d['m_Name']==name and sha(bytes(d['m_FontData']))==digest,'Original font identity/bytes mismatch')
- old=asset.objects[1551].read_typetree();check(old['m_FontNames']==['1234567890','YC-DSP-PSYM'] and old['m_FallbackFonts']==[{'m_FileID':0,'m_PathID':1547}],'Unrecognized or already adapted DIN fallback chain')
- new=copy.deepcopy(old);new['m_FontNames'].append('STXihei');new['m_FallbackFonts'].append({'m_FileID':0,'m_PathID':1549})
- report={'status':'plan-verified','originalAssetSHA256':originalSHA,'fontDataSHA256':{v[0]:v[1] for v in PINNED.values()},'font':'DIN','beforeFontNames':old['m_FontNames'],'afterFontNames':new['m_FontNames'],'beforeReferences':old['m_FallbackFonts'],'afterReferences':new['m_FallbackFonts'],'changedFields':['m_FontNames','m_FallbackFonts'],'fontDataUnchanged':True,'runtimeVerified':False,'parityLimit':'CJK glyphs use the existing game STXihei face instead of unavailable OS fallback; Windows/Mac OS typeface pixel identity is not claimed.'}
+ fonts=resolve_fonts(env.objects);din=fonts['DIN'];symbol=fonts['YC-DSP-PSYM'];cjk=fonts['STXIHEI']
+ old=din.read_typetree();check(old['m_FontNames']==['1234567890','YC-DSP-PSYM'] and old['m_FallbackFonts']==[{'m_FileID':0,'m_PathID':symbol.path_id}],'Unrecognized or already adapted DIN fallback chain')
+ new=copy.deepcopy(old);new['m_FontNames'].append('STXihei');new['m_FallbackFonts'].append({'m_FileID':0,'m_PathID':cjk.path_id})
+ report={'status':'plan-verified','originalAssetSHA256':originalSHA,'fontDataSHA256':PINNED,'font':'DIN','beforeFontNames':old['m_FontNames'],'afterFontNames':new['m_FontNames'],'beforeReferences':old['m_FallbackFonts'],'afterReferences':new['m_FallbackFonts'],'changedFields':['m_FontNames','m_FallbackFonts'],'fontDataUnchanged':True,'runtimeVerified':False,'parityLimit':'CJK glyphs use the existing game STXihei face instead of unavailable OS fallback; Windows/Mac OS typeface pixel identity is not claimed.'}
  if a.apply:
-  asset.objects[1551].save_typetree(new);data=asset.save();tmp=file.with_suffix('.font-adapt.tmp');check(not tmp.exists(),'Temporary output exists');tmp.write_bytes(data)
+  din.save_typetree(new);data=asset.save();tmp=file.with_suffix('.font-adapt.tmp');check(not tmp.exists(),'Temporary output exists');tmp.write_bytes(data)
   verify=UnityPy.load(str(tmp));check(set(verify.file.objects)==set(before),'Object IDs changed');check(refs(verify.file)==references,'External/script references changed')
   for o in verify.objects:
-   if o.path_id==1551:check(o.read_typetree()==new,'DIN changed outside exact fallback fields')
+   if o.path_id==din.path_id:check(o.read_typetree()==new,'DIN changed outside exact fallback fields')
    else:check(sha(o.get_raw_data())==before[o.path_id],'Other object changed: '+str(o.path_id))
   check(sha(file.read_bytes())==originalSHA,'Input changed during validation');os.replace(tmp,file)
   report.update(status='applied-object-byte-verified',unchangedOtherObjects=len(before)-1,outputAssetSHA256=sha(file.read_bytes()))

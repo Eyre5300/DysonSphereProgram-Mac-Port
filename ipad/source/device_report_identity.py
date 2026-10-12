@@ -1,5 +1,5 @@
 """Evidence attribution only; no game behavior or device mutations."""
-WORLD_PHASES = frozenset(("new_game_running", "world_audit", "render_regression", "shadow_regression",
+WORLD_PHASES = frozenset(("new_game_running", "file_layout_audit", "scene_performance_audit", "world_audit", "render_regression", "shadow_regression",
     "input_files_regression", "touch_combined_regression", "interface_batch", "keyboard_regression_batch", "mouse_regression_batch",
     "save_reload_batch", "matched_large_save_render_batch", "batch_finished_normal_exit",
     "ready_for_human_test_no_auto_exit"))

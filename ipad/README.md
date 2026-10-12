@@ -4,19 +4,19 @@
 
 本目录提供原创的平台适配、构建和验证工具。使用者必须自行准备已购买的 Windows 游戏、Unity 工具链和自己的 Apple 签名。仓库不包含游戏源码、资产、SDK 对象、App/IPA、测试存档或蓝图。
 
-当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。键鼠36已完成限定综合自动测试，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
+当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。键鼠37.1已用公开工具独立重建并完成限定综合自动测试，最终设备保留42版，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
 
-这是一套开发者复现入口，**不是向导式一键 iPad 安装器**。公开入口已做源码准备、编译和本地资源检查；从空白新机器到最终安装的全过程仍需验证。Mac 的 `start.command` 不会自动完成 iPad 部署。
+这是一套开发者复现入口，**不是向导式一键 iPad 安装器**。公开入口已在本机的全新工作区完成原始输入恢复、全新缓存构建、签名安装与 Pro 回归；尚未在另一台全新配置的 Mac 上复验。法线编码造成的地表暗区已在限定场景修复；低帧率尚未解决，项目现已阶段收尾。Mac 的 `start.command` 不会自动完成 iPad 部署。
 
 ## 架构
 
-用户自己的 Windows 文件 → 本仓库的 Mac 资源恢复项目 → iPad 平台适配 → Mac ARM64 IL2CPP/AOT 游戏程序集 → 匹配版本的 iOS Unity 引擎和原生键鼠接口 → 用户签名的 iPad App。
+用户自己的 Windows 文件 → 本分支内的共用资源恢复工具 → iPad 平台适配 → ARM64 IL2CPP/AOT 游戏程序集 → 匹配版本的 iOS Unity 引擎和原生键鼠接口 → 用户签名的 iPad App。
 
 iOS 原生引擎负责 Metal、窗口、音频和输入；游戏仍采用原按键、窗口关闭顺序与规则。AOT 桥接重写必要的加载命令并验证指令字节不变；不是远程串流，也不要求 JIT。BC 纹理适配保持原压缩块，不发布修改后的 Unity SDK。
 
 ## 固定输入与准备
 
-- 游戏：Windows DSP **0.10.35.29104**。先按主仓库指南完成 Mac 项目的资源/着色器恢复，保留未修改的 AssetRipper 2.0 导出。
+- 游戏：Windows DSP **0.10.35.29104**。使用下述独立入口恢复资源；可以提供 AssetRipper 2.0 可执行文件，或它未修改的导出。
 - Unity **2022.3.62f3c1**，Mac 和 iOS 构建支持，以及本人适用的 Unity 许可。
 - Apple Silicon Mac、完整 Xcode、连接并开启开发者模式的 iPad Pro。需要自己的 Team ID、Bundle ID、签名 identity 和设备 ID；工具没有内置开发者账号。
 - Python 3.12，主仓库依赖与 `ipad/requirements.txt`。
@@ -26,7 +26,18 @@ iOS 原生引擎负责 Metal、窗口、音频和输入；游戏仍采用原按�
 
 ## 1. 准备独立源码副本
 
-复制已经完成 Mac 资源恢复的 Unity 项目到 `PROJECT`；不要指向原始游戏、未修改导出或正式 Mac 项目。保留 `Assets`、`Packages`、`ProjectSettings`，不要复用不同平台的旧 `Library`。
+在本 iPad 分支中直接运行：
+
+```sh
+python3 ipad/source/prepare_from_windows.py \
+  --game "$WINDOWS_GAME" --workspace "$WORK" \
+  --assetripper "$ASSETRIPPER" \
+  --spirv-cross "$SPIRV_CROSS" --vkd3d "$VKD3D"
+```
+
+`WORK` 必须是新的私有目录。若已有未修改的 AssetRipper 2.0 导出，可用 `--exported-project "$ORIGINAL_EXPORT"` 替代 `--assetripper`。入口调用同一分支内的 `tools/prepare_project.py`、`tools/recover_pipeline.py` 和 iPad 源码适配器；无需先构建 Mac 游戏，也无需切换 Mac 分支或借用开发者的已修工程。
+
+生成的 `PROJECT` 为 `$WORK/work/dsp-runtime/port-project`，保留的原始导出为 `$WORK/work/dsp-runtime/recovered-project/ExportedProject`。不要复用其他工程的 `Library`。下述低层命令仅用于重试 iPad 适配阶段，完整入口已调用它：
 
 ```sh
 python3 ipad/source/prepare_ipad_project.py \
@@ -39,7 +50,7 @@ python3 ipad/source/prepare_ipad_project.py \
 
 ## 2. 导出两个平台
 
-将 `UNITY` 设为 Unity 可执行文件，`UNITY_APP` 设为同一个 `Unity.app` 目录。`ENGINE` 和 `MAC_AOT` 均为新私有输出目录。
+将 `UNITY` 设为 Unity 可执行文件，`UNITY_APP` 设为同一个 `Unity.app` 目录。 若本机许可有效但命令行报告 LicensingClient IPC 超时，可用 `TMPDIR=/tmp` 启动编辑器以对齐许可进程的本地 socket 路径；这不会激活或替代 Unity 许可。`ENGINE` 和 `MAC_AOT` 均为新私有输出目录。
 
 ```sh
 DSP_MAC_AOT_OUTPUT="$MAC_AOT" "$UNITY" -batchmode -quit \
@@ -47,12 +58,12 @@ DSP_MAC_AOT_OUTPUT="$MAC_AOT" "$UNITY" -batchmode -quit \
   -executeMethod DSPFullGameBridgeBuild.BuildMacAOT -logFile "$WORK/mac-export.log"
 
 DSP_IOS_BRIDGE_OUTPUT="$ENGINE" DSP_IOS_BUNDLE_ID="$BUNDLE" \
-DSP_IOS_BUILD_NUMBER=27 "$UNITY" -batchmode -quit \
+DSP_IOS_BUILD_NUMBER=42 "$UNITY" -batchmode -quit \
   -projectPath "$PROJECT" -buildTarget iOS \
   -executeMethod DSPFullGameBridgeBuild.ExportIOS -logFile "$WORK/ios-export.log"
 ```
 
-编辑器入口只放进 `Assets/Editor`。两个导出产生的 Bee/ManagedStripped 输入供后续音频绑定与 AOT 重编译使用，不再从开发机的旧日志恢复命令。
+编辑器入口只放进 `Assets/Editor`。工程准备阶段已经设置 `DSP_EMU_IPAD`，确保首次 Unity 编译也能解析平台类型。两个导出产生的 Bee/ManagedStripped 输入供后续音频绑定与 AOT 重编译使用，不再从开发机的旧日志恢复命令。`MAC_AOT` 是 iPad 桥接所需的中间产物，使用 macOS ARM64 编译工具链；不需要启动它或验收 Mac 游戏。
 
 ## 3. 原始 BC 支持与实际采样门槛
 
@@ -76,7 +87,7 @@ python3 ipad/source/build_bridge.py \
   --project "$PROJECT" --engine "$ENGINE" --unity "$UNITY_APP" --upstream "$EMU" \
   --work "$WORK/probe-build" --derived "$WORK/probe-derived" \
   --team "$TEAM" --bundle "$BUNDLE" --device "$DEVICE" --identity "$IDENTITY" \
-  --version 27-probe --bc-archive "$WORK/bc-engine/libiPhone-bc-candidate.a" \
+  --version 37.0 --bc-archive "$WORK/bc-engine/libiPhone-bc-candidate.a" \
   --bc-probe-package
 ```
 
@@ -84,14 +95,14 @@ python3 ipad/source/build_bridge.py \
 
 ```sh
 python3 ipad/source/run_bc_device_probe.py \
-  --device "$DEVICE" --bundle "$BUNDLE" --version 27-probe --output "$WORK/bc-results"
+  --device "$DEVICE" --bundle "$BUNDLE" --version 37.0 --output "$WORK/bc-results"
 ```
 
 必须两轮实际 Unity 采样通过，包含 12 组、233 个子资源、原生格式检查及独立颜色控制。退出码为零、Metal 硬件支持或旧 JSON 都不能代替这一步。
 
 ## 4. 完整签名包
 
-沿用上面的构建参数，使用新的 `--work`、`--derived` 和正式测试版本，移除 `--bc-probe-package` 并添加：
+沿用上面的构建参数，使用新的 `--work`、`--derived` 和正式测试版本（例如 `--version 37.1`），移除 `--bc-probe-package` 并添加：
 
 ```sh
 --bc-manifest "$WORK/bc-manifest.json" --source-data "$WINDOWS_DATA" \
@@ -116,8 +127,8 @@ python3 ipad/source/run_bc_device_probe.py \
 
 ```sh
 python3 ipad/source/run_device_batch.py \
-  --device "$DEVICE" --bundle "$BUNDLE" --version 27 \
-  --restart-existing --output-dir "$WORK/regression-27"
+  --device "$DEVICE" --bundle "$BUNDLE" --version 37.1 \
+  --world-audit --power-audit --restart-existing --output-dir "$WORK/regression-37.1"
 ```
 
 `--restart-existing` 会结束该 Bundle 的现有进程，只有明确允许中断游戏时使用。普通启动不启用测试；测试启动会静音、准备测试资源并修改独立测试存档，因此不要拿唯一存档测试。
@@ -134,3 +145,9 @@ python3 ipad/source/run_device_batch.py \
 - 主目录 MIT 只涵盖原创工具；游戏、Unity 和上游依赖各自保留原权利与许可。
 
 没有提供 mini 的内存实验、动画分块上传实现、降纹理配置或任何游戏/SDK 二进制。
+
+## 可选渲染诊断与收尾范围
+
+普通准备流程不生成实验着色器。仅复查历史专项时，在导出前额外运行 `prepare_scene_shader_probe.py --project "$PROJECT" --report "$WORK/reports/scene-shader-probe.json"`，或在低层准备入口传 `--render-probes`；随后才可使用 `run_device_batch.py` 的 `--scene-audit` / `--performance-audit`。这些模式需要本人存档副本 `scene-audit-fixture.dsv`，会隔离保存目录、暂改测试场景，并在退出时恢复设置。测试执行成功不表示达到60FPS或画质等价。候选着色器仅限显式诊断，不替换普通游戏材质。
+
+项目按用户要求在42版收尾；未验收的43版实验不纳入交付。清理时可删除Unity Library/Temp、AOT中间包、Xcode DerivedData、旧平台导出及旧测试包；应先归档最终签名App、源工程、存档和构建报告。不要删除自己的原始游戏、签名凭据或存档。

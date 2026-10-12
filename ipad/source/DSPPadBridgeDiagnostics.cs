@@ -53,6 +53,13 @@ public sealed class DSPPadBridgeDiagnostics:MonoBehaviour {
   limit=Time.realtimeSinceStartup+240;while(!(GameMain.isRunning&&!DSPGame.IsMenuDemo&&GameMain.data!=null&&GameMain.data.guideComplete&&GameMain.localPlanet!=null&&GameMain.localPlanet.factoryLoaded&&GameMain.gameTick>120)&&Time.realtimeSinceStartup<limit)yield return new WaitForSecondsRealtime(1);
   if(!GameMain.isRunning||GameMain.localPlanet==null||!GameMain.localPlanet.factoryLoaded||GameMain.gameTick<=120){Stage("new_game_timeout");busy=false;DSPGame.ExitProgram();yield break;}
   Stage("new_game_running");yield return Capture("emu-full-game-newgame.png");
+  // A focused scene batch must not fall through to already accepted input,
+  // power, files roundtrip, world or general functional suites.
+  if((DSPPadDiagnosticLaunch.SceneAuditRequested||DSPPadDiagnosticLaunch.PerformanceAuditRequested)&&!DSPPadDiagnosticLaunch.WorldAuditRequested&&!DSPPadDiagnosticLaunch.InputFilesRequested){
+   if(!DSPPadDiagnosticLaunch.PerformanceAuditRequested){Stage("file_layout_audit");yield return DSPPadIntegrationRegression.RunLayoutOnly();if(!DSPPadIntegrationRegression.Passed)r.errors.Add("File button layout failed");}
+   Stage("scene_performance_audit");yield return DSPPadSceneAudit.Run();if(!DSPPadSceneAudit.Passed)r.errors.Add("Scene performance audit incomplete");
+   r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;
+  }
   if(DSPPadDiagnosticLaunch.PowerAuditRequested){Stage("power_audit");yield return DSPPadPowerAudit.Run();if(!DSPPadPowerAudit.Passed)r.errors.Add("Power overlay audit failed");if(!DSPPadDiagnosticLaunch.WorldAuditRequested){r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;}}
   if(DSPPadDiagnosticLaunch.WorldAuditRequested){Stage("world_audit");yield return DSPPadWorldAudit.Run();if(!DSPPadWorldAudit.Passed)r.errors.Add("World rendering/input audit failed");}
   if(DSPTouchControls.Enabled||DSPPadDiagnosticLaunch.InputFilesRequested||DSPPadDiagnosticLaunch.WorldAuditRequested){
@@ -60,6 +67,7 @@ public sealed class DSPPadBridgeDiagnostics:MonoBehaviour {
    if(DSPTouchControls.Enabled){DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Touch);yield return new WaitForSecondsRealtime(.5f);Stage("touch_combined_regression");yield return DSPTouchRegression.Run();if(!DSPTouchRegression.Passed)r.errors.Add("Touch combined regression failed");DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Keyboard);yield return new WaitForSecondsRealtime(.5f);}
    DSPPadBatchFixture.Prepare();Stage("keyboard_regression_batch");yield return DSPPadKeyboardRegression.Run();Stage("mouse_regression_batch");yield return DSPPadMouseRegression.Run();
    if(DSPTouchControls.Enabled)DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Automatic);
+   if(DSPPadDiagnosticLaunch.SceneAuditRequested){Stage("scene_performance_audit");yield return DSPPadSceneAudit.Run();if(!DSPPadSceneAudit.Passed)r.errors.Add("Scene performance audit incomplete");}
    r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;
   }
 

@@ -35,6 +35,8 @@ public static class DSPPadDiagnosticLaunch {
 #endif
  static bool resolved,allowed;static int nativeFlags;
  public static bool TelemetryAllowed {get{bool batch=AutomaticActionsAllowed;return batch||(nativeFlags&16)!=0;}}
+ public static bool PerformanceAuditRequested=>AutomaticActionsAllowed&&(DSPAOTDiagnosticFlags()&2048)!=0;
+ public static bool SceneAuditRequested=>AutomaticActionsAllowed&&(nativeFlags&1024)!=0;
  public static bool PowerAuditRequested=>AutomaticActionsAllowed&&(nativeFlags&512)!=0;
  public static bool WorldAuditRequested=>AutomaticActionsAllowed&&(nativeFlags&256)!=0;
  public static bool InputFilesRequested=>AutomaticActionsAllowed&&(nativeFlags&128)!=0;

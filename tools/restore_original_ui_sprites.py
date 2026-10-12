@@ -36,6 +36,12 @@ def restore_in_place(game,app,report_path):
  game=Path(game).resolve();app=private(app);report_path=private(report_path)
  dest=app/'Contents/Resources/Data';src=game/'DSPGAME_Data'
  if not dest.is_dir() or not src.is_dir():raise ValueError('Owned Windows input and Mac app required')
+ return restore_data_in_place(src,dest,report_path)
+
+def restore_data_in_place(source_data,target_data,report_path):
+ src=Path(source_data).resolve();dest=private(target_data);report_path=private(report_path)
+ if src==dest or src in dest.parents or dest in src.parents:raise ValueError('Generated Data must be separate from original Data')
+ if not dest.is_dir() or not (src/'Managed/Assembly-CSharp.dll').is_file():raise ValueError('Owned Windows Data and generated target Data required')
  original=collections.defaultdict(list)
  for p in sorted(src.glob('*.assets')):
   env=UnityPy.load(str(p))
@@ -55,7 +61,7 @@ def restore_in_place(game,app,report_path):
    if len(matches)!=1:report['skipped'].append({'name':t['m_Name'],'reason':'missing_or_ambiguous_input'});continue
    s=matches[0];new=restored_metadata(t,s)
    if new==t:continue
-   # Native texture references/atlas references remain those of this Mac app.
+   # Native texture references/atlas references remain those of this target.
    ob.save_typetree(new);selected[ob.path_id]=new
    report['restored'].append({'asset':p.name,'pathID':ob.path_id,'name':t['m_Name'],'beforeRect':t['m_Rect'],'afterRect':s['m_Rect'],'beforePivot':t['m_Pivot'],'afterPivot':s['m_Pivot']})
   if selected:
@@ -86,5 +92,13 @@ def restore(game,app,output,report):
  return result
 if __name__=='__main__':
  p=argparse.ArgumentParser(description=__doc__)
- for k in ('game','app','output','report'):p.add_argument('--'+k,type=Path,required=True)
- a=p.parse_args();r=restore(a.game,a.app,a.output,a.report);print('Restored circular UI sprites:',len(r['restored']))
+ for k in ('game','app','output','source-data','target-data'):p.add_argument('--'+k,type=Path)
+ p.add_argument('--report',type=Path,required=True)
+ a=p.parse_args()
+ if a.source_data or a.target_data:
+  if not all((a.source_data,a.target_data)) or any((a.game,a.app,a.output)):p.error('Use --source-data and --target-data together, without Mac app arguments')
+  r=restore_data_in_place(a.source_data,a.target_data,a.report)
+ else:
+  if not all((a.game,a.app,a.output)):p.error('Mac clone mode requires --game, --app and --output')
+  r=restore(a.game,a.app,a.output,a.report)
+ print('Restored circular UI sprites:',len(r['restored']))

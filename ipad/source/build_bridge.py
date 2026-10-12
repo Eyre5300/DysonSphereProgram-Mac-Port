@@ -35,7 +35,9 @@ def main():
     if not a.bc_probe_package:
         resources=work/'full-game-bc-data-release/Data';mh=hashlib.sha256(a.bc_manifest.read_bytes()).hexdigest()
         tool('restore_manifest_bc.py','--manifest',a.bc_manifest,'--manifest-sha256',mh,'--source-data',a.source_data,'--target-data',engine/'Data','--report',reports/'bc.json','--apply','--output-data',resources,'--validated-sample-report',a.bc_sample_report)
+        tool('restore_original_normals.py','--source-data',a.source_data,'--target-data',resources,'--report',reports/'normals.json')
         tool('apply_din_cjk_fallback.py','--asset',resources/'sharedassets0.assets','--report',reports/'font.json','--apply')
+        run('ui-sprites',[sys.executable,src.parents[1]/'tools/restore_original_ui_sprites.py','--source-data',a.source_data,'--target-data',resources,'--report',reports/'ui-sprites.json'])
     app=derived/'Build/Products/Release-iphoneos/DSPemuiPad.app'
     entitlements=derived/'Build/Intermediates.noindex/Unity-iPhone.build/Release-iphoneos/Unity-iPhone.build/DSPemuiPad.app.xcent'
     tool('finalize_resource_clone.py','--app',app,'--data',resources,'--identity',a.identity,'--entitlements',entitlements,'--report',reports/'resources.json')
