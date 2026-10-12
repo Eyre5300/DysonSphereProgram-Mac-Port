@@ -44,7 +44,7 @@ public static class DSPPadKeyboard {
  public static void UpdatePublished(){for(int i=0;i<queues.Length;i++)queues[i].Published();}
  public static void FixedSampled(){for(int i=0;i<queues.Length;i++)queues[i].Sampled();}
  public static bool Read(KeyCode key,int mode,out bool value){
-  value=false;int i=Index(key);if(i<0)return false;
+  value=false;int i=Index(key);if(i<0)return false;if(DSPPadInputMode.UseTouch||DSPPadDocuments.Busy)return true;
   int bit=ModifierBit(key);if(bit!=0){value=mode==0?(modifiers&bit)!=0:mode==1?(modifiers&bit)!=0&&(previousModifiers&bit)==0:(modifiers&bit)==0&&(previousModifiers&bit)!=0;return true;}
   if(!native||(packets[i]&(1<<17))==0)return false;
   if(!Application.isFocused)return true;

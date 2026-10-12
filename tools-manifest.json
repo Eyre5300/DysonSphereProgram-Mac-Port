@@ -125,11 +125,15 @@
       "ipad/source/DSPPadBridgeDiagnostics.cs",
       "ipad/source/DSPPadCursorBridge.cs",
       "ipad/source/DSPPadDiagnosticLaunch.cs",
+      "ipad/source/DSPPadDocuments.cs",
+      "ipad/source/DSPPadDocuments.mm",
       "ipad/source/DSPPadEscapeButton.cs",
       "ipad/source/DSPPadEventSystemInput.cs",
       "ipad/source/DSPPadFontAudit.cs",
       "ipad/source/DSPPadFunctionalBatch.cs",
       "ipad/source/DSPPadInput.cs",
+      "ipad/source/DSPPadInputMode.cs",
+      "ipad/source/DSPPadIntegrationRegression.cs",
       "ipad/source/DSPPadKeyEdges.cs",
       "ipad/source/DSPPadKeyQueue.cs",
       "ipad/source/DSPPadKeyboard.cs",
@@ -216,18 +220,25 @@
     "device_gate": "14 functional stages,31 keyboard checks,25 mouse checks; original exit code0",
     "public_entrypoint": "component/source/compile/BC checks passed; fresh full end-to-end not yet verified",
     "miniSupported": false,
-    "reports": "ipad/VALIDATION.md"
+    "reports": "ipad/VALIDATION.md",
+    "keyboardUpgrade": {
+      "build": "29.4",
+      "deviceGate": "20 files +31 keyboard +25 mouse checks; world entry and normal exit0",
+      "previousBaseline": "Pro27 4d6d4e3 and complete pre-upgrade private data backup retained",
+      "userAuthorizedInPlaceUpgrade": true
+    }
   },
   "ipad_touch": {
     "branch": "codex/ipad-pro-touch",
     "baseline": "Pro27 / 4d6d4e3",
     "app": "DSP Touch (separate .touch. Bundle ID)",
-    "scope": "movement, look, building adjustment, belts and inserters",
+    "scope": "movement, look, precise construction, automatic input ownership and shared system Files import/export",
     "guide": "ipad/TOUCH.txt",
     "physicalFingerValidated": false,
     "newMachineEndToEndVerified": false,
-    "build": "28.4",
-    "deviceGate": "23 programmatic touch checks and 4 reviewed device frames; normal exit0; source/build/resource guards passed",
-    "reports": "ipad/VALIDATION.md"
+    "build": "29.3",
+    "deviceGate": "29 programmatic mode/files +23 touch +31 keyboard +25 mouse checks; normal exit0; real system picker reviewed; cloud transfer/physical input unverified",
+    "reports": "ipad/VALIDATION.md",
+    "cloudTransferValidated": false
   }
 }

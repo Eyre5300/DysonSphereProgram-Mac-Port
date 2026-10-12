@@ -61,6 +61,9 @@ for name,(key,t) in targets.items():
  for cid in o[t['buildConfigurationList']]['buildConfigurations']:
   s=o[cid]['buildSettings'];s['DEVELOPMENT_TEAM']=args.team;s['CODE_SIGN_STYLE']='Automatic';s['IPHONEOS_DEPLOYMENT_TARGET']='17.0';s['ENABLE_BITCODE']='NO';s['PRODUCT_BUNDLE_IDENTIFIER']=args.bundle if name=='Unity-iPhone' else args.bundle+'.unityframework';s['FRAMEWORK_SEARCH_PATHS']=['$(inherited)','$(PROJECT_DIR)/Vendor']
   if name=='Unity-iPhone':s['CODE_SIGN_ENTITLEMENTS']='Memory.entitlements'
+  if name=='UnityFramework':
+   flags=s.get('OTHER_LDFLAGS',['$(inherited)']);flags=[flags] if isinstance(flags,str) else flags
+   s['OTHER_LDFLAGS']=flags+['-framework','UniformTypeIdentifiers']
   if args.bc_archive:
    paths=s.get('LIBRARY_SEARCH_PATHS',['$(inherited)']);paths=[paths] if isinstance(paths,str) else paths
    s['LIBRARY_SEARCH_PATHS']=paths+['$(PROJECT_DIR)/Vendor']
@@ -73,6 +76,7 @@ pbx.write_text('// !$*UTF8*$!\n'+openstep(d)+'\n')
 if not (project/'Data/Managed/Metadata/global-metadata-ios-original.dat').exists():shutil.copy2(project/'Data/Managed/Metadata/global-metadata.dat',project/'Data/Managed/Metadata/global-metadata-ios-original.dat')
 shutil.copytree(mac/'Contents/Resources/Data/il2cpp_data',project/'Data/Managed',dirs_exist_ok=True)
 shutil.copy2(source/'DSPAOTDeviceInput.mm',project/'DSPAOTDeviceInput.mm')
+shutil.copy2(source/'DSPPadDocuments.mm',project/'DSPPadDocuments.mm')
 shutil.copy2(source/'DSPPointerState.hpp',project/'DSPPointerState.hpp')
 shutil.copy2(source/'DSPMetalCensus.m',project/'DSPMetalCensus.m')
 subprocess.run(['python3',str(source/'apply_pointer_view.py'),'--view',str(project/'Classes/UI/UnityView+iOS.mm'),'--plist',str(project/'Info.plist'),'--report',str(reports/'pointer-view-patch.json')],check=True)

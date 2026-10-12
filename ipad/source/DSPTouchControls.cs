@@ -4,7 +4,7 @@ public sealed class DSPTouchControls:MonoBehaviour {
  static DSPTouchControls instance;static int sampled=-1,left=-1,right=-1,target=-1;static Vector2 origin,lastRight,targetStart;static bool targetDragged;
  static Vector2 look,pendingLook,move;static Vector3 pointer,anchor;static bool hasPointer,hasAnchor;static int hand;static bool fine,basement;static float zoom,pendingZoom;static bool testMode;
  public static bool Enabled=>Application.identifier.Contains(".touch.");
- public static bool Allowed=>Enabled&&Application.isFocused&&GameMain.isRunning&&!DSPGame.IsMenuDemo&&!GameMain.isPaused&&!VFInput.inFullscreenGUI&&!VFInput.inputing&&!VFInput.inScreenshotMode;
+ public static bool Allowed=>Enabled&&DSPPadInputMode.UseTouch&&!DSPPadDocuments.Busy&&Application.isFocused&&GameMain.isRunning&&!DSPGame.IsMenuDemo&&!GameMain.isPaused&&!VFInput.inFullscreenGUI&&!VFInput.inputing&&!VFInput.inScreenshotMode;
  public static bool BuildActive=>Allowed&&GameMain.mainPlayer!=null&&GameMain.mainPlayer.controller.actionBuild.activeTool!=null&&GameMain.mainPlayer.controller.cmd.type==ECommand.Build;
  public static bool PointerActive=>Allowed&&hasPointer;
  public static Vector3 Pointer=>pointer;public static Vector2 Move=>move;public static Vector2 Look=>look;public static bool Looking=>right>=0;
@@ -26,6 +26,7 @@ public sealed class DSPTouchControls:MonoBehaviour {
  }
  public static float Zoom=>zoom;
  public static void Reset(){left=right=target=-1;move=look=pendingLook=Vector2.zero;fine=basement=false;zoom=pendingZoom=0;foreach(var k in keys.Values){k.q.Clear();k.pending=0;k.previous=k.down=k.up=false;}DSPPadInput.CancelWorldTap();}
+ public static void RefreshVisibility(){if(instance&&instance.panel)instance.panel.SetActive(Allowed);Canvas.ForceUpdateCanvases();}
  public static void Ensure(){if(!Enabled||instance)return;var go=new GameObject("DSP Touch controls");DontDestroyOnLoad(go);instance=go.AddComponent<DSPTouchControls>();}
  static bool UIAt(Vector2 p){return DSPSmartTouchFrame.UIBlocks(p);}
  static bool OwnZone(Vector2 p){if(!instance||!instance.panel||!instance.panel.activeInHierarchy)return false;var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current){position=p},hits);return hits.Count>0&&hits[0].gameObject.name.StartsWith("TouchZone");}

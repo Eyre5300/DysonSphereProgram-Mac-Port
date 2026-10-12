@@ -36,7 +36,7 @@ public sealed class DSPPadEventSystemInput:BaseInput {
  void MouseSnapshot(){
   DSPPadInput.Poll();
   if(mouseFrame==Time.frameCount)return;mouseFrame=Time.frameCount;
-  bool present=DSPPadInput.NativeMouseTransport?DSPPadInput.PhysicalMouse:(originalInput?originalInput.mousePresent:base.mousePresent);
+  bool present=!(DSPPadInputMode.UseTouch||DSPPadDocuments.Busy)&&(DSPPadInput.NativeMouseTransport?DSPPadInput.PhysicalMouse:(originalInput?originalInput.mousePresent:base.mousePresent));
   // Allow the original module one disappearance frame to consume canonical Up
   // edges and end its pointer press/drag. Keyboard presence never enables it.
   uiPresent=present||previousPresent;previousPresent=present;

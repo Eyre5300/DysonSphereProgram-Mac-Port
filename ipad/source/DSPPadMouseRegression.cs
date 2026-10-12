@@ -19,7 +19,7 @@ public static class DSPPadMouseRegression {
   public string name,status,evidence;
   public string source="native-programmatic; NOT physical keyboard/mouse";
  }
- [Serializable] public sealed class Report {
+ [Serializable] public sealed class Report {public string batchIdentifier=DSPPadDiagnosticLaunch.BatchIdentifier,buildVersion=DSPPadDiagnosticLaunch.BuildVersion;
   public string source="native-programmatic; NOT physical keyboard/mouse";
   public string scope="Own isolated diagnostic world only; no placement by this helper; original sandbox APIs provide explicitly labeled fixture stock outside this helper";
   public bool explicitBatch,explicitPointerTest,completed,nativeAccepted,normalRelease,clearAccepted;

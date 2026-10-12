@@ -11,7 +11,7 @@
 #include <os/proc.h>
 // Native process arguments are authoritative for this mixed-platform AOT host.
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTDiagnosticFlags(void){
- static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0);});return flags;
+ static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0);});return flags;
 }
 // The installed package can have a resource-only revision; Application.version
 // is the short marketing version and is not an evidence-directory identifier.
@@ -87,25 +87,7 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTModifierMask(vo
  return mask;
 }
 
-// iPad has no Finder. Browse the app's own save/blueprint folder inside UIKit,
-// with the system share sheet for export, preserving all user files.
-@interface DSPPortFolderController:UITableViewController
-@property(nonatomic,copy) NSString *folder;
-@property(nonatomic,strong) NSArray<NSString*> *entries;
-@end
-@implementation DSPPortFolderController
--(void)viewDidLoad{[super viewDidLoad];self.title=self.folder.lastPathComponent;self.entries=[[[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.folder error:nil] sortedArrayUsingSelector:@selector(localizedStandardCompare:)];self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];}
--(void)done{[self.navigationController dismissViewControllerAnimated:YES completion:nil];}
--(NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section{return self.entries.count;}
--(UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath{UITableViewCell *cell=[tableView dequeueReusableCellWithIdentifier:@"file"];if(!cell)cell=[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"file"];NSString *name=self.entries[indexPath.row];cell.textLabel.text=name;BOOL dir=NO;[[NSFileManager defaultManager] fileExistsAtPath:[self.folder stringByAppendingPathComponent:name] isDirectory:&dir];cell.accessoryType=dir?UITableViewCellAccessoryDisclosureIndicator:UITableViewCellAccessoryNone;return cell;}
--(void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath{NSString *path=[self.folder stringByAppendingPathComponent:self.entries[indexPath.row]];BOOL dir=NO;[[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&dir];if(dir){DSPPortFolderController *child=[[DSPPortFolderController alloc] initWithStyle:UITableViewStyleInsetGrouped];child.folder=path;[self.navigationController pushViewController:child animated:YES];}else{UIActivityViewController *share=[[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:path]] applicationActivities:nil];share.popoverPresentationController.sourceView=tableView;share.popoverPresentationController.sourceRect=[tableView rectForRowAtIndexPath:indexPath];[self presentViewController:share animated:YES completion:nil];}[tableView deselectRowAtIndexPath:indexPath animated:YES];}
-@end
-static UIViewController *DSPTopController(void){UIWindow *window=nil;for(UIScene *scene in UIApplication.sharedApplication.connectedScenes)if([scene isKindOfClass:UIWindowScene.class]&&scene.activationState==UISceneActivationStateForegroundActive)for(UIWindow *candidate in ((UIWindowScene*)scene).windows)if(candidate.isKeyWindow)window=candidate;UIViewController *top=window.rootViewController;while(top.presentedViewController)top=top.presentedViewController;return top;}
-extern "C" __attribute__((used,visibility("default"))) int DSPPortOpenFolder(const char *utf8){
- if(!utf8)return 0;NSString *path=[[NSString stringWithUTF8String:utf8] stringByStandardizingPath];NSString *home=[NSHomeDirectory() stringByAppendingString:@"/"];BOOL dir=NO;
- if(!path||![path hasPrefix:home]||![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&dir]||!dir)return 0;
- dispatch_async(dispatch_get_main_queue(),^{DSPPortFolderController *browser=[[DSPPortFolderController alloc] initWithStyle:UITableViewStyleInsetGrouped];browser.folder=path;UINavigationController *nav=[[UINavigationController alloc] initWithRootViewController:browser];nav.modalPresentationStyle=UIModalPresentationFullScreen;[DSPTopController() presentViewController:nav animated:YES completion:nil];});return 1;
-}
+#include "DSPPadDocuments.mm"
 
 extern bool _unityAppReady;
 extern "C" void *il2cpp_resolve_icall(const char *);
@@ -188,6 +170,8 @@ struct DSPKeyboardEvents {
  void set(int code,bool pressed,int modifiers){if(code<0||code>=256||held[code]==pressed)return;held[code]=pressed;if(pressed){if(down[code]<255)down[code]++;mods[code]=modifiers;}else if(up[code]<255)up[code]++;}
  int take(int code,bool supported){int value=(held[code]?1:0)|(down[code]<<1)|(up[code]<<9)|(supported?1<<17:0)|(mods[code]<<18);down[code]=up[code]=0;return value;}
 };
+static std::atomic<uint32_t> keyboardActivity{0};
+extern "C" __attribute__((used,visibility("default"))) uint32_t DSPAOTKeyboardActivity(){return keyboardActivity.load();}
 static std::mutex keyboardMutex;
 static GCKeyboardInput *trackedKeyboard;
 static GCKeyboardValueChangedHandler priorKeyboardHandler,installedKeyboardHandler;
@@ -208,6 +192,7 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollKeyboard(co
  if(input&&(!installedKeyboardHandler||input.keyChangedHandler!=installedKeyboardHandler)){
   priorKeyboardHandler=input.keyChangedHandler;GCKeyboardValueChangedHandler previous=priorKeyboardHandler;
   installedKeyboardHandler=^(GCKeyboardInput *profile,GCDeviceButtonInput *key,GCKeyCode code,BOOL pressed){
+   if(pressed)keyboardActivity.fetch_add(1);
    int modifiers=DSPKeyboardModifiers(profile);
    {std::lock_guard<std::mutex> lock(keyboardMutex);if(profile==trackedKeyboard)keyboardEvents.set((int)code,pressed,modifiers);}
    if(previous)previous(profile,key,code,pressed);

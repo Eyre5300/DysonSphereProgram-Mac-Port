@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "cde77fddb6ef2888301dd4fd2f3341bd7eac35b8a2ff42de957f3262999271d1",
+      "sha256": "a2f5aafbe27bf101d29dae17817104790ed777b92ec4619e8205220fed4dbace",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -33,7 +33,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "55b9e76a5389bc71180917c6808b5a411e8f7894b58361ef91f625b2f8c12763",
+      "sha256": "e00ffb24c4b496ff3d5f9fbc75b21e88322983d3d1abd554d99cd0333532fab6",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,8 +43,18 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "cba24212fc24dd7ea6e12019388ce0cefa575402552c9b6c65361b982727a7a1",
+      "sha256": "888a04fb23727af9980fbdf074180e5d3537b8a000792080a8af4e8382fdf881",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadDocuments.cs",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
+      "sha256": "eee2a1c9d54af3533e787b95eddd8215d0f17d22cd7b576e723f562867b6baea"
+    },
+    {
+      "file": "source/DSPPadDocuments.mm",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
+      "sha256": "dd5f69c74c3cfc2685808752a2e781f394f19b8057db34ffe4c69352501374f6"
     },
     {
       "file": "source/DSPPadEscapeButton.cs",
@@ -53,7 +63,7 @@
     },
     {
       "file": "source/DSPPadEventSystemInput.cs",
-      "sha256": "d5d829bf88156ed78f36f109de1641c08ed4eb3002d25ed54033fa95d6e40960",
+      "sha256": "fd1ba38fe09d3a5f92c0975da53b562366b58bafb478064264faa6cb002528bf",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -68,8 +78,18 @@
     },
     {
       "file": "source/DSPPadInput.cs",
-      "sha256": "f3e56d6b5ef6b0d9a5adf79afeefdf67b9490743dcd19b412479ece3f66b08e6",
+      "sha256": "f5c5c61f461893dfbca08cd6426a3fc54753147d769c988be76706eaf7d8f0d6",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadInputMode.cs",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
+      "sha256": "551c3b65e2898eda0237d43637538f07de1eb64e90547797987fdf64fec52956"
+    },
+    {
+      "file": "source/DSPPadIntegrationRegression.cs",
+      "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets",
+      "sha256": "3e829c23ef4a8eea581c52a07686f414ead0e0e9b72214554e70d2d16ffda0c1"
     },
     {
       "file": "source/DSPPadKeyEdges.cs",
@@ -83,12 +103,12 @@
     },
     {
       "file": "source/DSPPadKeyboard.cs",
-      "sha256": "e7092905e522e5cd8333f1efc1faea3531f5a8f40526f9bd316bfd82a20cd2ea",
+      "sha256": "75c775e40eda9487b9713145ce75ce7d09bb6d37306cb68708cfed4d161bb7ca",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/DSPPadKeyboardRegression.cs",
-      "sha256": "742c80bf2a7f660738d1a12e57b62b31f5b204a55e6f9d18e04a53cc617ae437",
+      "sha256": "1f1322a7f1661c30c4cf3c64ec48d81afbd7536fdece88ec0e574f4373bc906e",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -113,7 +133,7 @@
     },
     {
       "file": "source/DSPPadMouseRegression.cs",
-      "sha256": "5d9cb0c1eb916b58a52c5f7551cda510f8f3bf794ed6fd548706c66701ded95d",
+      "sha256": "3e7b63615d8d5e93a94bfb4d3af454949c0435b0354d167a0f7c3b44118215d7",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -173,12 +193,12 @@
     },
     {
       "file": "source/DSPSmartTouchFrame.cs",
-      "sha256": "30b418684945be38c90ebaab0a84710c7dca728bc4537d152bf0d2301ed4ab3c",
+      "sha256": "2e8b54103cc7f7cc9a163f00d90a9ac7248a20e0c8d98585a28cef4540708af2",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/DSPTouchControls.cs",
-      "sha256": "e3fcfa9fe6c5c03fda9c67375cdca9a5bcbc21a9d2972a92af0002307be8fe6c",
+      "sha256": "52d44f7b75f28fd0b1fea5ee0eca94f8688797a73fb5b27e3871350e95efb56e",
       "origin": "Original touch adapter or explicit regression harness authored for this port; no recovered game source or assets"
     },
     {
@@ -393,12 +413,12 @@
     },
     {
       "file": "source/batch_result.py",
-      "sha256": "455953338b9815ae8da40916aef19d77f4b9f901185a0d19638684197ce090e2",
+      "sha256": "67e639e26686da5b83fd66a65e3f3fe71a8562a03c04ce58ec04b13a688887e1",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
       "file": "source/build_bridge.py",
-      "sha256": "d5ca7293504efd233776840e90ed476f95b562da83f1449013bd012c77eae829",
+      "sha256": "4852d6219c5a1f42e0c4e35b1b06096aaf79845469a78116fea3b82f4ade1a3a",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -408,7 +428,7 @@
     },
     {
       "file": "source/device_report_identity.py",
-      "sha256": "3882672ff50464f2b83c18b2ee1f2970b76b274bcede4d8246a692eaf7d50f8a",
+      "sha256": "923ad4d18e20aba5cbfd7ee550b8bad93c21ab695b8b8daf7d14e3c468d4a4ab",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -428,7 +448,7 @@
     },
     {
       "file": "source/prepare_engine_bridge.py",
-      "sha256": "bae09c898bc50566a51dd3c83f2f5fa29f8588c302922335179e7a25d5b1fc06",
+      "sha256": "0f2744796b780f11117f5f99a96d0ea84e1e9f6f7ea282da4e462d57153f8ee7",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -468,7 +488,7 @@
     },
     {
       "file": "source/run_device_batch.py",
-      "sha256": "9cb3a0ae07c76504afab61cbbb8a9648be0691695e2963f80da9a8cedda67ca7",
+      "sha256": "01eb1c8c511b563bcb5e877595a2f82ecce85232c42e0cdc5610d51187b2a8b1",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -478,7 +498,7 @@
     },
     {
       "file": "source/test_release_guards.py",
-      "sha256": "eaf5a0f0ec7f9dc0eb66e84fb5ad8bca165ed1708b1aa71b2c0111c8224d3a12",
+      "sha256": "5b5bdfc348d87fc263ca0ff79a5138901db9d07d5be7c87bd695fa784eda5214",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     }
   ]

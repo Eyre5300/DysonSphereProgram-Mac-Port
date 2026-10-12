@@ -39,3 +39,22 @@ def touch_failures(state, report):
         or any(c.get('passed') is not True for c in checks)):
         result.append('Touch checks incomplete or failed')
     return result
+
+
+def integration_failures(state, touch_expected):
+    result=touch_failures(state,state.get('touchReport')) if touch_expected else process_failures(state)
+    for key in ['integrationReport','keyboardReport','mouseReport']:
+        r=state.get(key) or {}
+        if (r.get('batchIdentifier')!=state.get('batchIdentifier') or str(r.get('buildVersion'))!=state.get('expectedVersion') or not r.get('completed')):
+            result.append(key+': missing, incomplete or stale')
+    r=state.get('integrationReport') or {}
+    names={c.get('name') for c in r.get('checks',[])}
+    required={'system document picker presented','cancel preserves save','native coordinated save import','duplicate save keeps both','original parser reads imported save','invalid save rejected','system export picker presented','export cancellation preserves source','native coordinated blueprint import','original blueprint roundtrip','cross-type import rejected'}
+    if touch_expected:required|={'direct touch selects touch','pointer jitter does not switch','pointer movement selects keyboard','drag defers mode switch','after release selects touch','keyboard action selects keyboard','fixed touch ignores keyboard mode request','fixed keyboard ignores touch mode request','automatic restored'}
+    if r.get('phase')!='passed' or r.get('errors') or not required.issubset(names) or any(c.get('passed') is not True for c in r.get('checks',[])):
+        result.append('Input/files checks incomplete or failed')
+    keys=(state.get('keyboardReport') or {}).get('checks',[])
+    if len(keys)!=len(set(keys)) or sum(c.startswith('PASS ') for c in keys)<31 or any(c.startswith(('FAIL ','UNVERIFIED ')) for c in keys):result.append('Keyboard checks incomplete or failed')
+    mouse=(state.get('mouseReport') or {}).get('checks',[])
+    if len(mouse)!=len({c.get('name') for c in mouse}) or sum(c.get('status')=='PASS' for c in mouse)<25 or any(c.get('status') in ('FAIL','SKIPPED') for c in mouse):result.append('Mouse checks incomplete or failed')
+    return result

@@ -139,6 +139,9 @@ public static class DSPPadInput {
   // cursor coordinates. Use the same canonical point for world and original UI.
   if(NativePositionValid&&PhysicalMouse){position=new Vector3(nx*Screen.width,ny*Screen.height,0);positionReady=true;}
   else if(!nativeTransport&&(!positionReady||UnityEngine.Input.touchCount==0)){position=UnityEngine.Input.mousePosition;positionReady=true;}
+  DSPPadDocuments.Ensure();
+  DSPPadInputMode.Poll(delta,wheel,rawDown!=0,rawButtons!=0,DiagnosticPointerSource);
+  DSPSmartTouchFrame.CheckPeripherals();
   DSPTouchControls.Poll();
   UpdateWorldTap();
   if(escapeHeld&&Time.realtimeSinceStartup-escapeStarted>2f)CancelVirtualKeys();
@@ -149,28 +152,33 @@ public static class DSPPadInput {
  static bool MouseKey(KeyCode key,out int index){index=(int)key-(int)KeyCode.Mouse0;return index>=0&&index<7;}
  public static bool GetKey(KeyCode key){
   Poll();
+  if(DSPPadDocuments.Busy)return false;
   bool touchKey;if(DSPTouchControls.Read(key,0,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeHeld)return true;
 #if DSP_EMU_IPAD
   bool keyValue;if(DSPPadKeyboard.Read(key,0,out keyValue))return keyValue;
 #endif
   int b;bool mouse=MouseKey(key,out b);if(mouse){if(tapCancelBarrier&&b==tapCanceledButton)return false;if(tapState==2&&b==tapButton)return true;}
+  if(mouse&&DSPPadInputMode.UseTouch)return false;
   if(mouse&&nativeTransport)return PhysicalMouse&&(buttons&(1<<b))!=0;
   return UnityEngine.Input.GetKey(key);
  }
  public static bool GetKeyDown(KeyCode key){
   Poll();
+  if(DSPPadDocuments.Busy)return false;
   bool touchKey;if(DSPTouchControls.Read(key,1,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeDownFrame==Time.frameCount)return true;
 #if DSP_EMU_IPAD
   bool keyValue;if(DSPPadKeyboard.Read(key,1,out keyValue))return keyValue;
 #endif
   int b;bool mouse=MouseKey(key,out b);if(mouse){if(tapCancelBarrier&&b==tapCanceledButton)return false;if(b==tapButton&&tapDownFrame==Time.frameCount)return true;}
+  if(mouse&&DSPPadInputMode.UseTouch)return false;
   if(mouse&&nativeTransport)return PhysicalMouse&&(((packetDown&(1<<b))!=0)||((buttons&(1<<b))!=0&&(previous&(1<<b))==0));
   return UnityEngine.Input.GetKeyDown(key);
  }
  public static bool GetKeyUp(KeyCode key){
   Poll();
+  if(DSPPadDocuments.Busy)return false;
   bool touchKey;if(DSPTouchControls.Read(key,2,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeUpFrame==Time.frameCount)return true;
 #if DSP_EMU_IPAD
@@ -187,6 +195,7 @@ public static class DSPPadInput {
  public static float GetAxis(string name){
   Poll();
   if(DSPTouchControls.Enabled&&name=="Mouse Wheel"&&DSPTouchControls.Zoom!=0)return DSPTouchControls.Zoom*.1f;
+  if(DSPPadDocuments.Busy||DSPPadInputMode.UseTouch)return 0;
   if(nativeTransport){if(name=="Mouse X")return PhysicalMouse?delta.x*.1f:0;if(name=="Mouse Y")return PhysicalMouse?delta.y*.1f:0;if(name=="Mouse Wheel")return PhysicalMouse?wheel*.1f:0;}
   return UnityEngine.Input.GetAxis(name);
  }

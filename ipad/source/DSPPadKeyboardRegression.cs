@@ -5,7 +5,7 @@ public static class DSPPadKeyboardRegression {
  [DllImport("@rpath/UnityFramework.framework/UnityFramework")]static extern int DSPAOTQueueTestKey(int code,int pressed);
  [DllImport("@rpath/UnityFramework.framework/UnityFramework")]static extern void DSPAOTEndTestKeyboard();
  [DllImport("@rpath/UnityFramework.framework/UnityFramework")]static extern int DSPAOTQueueTestPointer(float x,float y,int buttons,float dx,float dy,float wheel);
- [Serializable]sealed class Result{public string source="PROGRAMMATIC native transport; physical keyboard unverified";public bool completed;public List<string> checks=new List<string>();}
+ [Serializable]sealed class Result{public string batchIdentifier=DSPPadDiagnosticLaunch.BatchIdentifier,buildVersion=DSPPadDiagnosticLaunch.BuildVersion;public string source="PROGRAMMATIC native transport; physical keyboard unverified";public bool completed;public List<string> checks=new List<string>();}
  static Result result;static Vector2 point;
  static void Note(string name,bool pass,string evidence){result.checks.Add((pass?"PASS ":"FAIL ")+name+": "+evidence);Write();}
  static void Write(){File.WriteAllText(Path.Combine(Application.persistentDataPath,"dsp-keyboard-regression.json"),JsonUtility.ToJson(result,true));}

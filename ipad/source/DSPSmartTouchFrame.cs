@@ -14,7 +14,7 @@ public static class DSPSmartTouchFrame {
  static bool unavailable,wasEnabled;static int peripheralFrame=-1,width,height;
  public static bool KeyboardAndMouse {get;private set;}
  public static void CheckPeripherals(){
-  if(DSPTouchControls.Enabled){KeyboardAndMouse=false;return;}
+  if(DSPTouchControls.Enabled){KeyboardAndMouse=!DSPPadInputMode.UseTouch;return;}
   if(peripheralFrame==Time.frameCount)return;peripheralFrame=Time.frameCount;
   if(!unavailable)try{KeyboardAndMouse=DSPAOTHasKeyboardAndMouse()!=0;}catch(DllNotFoundException){unavailable=true;}catch(EntryPointNotFoundException){unavailable=true;}
  }

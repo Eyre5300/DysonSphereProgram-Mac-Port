@@ -53,7 +53,14 @@ public sealed class DSPPadBridgeDiagnostics:MonoBehaviour {
   limit=Time.realtimeSinceStartup+240;while(!(GameMain.isRunning&&!DSPGame.IsMenuDemo&&GameMain.data!=null&&GameMain.data.guideComplete&&GameMain.localPlanet!=null&&GameMain.localPlanet.factoryLoaded&&GameMain.gameTick>120)&&Time.realtimeSinceStartup<limit)yield return new WaitForSecondsRealtime(1);
   if(!GameMain.isRunning||GameMain.localPlanet==null||!GameMain.localPlanet.factoryLoaded||GameMain.gameTick<=120){Stage("new_game_timeout");busy=false;DSPGame.ExitProgram();yield break;}
   Stage("new_game_running");yield return Capture("emu-full-game-newgame.png");
-  if(DSPTouchControls.Enabled){Stage("touch_combined_regression");yield return DSPTouchRegression.Run();if(!DSPTouchRegression.Passed)r.errors.Add("Touch combined regression failed; inspect touch-regression.json");r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;}
+  if(DSPTouchControls.Enabled||DSPPadDiagnosticLaunch.InputFilesRequested){
+   Stage("input_files_regression");yield return DSPPadIntegrationRegression.Run();if(!DSPPadIntegrationRegression.Passed)r.errors.Add("Input/files integration failed");
+   if(DSPTouchControls.Enabled){DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Touch);yield return new WaitForSecondsRealtime(.5f);Stage("touch_combined_regression");yield return DSPTouchRegression.Run();if(!DSPTouchRegression.Passed)r.errors.Add("Touch combined regression failed");DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Keyboard);yield return new WaitForSecondsRealtime(.5f);}
+   DSPPadBatchFixture.Prepare();Stage("keyboard_regression_batch");yield return DSPPadKeyboardRegression.Run();Stage("mouse_regression_batch");yield return DSPPadMouseRegression.Run();
+   if(DSPTouchControls.Enabled)DSPPadInputMode.SetPreference(DSPPadInputMode.Choice.Automatic);
+   r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;
+  }
+
   Stage("render_regression");yield return DSPPadRenderDiagnostics.RegressionViews();
   Stage("shadow_regression");yield return DSPPadShadowRegression.Run();
   var ui=UIRoot.instance.uiGame;

@@ -40,4 +40,27 @@ class Guards(unittest.TestCase):
    self.assertTrue(touch_failures(state,bad))
   bad=copy.deepcopy(report);bad['checks'][0]['passed']=False;self.assertTrue(touch_failures(state,bad))
   state['enteredWorld']=False;self.assertTrue(touch_failures(state,report))
+class IntegrationGuards(unittest.TestCase):
+ def integration_state(self):
+  state,touch=Guards().touch_state()
+  names=['system document picker presented','cancel preserves save','native coordinated save import','duplicate save keeps both','original parser reads imported save','invalid save rejected','system export picker presented','export cancellation preserves source','native coordinated blueprint import','original blueprint roundtrip','cross-type import rejected','direct touch selects touch','pointer jitter does not switch','pointer movement selects keyboard','drag defers mode switch','after release selects touch','keyboard action selects keyboard','fixed touch ignores keyboard mode request','fixed keyboard ignores touch mode request','automatic restored']
+  state['touchReport']=touch
+  for key in ['integrationReport','keyboardReport','mouseReport']:
+   state[key]={'batchIdentifier':'new','buildVersion':'27','completed':True,'phase':'passed','errors':[]}
+  state['integrationReport']['checks']=[{'name':n,'passed':True} for n in names]
+  state['keyboardReport']['checks']=['PASS key '+str(i) for i in range(31)]
+  state['mouseReport']['checks']=[{'name':'mouse '+str(i),'status':'PASS'} for i in range(25)]
+  return state
+ def test_integration_rejects_stale_missing_failed_or_duplicate(self):
+  from batch_result import integration_failures
+  state=self.integration_state()
+  for touch in [False,True]:
+   self.assertEqual(integration_failures(state,touch),[])
+   for key in ['integrationReport','keyboardReport','mouseReport']:
+    for field,value in [('completed',False),('batchIdentifier','old'),('buildVersion','0'),('checks',[])]:
+     bad=copy.deepcopy(state);bad[key][field]=value;self.assertTrue(integration_failures(bad,touch))
+   bad=copy.deepcopy(state);bad['integrationReport']['checks'][0]['passed']=False;self.assertTrue(integration_failures(bad,touch))
+   for key in ['keyboardReport','mouseReport']:
+    bad=copy.deepcopy(state);bad[key]['checks']=[bad[key]['checks'][0]]*len(bad[key]['checks']);self.assertTrue(integration_failures(bad,touch))
+  state.pop('touchReport');self.assertEqual(integration_failures(state,False),[]);self.assertTrue(integration_failures(state,True))
 if __name__=='__main__':unittest.main()

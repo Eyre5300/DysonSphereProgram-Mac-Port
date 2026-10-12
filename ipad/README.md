@@ -1,4 +1,4 @@
-触控开发分支：Pro27 键鼠基线保留；独立 DSP Touch 首期的操作、构建与测试范围见 [TOUCH.txt](TOUCH.txt)。
+触控开发分支：保留 Pro27 源码/安装包/存档备份；当前 DSP Touch 支持自动键鼠/触控选择，触控与键鼠版共用系统 Files/iCloud 手动导入导出。操作、构建与测试范围见 [TOUCH.txt](TOUCH.txt)。
 
 # iPad Pro 迁移：开发者预览
 
