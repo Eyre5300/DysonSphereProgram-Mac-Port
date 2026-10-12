@@ -8,7 +8,7 @@ import argparse,json,subprocess,time,uuid
 from device_report_identity import ReportIdentity
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--device',required=True);p.add_argument('--bundle',required=True);p.add_argument('--version',required=True)
-p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
+p.add_argument('--touch',action='store_true',help='Validate the separate touch App first-phase report');p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
 out=a.output_dir or Path(__file__).resolve().parents[1]/'local-private/outputs/full-game-bridge'
 from private_paths import private_output
 out=private_output(out)
@@ -72,7 +72,11 @@ with (out/('console-'+version+'.log')).open('w') as console:
     if functional:state['functionalReport']=functional;state['functionalPhase']=functional.get('phase')
    else:state['finalReportRejected']='Missing or stale managed final report'
   from batch_result import failures
-  state['validationFailures']=failures(state,state.get('functionalReport'))
+  if a.touch:
+   from batch_result import touch_failures
+   state['touchReport']=read_remote('touch-regression.json')
+   state['validationFailures']=touch_failures(state,state['touchReport'])
+  else:state['validationFailures']=failures(state,state.get('functionalReport'))
   state['passed']=not state['validationFailures']
   write();print('Console finished:',child.returncode,'worldEntered:',state['enteredWorld'],flush=True)
   if not state['passed']:raise SystemExit(child.returncode or 1)

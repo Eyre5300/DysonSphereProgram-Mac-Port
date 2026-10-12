@@ -151,6 +151,8 @@
       "ipad/source/DSPSmartTouchControls.h",
       "ipad/source/DSPSmartTouchControls.m",
       "ipad/source/DSPSmartTouchFrame.cs",
+      "ipad/source/DSPTouchControls.cs",
+      "ipad/source/DSPTouchRegression.cs",
       "ipad/source/PortBlueprintAudit.cs",
       "ipad/source/PortCameraProjection.cs",
       "ipad/source/PortCargoImportedPoints.cs",
@@ -214,6 +216,18 @@
     "device_gate": "14 functional stages,31 keyboard checks,25 mouse checks; original exit code0",
     "public_entrypoint": "component/source/compile/BC checks passed; fresh full end-to-end not yet verified",
     "miniSupported": false,
+    "reports": "ipad/VALIDATION.md"
+  },
+  "ipad_touch": {
+    "branch": "codex/ipad-pro-touch",
+    "baseline": "Pro27 / 4d6d4e3",
+    "app": "DSP Touch (separate .touch. Bundle ID)",
+    "scope": "movement, look, building adjustment, belts and inserters",
+    "guide": "ipad/TOUCH.txt",
+    "physicalFingerValidated": false,
+    "newMachineEndToEndVerified": false,
+    "build": "28.4",
+    "deviceGate": "23 programmatic touch checks and 4 reviewed device frames; normal exit0; source/build/resource guards passed",
     "reports": "ipad/VALIDATION.md"
   }
 }

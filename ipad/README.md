@@ -1,3 +1,5 @@
+触控开发分支：Pro27 键鼠基线保留；独立 DSP Touch 首期的操作、构建与测试范围见 [TOUCH.txt](TOUCH.txt)。
+
 # iPad Pro 迁移：开发者预览
 
 本目录提供原创的平台适配、构建和验证工具。使用者必须自行准备已购买的 Windows 游戏、Unity 工具链和自己的 Apple 签名。仓库不包含游戏源码、资产、SDK 对象、App/IPA、测试存档或蓝图。

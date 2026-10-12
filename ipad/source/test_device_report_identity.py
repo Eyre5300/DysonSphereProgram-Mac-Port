@@ -20,6 +20,8 @@ class ReportIdentityTest(unittest.TestCase):
   for phase in ['boot','main_menu','bc_probe_waiting','new_game_loading','preload_timeout','unexpected']:
    self.assertFalse(ReportIdentity.entered_world({'phase':phase,'tick':999}))
   self.assertFalse(ReportIdentity.entered_world({'phase':'render_regression','tick':0}))
+  self.assertTrue(ReportIdentity.entered_world({'phase':'touch_combined_regression','tick':999}))
+  self.assertFalse(ReportIdentity.entered_world({'phase':'touch_combined_regression','tick':0}))
   self.assertTrue(ReportIdentity.entered_world({'phase':'render_regression','tick':999}))
   self.assertTrue(ReportIdentity.entered_world({'phase':'functional_batch_25','tick':999}))
 if __name__=='__main__':unittest.main()

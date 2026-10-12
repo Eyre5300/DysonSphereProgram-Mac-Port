@@ -27,4 +27,17 @@ class Guards(unittest.TestCase):
   s,f=self.state();f['stages'][-1]['status']='running';self.assertTrue(failures(s,f))
  def test_missing_functional_rejected(self):
   s,f=self.state();self.assertTrue(failures(s,None))
+ def touch_state(self):
+  names=['HUD included in original UI camera', 'simultaneous move and look', 'release clears movement and look', 'look tap never clicks world', 'camera zoom buttons', 'three rapid rotation buttons', 'miner original fine rotation', 'fine pointer nudge', 'cancel releases modifier', 'preview drag does not place', 'original building placement', 'belt height controls', 'belt start stage', 'belt endpoint edit does not place', 'original belt segment placement', 'sorter fixture containers', 'sorter selects source', 'sorter valid target preview', 'sorter preview does not place', 'original sorter placement', 'fullscreen blocks movement', 'save touch-built world', 'reload touch-built world']
+  state,_=self.state()
+  return state,{'batchIdentifier':'new','buildVersion':'27','completed':True,'phase':'passed','errors':[], 'checks':[{'name':name,'passed':True} for name in names]}
+ def test_touch_evidence_identity_and_completeness(self):
+  from batch_result import touch_failures
+  state,report=self.touch_state();self.assertEqual(touch_failures(state,report),[])
+  for key,value in [('batchIdentifier','old'),('buildVersion','28'),('completed',False),('errors',['error'])]:
+   bad=copy.deepcopy(report);bad[key]=value;self.assertTrue(touch_failures(state,bad))
+  for bad in [None,{},dict(report,checks=report['checks'][:-1]),dict(report,checks=report['checks']+report['checks'][:1])]:
+   self.assertTrue(touch_failures(state,bad))
+  bad=copy.deepcopy(report);bad['checks'][0]['passed']=False;self.assertTrue(touch_failures(state,bad))
+  state['enteredWorld']=False;self.assertTrue(touch_failures(state,report))
 if __name__=='__main__':unittest.main()

@@ -4,6 +4,9 @@ p=argparse.ArgumentParser(description='Compile the unchanged Mac game assembly w
 p.add_argument('--project',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--unity',type=Path,required=True);a=p.parse_args()
 a.project=a.project.resolve();a.output=a.output.resolve();a.unity=a.unity.resolve()
 b=a.project/'Library/Bee/artifacts';sdk=a.unity.parent/'PlaybackEngines/iOSSupport/Variations/il2cpp/Managed';tool=a.unity/'Contents/il2cpp/build/deploy/il2cpp';mac=a.unity/'Contents/PlaybackEngines/MacStandaloneSupport';i=a.output/'inputs';i.mkdir(parents=True,exist_ok=True)
+cache=a.output/'cache';marker=cache/'.dsp-build-root'
+if cache.exists() and (not marker.exists() or marker.read_text()!=str(a.output)):raise RuntimeError('AOT cache belongs to another workspace; use a fresh private output/cache')
+cache.mkdir(exist_ok=True);marker.write_text(str(a.output))
 original=b/'MacStandalonePlayerBuildProgram/ManagedStripped';audio=b/'iOS/ManagedStripped/UnityEngine.AudioModule.dll'
 for q in i.glob('*.dll'):
  if not (original/q.name).exists():q.unlink()

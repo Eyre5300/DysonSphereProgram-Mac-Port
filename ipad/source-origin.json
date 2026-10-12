@@ -33,7 +33,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "bb27055dccf45ece4742fe006b0450f9295126f46da880883ce5d72756abd8bd",
+      "sha256": "55b9e76a5389bc71180917c6808b5a411e8f7894b58361ef91f625b2f8c12763",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -68,7 +68,7 @@
     },
     {
       "file": "source/DSPPadInput.cs",
-      "sha256": "88101da73497d71e18fe8bfc64cea238bd4d39b655d82377a4cac029658cbb77",
+      "sha256": "f3e56d6b5ef6b0d9a5adf79afeefdf67b9490743dcd19b412479ece3f66b08e6",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -173,8 +173,18 @@
     },
     {
       "file": "source/DSPSmartTouchFrame.cs",
-      "sha256": "7a49302a3dd621ba2c41302d4ec1fd9d5530e570d207701389ad5d2853b93afa",
+      "sha256": "30b418684945be38c90ebaab0a84710c7dca728bc4537d152bf0d2301ed4ab3c",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPTouchControls.cs",
+      "sha256": "e3fcfa9fe6c5c03fda9c67375cdca9a5bcbc21a9d2972a92af0002307be8fe6c",
+      "origin": "Original touch adapter or explicit regression harness authored for this port; no recovered game source or assets"
+    },
+    {
+      "file": "source/DSPTouchRegression.cs",
+      "sha256": "e374d61ba3ee524637f36994b3f5cbfdd3be4918f467753f1b10467b4b139665",
+      "origin": "Original touch adapter or explicit regression harness authored for this port; no recovered game source or assets"
     },
     {
       "file": "source/PortBlueprintAudit.cs",
@@ -383,12 +393,12 @@
     },
     {
       "file": "source/batch_result.py",
-      "sha256": "a1d2c15ca23c2e596422f1234300c87d18ee152004f52a2a397cd2d52c146b58",
+      "sha256": "455953338b9815ae8da40916aef19d77f4b9f901185a0d19638684197ce090e2",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
       "file": "source/build_bridge.py",
-      "sha256": "e763ea870b645018e62b45939192e42bcfff4a84e09636602bc1df46ecac086b",
+      "sha256": "d5ca7293504efd233776840e90ed476f95b562da83f1449013bd012c77eae829",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -398,7 +408,7 @@
     },
     {
       "file": "source/device_report_identity.py",
-      "sha256": "2304a56e72f80736421a7d4156db76e1e29dfc85609f9add5170c312eb8e0819",
+      "sha256": "3882672ff50464f2b83c18b2ee1f2970b76b274bcede4d8246a692eaf7d50f8a",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -438,7 +448,7 @@
     },
     {
       "file": "source/rebuild_mobile_audio_bindings.py",
-      "sha256": "b45ca95e4c392b5e6157f9102008bf167f1de9fdaf832560a51702b80339b526",
+      "sha256": "3bb22192815518ddcda3df93f3c61216569e72aa9fe3d192e35b542374148bf4",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -458,17 +468,17 @@
     },
     {
       "file": "source/run_device_batch.py",
-      "sha256": "0d2c676ab82da281892a49545017495a22f88b70215918fc003666e108a4f337",
+      "sha256": "9cb3a0ae07c76504afab61cbbb8a9648be0691695e2963f80da9a8cedda67ca7",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/test_device_report_identity.py",
-      "sha256": "47d92bf4528feca16667a8ac1989932fc35891ccd04946cd45db8bcecddb07ad",
+      "sha256": "760d74aa72f0eab0cd6c6e7d4446ae1cc0e7951d47b56a5742ac8be87f8d3fe3",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/test_release_guards.py",
-      "sha256": "5082956df42b357c9b4347a7dffd24b9019d41fdbd2a75d2d9b56070a50b3a22",
+      "sha256": "eaf5a0f0ec7f9dc0eb66e84fb5ad8bca165ed1708b1aa71b2c0111c8224d3a12",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     }
   ]

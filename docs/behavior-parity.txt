@@ -52,3 +52,11 @@ Graphics: HDR Bloom/DoF, shadow tiers and exact original BC blocks adapted.2234 
 Animation: Pro retains original VertaBuffer loading/upload. The unfinished mini lazy/chunked upload experiment is excluded from the public production path; legacy report counters are zero compatibility fields.
 Bounded tests cover supplied large saves, production/logistics/science/blueprints, sphere/launch, warp/interstellar logistics, limited ground combat and five-minute stability. Not all weapons, space combat, maximum factories, real hardware input or multi-hour play.
 Public files contain authored tools and adapters only. Users supply their own game, Unity SDK and signing. Public entry points undergo source preparation/compile and local archive/manifest checks; a clean new-machine end-to-end installation is still unverified. This is not a ready-made game or guaranteed one-click installer. See ipad/README.md.
+
+
+2026-10-12 独立触控首期（codex/ipad-pro-touch）
+仅 Bundle ID 含 .touch. 的独立 App 开启新触控适配。Pro27 安装及存档保持独立。
+变化：左侧移动、右侧视角、世界定位后显式确认施工、屏幕距离微调、工具修饰键按钮锁定、触控显示期间隐藏右侧键盘提示。这些是有意的触控交互差异，不宣称与鼠标手势相同。
+保留：建筑吸附与合法性、采矿机原版精细旋转、传送带路径和高度、分拣器源/目标接口选择、原版逐级取消。3113 原游戏源码文件与 Pro27 私人项目逐字节相同。
+限制：微调不是固定一格；球面锚点尚未覆盖复杂地形和远景；仍有原版键盘教程文字；尚未完成蓝图、批量拆除升级、物品快捷分配、战斗及太空飞行的专用触控交互。
+测试使用实际 iPad Pro，但输入由程序送入同一触控路由/经射线核对的按钮回调；无法证明实际手指、所有系统多指手势、人体工学或长时间操作。分拣器测试尚未覆盖全部接口组合与实际货物流通。详细版本结果见 ipad/VALIDATION.md。

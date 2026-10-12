@@ -19,7 +19,7 @@ public static class DSPPadInput {
  // 1=queued, 2=down awaiting fixed sample, 3=up awaiting fixed sample.
  static int tapState,tapButton,tapCanceledButton,tapDownFrame=-1,tapUpFrame=-1;static Vector3 tapPosition;
  static float tapStarted;static bool tapDownSampled,tapUpSampled,tapCancelBarrier;
- public static bool VirtualPointerActive=>tapState>=2;
+ public static bool VirtualPointerActive=>tapState>=2||DSPTouchControls.PointerActive;
  public static int ActiveWorldButton=>tapState==0?-1:tapButton;
  public static int WorldTapPresses {get;private set;}
  public static int WorldTapFixedDownSamples {get;private set;}
@@ -84,13 +84,13 @@ public static class DSPPadInput {
   if(!Application.isFocused||escapeHeld||escapeQueued)return;
   escapeQueued=true;VirtualEscapePresses++;DSPSmartTouchFrame.Reset();
  }
- public static void UpdateInputPublished(){
+ public static void UpdateInputPublished(){DSPTouchControls.Published();
 #if DSP_EMU_IPAD
   DSPPadKeyboard.UpdatePublished();
 #endif
   for(int b=0;b<7;b++)mouseKeys[b].Published();
  }
- public static void FixedInputSampled(){
+ public static void FixedInputSampled(){DSPTouchControls.Sampled();
 #if DSP_EMU_IPAD
   DSPPadKeyboard.FixedSampled();
 #endif
@@ -139,15 +139,17 @@ public static class DSPPadInput {
   // cursor coordinates. Use the same canonical point for world and original UI.
   if(NativePositionValid&&PhysicalMouse){position=new Vector3(nx*Screen.width,ny*Screen.height,0);positionReady=true;}
   else if(!nativeTransport&&(!positionReady||UnityEngine.Input.touchCount==0)){position=UnityEngine.Input.mousePosition;positionReady=true;}
+  DSPTouchControls.Poll();
   UpdateWorldTap();
   if(escapeHeld&&Time.realtimeSinceStartup-escapeStarted>2f)CancelVirtualKeys();
   if(escapeHeld&&escapeFixedSampled){escapeHeld=false;escapeFixedSampled=false;escapeUpFrame=frame;}
   if(escapeQueued&&!escapeHeld&&escapeUpFrame!=frame){escapeQueued=false;escapeHeld=true;escapeFixedSampled=false;escapeDownFrame=frame;escapeStarted=Time.realtimeSinceStartup;}
  }
- public static Vector3 mousePosition {get{Poll();return VirtualPointerActive?tapPosition:(nativeTransport?position:UnityEngine.Input.mousePosition);}}
+ public static Vector3 mousePosition {get{Poll();return tapState>=2?tapPosition:DSPTouchControls.PointerActive?DSPTouchControls.Pointer:(nativeTransport?position:UnityEngine.Input.mousePosition);}}
  static bool MouseKey(KeyCode key,out int index){index=(int)key-(int)KeyCode.Mouse0;return index>=0&&index<7;}
  public static bool GetKey(KeyCode key){
   Poll();
+  bool touchKey;if(DSPTouchControls.Read(key,0,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeHeld)return true;
 #if DSP_EMU_IPAD
   bool keyValue;if(DSPPadKeyboard.Read(key,0,out keyValue))return keyValue;
@@ -158,6 +160,7 @@ public static class DSPPadInput {
  }
  public static bool GetKeyDown(KeyCode key){
   Poll();
+  bool touchKey;if(DSPTouchControls.Read(key,1,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeDownFrame==Time.frameCount)return true;
 #if DSP_EMU_IPAD
   bool keyValue;if(DSPPadKeyboard.Read(key,1,out keyValue))return keyValue;
@@ -168,6 +171,7 @@ public static class DSPPadInput {
  }
  public static bool GetKeyUp(KeyCode key){
   Poll();
+  bool touchKey;if(DSPTouchControls.Read(key,2,out touchKey))return touchKey;
   if(key==KeyCode.Escape&&escapeUpFrame==Time.frameCount)return true;
 #if DSP_EMU_IPAD
   bool keyValue;if(DSPPadKeyboard.Read(key,2,out keyValue))return keyValue;
@@ -182,6 +186,7 @@ public static class DSPPadInput {
  public static bool GetMouseButtonUp(int button)=>button>=0&&button<7?GetKeyUp(KeyCode.Mouse0+button):UnityEngine.Input.GetMouseButtonUp(button);
  public static float GetAxis(string name){
   Poll();
+  if(DSPTouchControls.Enabled&&name=="Mouse Wheel"&&DSPTouchControls.Zoom!=0)return DSPTouchControls.Zoom*.1f;
   if(nativeTransport){if(name=="Mouse X")return PhysicalMouse?delta.x*.1f:0;if(name=="Mouse Y")return PhysicalMouse?delta.y*.1f:0;if(name=="Mouse Wheel")return PhysicalMouse?wheel*.1f:0;}
   return UnityEngine.Input.GetAxis(name);
  }

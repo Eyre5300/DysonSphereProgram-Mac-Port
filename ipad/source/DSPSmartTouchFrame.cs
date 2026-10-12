@@ -14,12 +14,13 @@ public static class DSPSmartTouchFrame {
  static bool unavailable,wasEnabled;static int peripheralFrame=-1,width,height;
  public static bool KeyboardAndMouse {get;private set;}
  public static void CheckPeripherals(){
+  if(DSPTouchControls.Enabled){KeyboardAndMouse=false;return;}
   if(peripheralFrame==Time.frameCount)return;peripheralFrame=Time.frameCount;
   if(!unavailable)try{KeyboardAndMouse=DSPAOTHasKeyboardAndMouse()!=0;}catch(DllNotFoundException){unavailable=true;}catch(EntryPointNotFoundException){unavailable=true;}
  }
  public static Vector2 Move {get;private set;}
  public static Vector2 Look {get;private set;}
- public static bool LookHeld=>right!=-1;
+ public static bool LookHeld=>DSPTouchControls.Enabled?DSPTouchControls.Looking:right!=-1;
  public static bool Enabled {get;private set;}
  public static int UIRejectedTouches {get;private set;}
  public static string LastUIBlocker {get;private set;}
@@ -35,8 +36,9 @@ public static class DSPSmartTouchFrame {
   return "";
  }
  public static bool UIBlocks(Vector2 point){if(DSPPadEscapeButton.Contains(point)){LastUIBlocker="iPad Esc";return true;}string b=BlockerAt(point);if(b.Length!=0)LastUIBlocker=b;return b.Length!=0;}
- public static void Reset(){left=-1;right=-1;Move=Vector2.zero;Look=Vector2.zero;pendingLook=Vector2.zero;tap.Cancel();DSPPadInput.CancelWorldTap();}
+ public static void Reset(){DSPTouchControls.Reset();left=-1;right=-1;Move=Vector2.zero;Look=Vector2.zero;pendingLook=Vector2.zero;tap.Cancel();DSPPadInput.CancelWorldTap();}
  public static void Sample(bool gameplayAllowed) {
+  if(DSPTouchControls.Enabled){DSPTouchControls.Poll();Enabled=DSPTouchControls.Allowed;Move=DSPTouchControls.Move;Look=DSPTouchControls.Look;return;}
   CheckPeripherals();
   if(width!=Screen.width||height!=Screen.height){Reset();width=Screen.width;height=Screen.height;}
   Enabled=gameplayAllowed&&!KeyboardAndMouse&&Application.isFocused;
