@@ -11,7 +11,7 @@
 #include <os/proc.h>
 // Native process arguments are authoritative for this mixed-platform AOT host.
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTDiagnosticFlags(void){
- static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0);});return flags;
+ static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0)|([args containsObject:@"--dsp-world-audit"]?256:0);});return flags;
 }
 // The installed package can have a resource-only revision; Application.version
 // is the short marketing version and is not an evidence-directory identifier.

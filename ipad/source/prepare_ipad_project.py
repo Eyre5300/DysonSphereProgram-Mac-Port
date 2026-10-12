@@ -56,6 +56,7 @@ def main():
         if not text.startswith(alias):starmap.write_text(alias+text)
     run('apply_cursor_bridge.py','--file',game/'UICursor.cs','--report',a.report.with_name('cursor-adapter.json'))
     run('apply_dof_alpha_patch.py','--project',project)
+    run('apply_verta_binding.py','--project',project)
     run('apply_textasset_stream.py','--original',original/'Assets/Scripts/Assembly-CSharp/HashSystem.cs','--target',game/'HashSystem.cs','--report',a.report.with_name('hash-adapter.json'))
     bloom=game/'UnityEngine/PostProcessing/BloomComponent.cs';s=bloom.read_text();anchor='RenderTextureFormat format = (Application.isMobilePlatform ? RenderTextureFormat.Default : RenderTextureFormat.DefaultHDR);';bloom.write_text(once(s,anchor,anchor+'\n#if DSP_EMU_IPAD\n            if (DSPPadRenderFormats.DesktopBloomCandidate) format = RenderTextureFormat.ARGBHalf;\n#endif'))
     # Avoid carrying Mac's optional lazy-target experiment into the iPad build.

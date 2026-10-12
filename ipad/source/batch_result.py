@@ -58,3 +58,35 @@ def integration_failures(state, touch_expected):
     mouse=(state.get('mouseReport') or {}).get('checks',[])
     if len(mouse)!=len({c.get('name') for c in mouse}) or sum(c.get('status')=='PASS' for c in mouse)<25 or any(c.get('status') in ('FAIL','SKIPPED') for c in mouse):result.append('Mouse checks incomplete or failed')
     return result
+
+
+def world_audit_failures(state, report):
+    result=integration_failures(state, False)
+    if not report or report.get('batchIdentifier')!=state.get('batchIdentifier') or str(report.get('buildVersion'))!=state.get('expectedVersion'):
+        return result+['World audit missing or stale']
+    if not report.get('completed') or report.get('errors'):
+        result.append('World audit incomplete or failed')
+    if not report.get('cameraRestored') or len(report.get('cameraBefore',[]))!=6 or report.get('cameraBefore')!=report.get('cameraAfter'):
+        result.append('World audit left a different camera fixture')
+    snaps=report.get('snapshots',[])
+    if [s.get('label') for s in snaps]!=['normal','globe']:
+        result.append('Both world views required')
+    for s in snaps:
+        if s.get('label')=='globe' and (not s.get('veinDistribution') or s.get('visibleVeinIcons',0)<=0):
+            result.append('Enabled vein distribution icons missing')
+        if not s.get('loaded') or not s.get('renderVein') or s.get('liveVeins',0)<=0 or s.get('animMismatch')!=0:
+            result.append('Vein data/upload invalid: '+s.get('label',''))
+        draws=0
+        for m in s.get('models',[]):
+            for b in m.get('batches',[]):
+                if b.get('instanceMismatch')!=0: result.append('Instance upload mismatch')
+                for mat in b.get('materials',[]):
+                    if not mat.get('supported') or mat.get('vertaWords')!=b.get('expectedVertaWords'):
+                        result.append('Unsupported shader or wrong animation length')
+                    if m.get('type')=='Vein' and mat.get('frameCount',0)>0 and b.get('expectedVertaWords',0)>0:
+                        draws+=sum(b.get('args',[])[1::5])
+        if draws<=0:result.append('No animated vein draw evidence')
+    inputs=report.get('inputs',[])
+    if len(inputs)!=4 or not inputs[0].startswith('Normal zoom limit: Normal distance=1') or inputs[-1]!='Globe zoom transition: Starmap star=True':
+        result.append('Original zoom path evidence missing')
+    return result

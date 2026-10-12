@@ -63,4 +63,23 @@ class IntegrationGuards(unittest.TestCase):
    for key in ['keyboardReport','mouseReport']:
     bad=copy.deepcopy(state);bad[key]['checks']=[bad[key]['checks'][0]]*len(bad[key]['checks']);self.assertTrue(integration_failures(bad,touch))
   state.pop('touchReport');self.assertEqual(integration_failures(state,False),[]);self.assertTrue(integration_failures(state,True))
+
+
+class WorldGuards(unittest.TestCase):
+ def test_rejects_original_zero_length_regression_and_missing_evidence(self):
+  from batch_result import world_audit_failures
+  state=IntegrationGuards().integration_state()
+  batch={'instanceMismatch':0,'expectedVertaWords':100,'args':[3,4,0,0,0],'materials':[{'supported':True,'frameCount':7,'vertaWords':100}]}
+  snap={'label':'normal','loaded':True,'renderVein':True,'liveVeins':4,'animMismatch':0,'models':[{'type':'Vein','batches':[batch]}]}
+  globe=copy.deepcopy(snap);globe.update(label='globe',veinDistribution=True,visibleVeinIcons=3)
+  report={'batchIdentifier':'new','buildVersion':'27','completed':True,'cameraRestored':True,'cameraBefore':[0,.8,.8,0,.8,.8],'cameraAfter':[0,.8,.8,0,.8,.8],'errors':[],'snapshots':[snap,globe],'inputs':['Normal zoom limit: Normal distance=1','Globe left drag angle=0','Globe middle drag angle=19','Globe zoom transition: Starmap star=True']}
+  self.assertEqual(world_audit_failures(state,report),[])
+  for field,value in [('batchIdentifier','old'),('completed',False),('errors',['failure']),('snapshots',[]),('inputs',[]),('cameraRestored',False),('cameraAfter',[0,.2,.7,0,.2,.7])]:
+   bad=copy.deepcopy(report);bad[field]=value;self.assertTrue(world_audit_failures(state,bad))
+  for field,value in [('expectedVertaWords',0),('args',[3,0,0,0,0]),('instanceMismatch',1)]:
+   bad=copy.deepcopy(report);bad['snapshots'][0]['models'][0]['batches'][0][field]=value;self.assertTrue(world_audit_failures(state,bad))
+  bad=copy.deepcopy(report);bad['snapshots'][1]['visibleVeinIcons']=0;self.assertTrue(world_audit_failures(state,bad))
+  bad=copy.deepcopy(report);bad['snapshots'][0]['models'][0]['batches'][0]['materials'][0]['vertaWords']=0
+  self.assertTrue(world_audit_failures(state,bad))
+
 if __name__=='__main__':unittest.main()

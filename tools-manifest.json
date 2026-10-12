@@ -150,6 +150,7 @@
       "ipad/source/DSPPadTapGesture.cs",
       "ipad/source/DSPPadTextAssetStream.cs",
       "ipad/source/DSPPadVertaBacking.cs",
+      "ipad/source/DSPPadWorldAudit.cs",
       "ipad/source/DSPPointerState.hpp",
       "ipad/source/DSPRayReceiverAudit.cs",
       "ipad/source/DSPSmartTouchControls.h",
@@ -196,6 +197,7 @@
       "ipad/source/apply_textasset_stream.py",
       "ipad/source/apply_touch11_patch.py",
       "ipad/source/apply_touch_escape_patch.py",
+      "ipad/source/apply_verta_binding.py",
       "ipad/source/audit_mac.py",
       "ipad/source/augment_engine_icalls.py",
       "ipad/source/batch_result.py",
@@ -215,17 +217,19 @@
       "ipad/source/run_bc_device_probe.py",
       "ipad/source/run_device_batch.py",
       "ipad/source/test_device_report_identity.py",
-      "ipad/source/test_release_guards.py"
+      "ipad/source/test_release_guards.py",
+      "ipad/source/test_verta_binding.py"
     ],
     "device_gate": "14 functional stages,31 keyboard checks,25 mouse checks; original exit code0",
     "public_entrypoint": "component/source/compile/BC checks passed; fresh full end-to-end not yet verified",
     "miniSupported": false,
     "reports": "ipad/VALIDATION.md",
     "keyboardUpgrade": {
-      "build": "29.4",
-      "deviceGate": "20 files +31 keyboard +25 mouse checks; world entry and normal exit0",
+      "build": "31.3",
+      "deviceGate": "World GPU/vein icons/original view logic +20 files +31 keyboard +25 mouse; continuous batch normal exit0",
       "previousBaseline": "Pro27 4d6d4e3 and complete pre-upgrade private data backup retained",
-      "userAuthorizedInPlaceUpgrade": true
+      "userAuthorizedInPlaceUpgrade": true,
+      "branch": "codex/ipad-pro-keyboard-fixes"
     }
   },
   "ipad_touch": {
@@ -239,6 +243,7 @@
     "build": "29.3",
     "deviceGate": "29 programmatic mode/files +23 touch +31 keyboard +25 mouse checks; normal exit0; real system picker reviewed; cloud transfer/physical input unverified",
     "reports": "ipad/VALIDATION.md",
-    "cloudTransferValidated": false
+    "cloudTransferValidated": false,
+    "status": "Paused by user; installed29.3 retained; current branch targets keyboard rendering fixes"
   }
 }

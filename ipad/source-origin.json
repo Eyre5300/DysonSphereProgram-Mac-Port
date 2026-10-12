@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "a2f5aafbe27bf101d29dae17817104790ed777b92ec4619e8205220fed4dbace",
+      "sha256": "e838723cf04e40cdeb41d4f3d7cefaf883612fc1029586610919baf586a027d0",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -33,7 +33,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "e00ffb24c4b496ff3d5f9fbc75b21e88322983d3d1abd554d99cd0333532fab6",
+      "sha256": "0fa552448f4a8df2d7508b916bf519d20617457c9163c5e1b842a076d82fb1e5",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "888a04fb23727af9980fbdf074180e5d3537b8a000792080a8af4e8382fdf881",
+      "sha256": "e2afd75dd35fc43e980dbd74d1eb7f5b47e9e9cfc8ccaf74873d051a31a05fe2",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -170,6 +170,11 @@
       "file": "source/DSPPadVertaBacking.cs",
       "sha256": "0f8dc9c3e74704edfb281df89e9586d1c45d18ef7980ec4375cd702a913949d0",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/DSPPadWorldAudit.cs",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
+      "sha256": "01bd0ba8b7d7731a8f29fa4daf9060a6e09a80865eb74d37db7e583d10736300"
     },
     {
       "file": "source/DSPPointerState.hpp",
@@ -402,6 +407,11 @@
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
+      "file": "source/apply_verta_binding.py",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
+      "sha256": "5fd3d605b4c821f1005ae7bb0d2bee701aa0547483e1375fc2a65445f720343f"
+    },
+    {
       "file": "source/audit_mac.py",
       "sha256": "37466e4944f32833c1d1e32429116334f45dad85c90f673b88021c0c67872caf",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
@@ -413,7 +423,7 @@
     },
     {
       "file": "source/batch_result.py",
-      "sha256": "67e639e26686da5b83fd66a65e3f3fe71a8562a03c04ce58ec04b13a688887e1",
+      "sha256": "85730880a0304ad00c33310797451ea60e93b437940cd19267dee9aa297e6542",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -428,7 +438,7 @@
     },
     {
       "file": "source/device_report_identity.py",
-      "sha256": "923ad4d18e20aba5cbfd7ee550b8bad93c21ab695b8b8daf7d14e3c468d4a4ab",
+      "sha256": "e7012f5ed98400b2b3bde3de47b46b2f2b93756574aa959391ed7571207ec8df",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -453,7 +463,7 @@
     },
     {
       "file": "source/prepare_ipad_project.py",
-      "sha256": "c17bc29f3f54c948e457a82a1c526c2668742dc03f87ae4fdf349c3a232484f7",
+      "sha256": "bfc33225d3079f5bb14299a2bba75703e55d1b32d9e2eaf417eaef4d91c189e0",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -488,7 +498,7 @@
     },
     {
       "file": "source/run_device_batch.py",
-      "sha256": "01eb1c8c511b563bcb5e877595a2f82ecce85232c42e0cdc5610d51187b2a8b1",
+      "sha256": "f8c2addcebc477fd9fafac8fbf72aa8d35248eb6a6cc7ddb65ebb36c5e8a7d04",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -498,8 +508,13 @@
     },
     {
       "file": "source/test_release_guards.py",
-      "sha256": "5b5bdfc348d87fc263ca0ff79a5138901db9d07d5be7c87bd695fa784eda5214",
+      "sha256": "c736e9fd1ac0396205dd551efd24c48ec66f92c65faa36e3194d60c9df714580",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
+    },
+    {
+      "file": "source/test_verta_binding.py",
+      "origin": "Project-authored platform adapter, transformation, or diagnostic fixture; no recovered game implementation",
+      "sha256": "bf69943e4d986c2cb3fdf13adbfd058d613eabf483fd40b9a9ab01c1b15f6b74"
     }
   ]
 }

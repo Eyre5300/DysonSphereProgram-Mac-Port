@@ -68,3 +68,52 @@ Public files contain authored tools and adapters only. Users supply their own ga
 键鼠与触控共用 UIDocumentPicker：系统选择 iCloud Drive/本机/第三方文件，NSFileCoordinator 协调读取并复制到本机，再原版校验；同名保留两份。导出快照不改变原件；取消不导入，不触发自动云同步。
 存档只预检原版头部及长度，不保证完整内容/版本兼容；蓝图设置64MiB导入上限以限制全量解析开销。大量文件的本机复制/解析可造成短暂停顿。未知格式和无效内容显示错误。
 测试中通过原生委托送入本机文件 URL 验证复制、取消、重名和原版解析；不能把该结果当作 iCloud 实际上传/下载或第三方提供商验证。自动模式的程序化回归也不代替实体键鼠/手指与系统合成事件验证。具体版本及安装限制见 ipad/VALIDATION.md。
+
+2026-10-12 Pro keyboard world rendering correction (31/31.1)
+Touch work is paused by the user. Independent keyboard fixes branch; no mini work.
+Original comparison: Windows 0.10.35.29104 VertaBuffer storage, full upload,
+Import/Export and frame data retained exactly. Only SetToAnimMaterial's buffer
+binding calls PortSetBuffer, matching the established Mac Metal adapter.
+Regression cause: restoring original VertaBuffer while removing the mini lazy
+upload experiment also removed required _PortWords_VertaBuffer metadata.
+Device30 had 604 live veins, correct CPU/GPU instances and animation upload,
+and nonzero indirect draw counts, but both animated vein materials had length0.
+Device31 restored lengths27510/19362 and visible ground/globe ore geometry.
+All108 referenced vein shader dependencies matched Mac; no shader/asset downgrade.
+This is a platform metadata fix, not a change to original game data or behavior.
+Device31 generated diagnostic-only absent-material-property errors and ended the
+test input transport before the following keyboard phase. It is NOT accepted as
+a clean batch.31.1 was built but not installed.31.2 addresses both test-driver
+issues and additionally tests the original vein-distribution toggle. Game fix
+is identical across31/31.1/31.2; final status below.
+Original input: RTS ordinary zoom clamps at maximum distance, M opens globe;
+original cameraRTSRotateButton defaults to middle mouse in globe/starmap.
+Both30 and31: normal zoom stayedNormal at1; left globe drag0 degrees,
+middle19.14178 degrees; globe continued zoom enteredStarmap. Keep original logic.
+UIVeinDetail/UIVeinDetailNode/UIZoomWatcher/StarmapCamera match Windows exactly
+(after platform Input alias where applicable). RTSPoser/PlanetPoser only retain
+an existing gated touch-look alternative; keyboard rotation branch unchanged.
+Vein distribution icons are controlled by dfVeinOn, false at original initialization;
+hover information is a separate original path. Do not force the overlay always on.
+Scope: initial-world rendered veins and active renderer batches, automated native
+input queue, shared document picker/integration and keyboard/mouse regression.
+Not a claim of all planets/models, physical keyboard timing, cloud-provider actual
+transfer, or complete visual parity. Mac final and installed Touch29.3 are unchanged.
+
+31.2 combined batch: ore models, 36 enabled globe icons, both original camera
+paths, 20 file and25 mouse checks passed with no runtime errors. Keyboard flight
+fixture reachedFly/Sail but returned to ground before leaving the planet, so the
+strict combined gate FAILED (24keyboard PASS, downstream space checks unverified).
+31.2 isolated integration batch: same installed game, without the preceding view
+audit, passed20files/31keyboard/25mouse and enteredSail with planet0, normalexit0.
+Original UIGlobemap.FadeOut changes both RTS/build camera yaw/pitch/distance.
+31.3 test-only cleanup restores both camera parameter triples saved before the
+view audit, records before/after equality, then executes the existing full keyboard
+and mouse sequences. Production camera/flight logic is not patched.31.3 final
+batch result is recorded in ipad/VALIDATION.md; prior failed batches remain evidence.
+Complete3113-file comparison with Pro27: only VertaBuffer differs, by the one
+required material-binding call. Original full resource payload/quality retained.
+
+31.3 FINAL: combined world/icon/input/files batch passed; 604veins/22active models,
+29visible globe icons,20files/31keyboard/25mouse, errors0 and originalexit0.
+Camera before/after equality verified; screenshots reviewed. Scope limits above remain.
