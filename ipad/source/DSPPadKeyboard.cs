@@ -5,7 +5,7 @@ public static class DSPPadKeyboard {
  static extern int DSPAOTPollKeyboard([In] int[] codes,[Out] int[] packets,int count);
  static readonly int[] indices=new int[512];static readonly int[] codes,packets;static readonly KeyCode[] keys;
  static readonly DSPPadKeyQueue[] queues;static bool unavailable,native;static readonly bool[] rawPrevious=new bool[512];
- static int modifiers,previousModifiers;public static int PhysicalModifiers {get;private set;}
+ static int modifiers,previousModifiers;static bool escapeDown,escapeUp;public static int PhysicalModifiers {get;private set;}
  public static bool AnyHeld {get;private set;}public static bool AnyDown {get;private set;}
  static DSPPadKeyboard(){
   for(int i=0;i<indices.Length;i++)indices[i]=-1;var kk=new System.Collections.Generic.List<KeyCode>();var cc=new System.Collections.Generic.List<int>();
@@ -33,7 +33,12 @@ public static class DSPPadKeyboard {
    if(!Application.isFocused)presses=0;
    rawPrevious[key]=raw;
    if(bit!=0&&raw)PhysicalModifiers|=bit;
-   queues[i].Poll(raw,presses,(packet>>18)&255,Application.isFocused&&!VFInput.inputing&&bit==0,Time.realtimeSinceStartup);
+   bool wasHeld=queues[i].Held;
+   bool ready=keys[i]!=KeyCode.Escape||(!DSPPadEscapeOrder.WaitingForPauseMenu&&(VFInput.axis_button==null||VFInput.axis_button.useCounter[5]==0));
+   queues[i].Poll(raw,presses,(packet>>18)&255,Application.isFocused&&!VFInput.inputing&&bit==0,Time.realtimeSinceStartup,ready);
+   // UI and fixed world input must refer to the SAME Escape press. Otherwise
+   // raw rapid edges close UI now while their queued world edges arrive later.
+   if(keys[i]==KeyCode.Escape){escapeDown=!wasHeld&&queues[i].Held;escapeUp=wasHeld&&!queues[i].Held;}
    if(bit==0)retainedModifiers|=queues[i].UnsampledModifiers;
    AnyHeld|=raw;AnyDown|=presses>0;
   }
@@ -43,12 +48,19 @@ public static class DSPPadKeyboard {
  }
  public static void UpdatePublished(){for(int i=0;i<queues.Length;i++)queues[i].Published();}
  public static void FixedSampled(){for(int i=0;i<queues.Length;i++)queues[i].Sampled();}
+ public static void ClearEscape(){queues[Index(KeyCode.Escape)].ResetDelivery(false);escapeDown=escapeUp=false;}
  public static bool Read(KeyCode key,int mode,out bool value){
   value=false;int i=Index(key);if(i<0)return false;if(DSPPadInputMode.UseTouch||DSPPadDocuments.Busy)return true;
   int bit=ModifierBit(key);if(bit!=0){value=mode==0?(modifiers&bit)!=0:mode==1?(modifiers&bit)!=0&&(previousModifiers&bit)==0:(modifiers&bit)==0&&(previousModifiers&bit)!=0;return true;}
+  if(key==KeyCode.Escape){value=Application.isFocused&&(mode==0?queues[i].Held:mode==1?escapeDown:escapeUp);return true;}
   if(!native||(packets[i]&(1<<17))==0)return false;
   if(!Application.isFocused)return true;
   value=mode==0?queues[i].Held:mode==1?((packets[i]>>1)&255)!=0:((packets[i]>>9)&255)!=0;return true;
  }
- public static void Reset(){for(int i=0;i<queues.Length;i++)queues[i].Clear();Array.Clear(rawPrevious,0,rawPrevious.Length);modifiers=previousModifiers=PhysicalModifiers=0;AnyHeld=AnyDown=false;}
+ public static void Reset(){
+  bool preserve=DSPPadEscapeOrder.ResettingPauseMenu,wasEscape=rawPrevious[(int)KeyCode.Escape];
+  for(int i=0;i<queues.Length;i++){if(preserve&&keys[i]==KeyCode.Escape)queues[i].ResetDelivery(true);else queues[i].Clear();}
+  Array.Clear(rawPrevious,0,rawPrevious.Length);if(preserve)rawPrevious[(int)KeyCode.Escape]=wasEscape;
+  modifiers=previousModifiers=PhysicalModifiers=0;AnyHeld=AnyDown=escapeDown=escapeUp=false;DSPPadEscapeOrder.Consumed();
+ }
 }

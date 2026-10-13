@@ -1,3 +1,35 @@
+2026-10-13 — Pro keyboard build 46: high-refresh Escape follow-up
+
+The 44 source review below remains the broad inventory. This change reviews
+VFInput, GameMain and UIEscMenu again against the same owned Windows source;
+300 consumers now include 248 identical except for the Input alias, 52 reviewed
+adaptations. Original window/cancel/pause method bodies remain unchanged after
+removing explicit iPad scheduling calls. No copied close-order policy exists in
+the adapter.
+
+Escape UI edges and fixed input now share one queued press. Pause waits for an
+actual original logic opportunity; consumed events cannot fall through. Rapid
+Escape waits for the original use-counter suppression to expire. The original
+pause menu still resets current input, while a scoped transport reset retains
+undelivered Escape events and does not turn a held old key into a new press.
+Other resets continue to clear the queue. Context changes clear pending pause.
+
+46 batch 10f6d887-8528-48a2-a489-1f2b7d4fa277: 73 checks passed at
+119.04 rendered FPS, 1585 render frames without simulation progress, zero runtime
+errors and normal exit. Six queued taps visited inventory -> mecha -> preview
+cancel -> leave build -> pause -> resume in order. Long hold, three tools,
+12 frame phases, options-over-pause, technology, starmap and blueprint close
+checks passed. 45's failure at the last rapid resume is retained as failed
+history. Neither batch reduced the frame rate or changed visual settings.
+
+33 Python tests, the existing transport checks, 44 Escape schedule cases and
+production wrapper context tests passed; private replay of the owned original
+methods also verifies delayed world cancellation. These are not Windows binary
+hardware tests. Physical peripherals and all battle/editor/focus combinations
+remain bounded by the limitations below. See VALIDATION.md for data protection
+and the ordinary-launch handoff. The remaining 44 text is historical evidence;
+its unresolved high-refresh Escape status is superseded by this follow-up.
+
 2026-10-13 — Pro keyboard build 44: Windows input review
 
 Scope and evidence

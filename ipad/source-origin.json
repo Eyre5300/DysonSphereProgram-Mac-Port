@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "42e85c89ad5d3e23099393c37cbc4968b086734fbe12ee15b25a8bfe58746809",
+      "sha256": "904459b3651ac89c025e64c3c1cf9b14dd557ca9a1c33a91fc955428c2fb464a",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "a641c89cd218308202ef03387931e9a8e125ea581723b12c13cfe42eafcd8dd7",
+      "sha256": "42ee1ea08debc26589a2aa158f728074b182599ffd0135b62676cc59d12ec245",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "ea5ab682cd3cd16cabcba795112640a035e66f9fa4596dba5842604d80ee486f",
+      "sha256": "65e00b7db3c60a32c8a69ff0bd9acf31252b944c598e8d5207fc72b679c5db1f",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -67,9 +67,24 @@
       "origin": "Project-authored input ownership, system document adapter or synthetic integration harness; no recovered game code or assets"
     },
     {
+      "file": "source/DSPPadEscapeAudit.cs",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "1b14bc2aff412191164aed3f01572f728e493c95822146d28e54462c5468b033"
+    },
+    {
       "file": "source/DSPPadEscapeButton.cs",
       "sha256": "ee0aa555120d30761664758a6feaefe57420639f14a6a366f0713150f2ef918f",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/DSPPadEscapeOrder.cs",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "c5af5eebef100e2c2e6b24c822be7e2c24e49d08b47e8c2c2f22b37be67db2a1"
+    },
+    {
+      "file": "source/DSPPadEscapeSequence.cs",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "b2e5bf2aa0a10a7479df1edcdc3f85f2cc21a03b6d28460ffa505539be99927d"
     },
     {
       "file": "source/DSPPadEventSystemInput.cs",
@@ -113,12 +128,12 @@
     },
     {
       "file": "source/DSPPadKeyQueue.cs",
-      "sha256": "cf5281465e30e4c997ece60c227f6527fd8273e8ff31d05ffb0ee470444d22be",
+      "sha256": "48f139b01d3883fb53df4e8c8762cb64efe204d36bdd4d2fc8755d2873cde136",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/DSPPadKeyboard.cs",
-      "sha256": "6c83b54beafa74e8ca92bea44466f6078ff0ba2908d9ae50e5512a7e68a009aa",
+      "sha256": "a1735d00c108ace2e3e123184611c1b407ee862aa249ff23506b3c92d54b9824",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -377,6 +392,11 @@
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
+      "file": "source/apply_escape_order.py",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "4d14aac3162f59bd0f67446170ab6217939f6214ae6e0ac3932f44694077a99f"
+    },
+    {
       "file": "source/apply_hdr_tiers.py",
       "sha256": "8a7c9188b41f2d92b8b44556bb0c33b618e2d81e6dcfadfb0789958d1d4c45aa",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
@@ -473,7 +493,7 @@
     },
     {
       "file": "source/batch_result.py",
-      "sha256": "437a90c2e51431187cac836f958117e64552754fdf17566d83ba6eff5b943df0",
+      "sha256": "63e254bbbcb390433d0de8311187ca5ff6e369569edc5ebc8d742e1ef3e6738f",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -523,7 +543,7 @@
     },
     {
       "file": "source/prepare_ipad_project.py",
-      "sha256": "d2660ac8c00d279489887b108408da86be045e371131bd106590a75207eaa7cf",
+      "sha256": "cbe77984711e51d653466fd2f496a4a2adf23cee1964f3803d683674e0aac6d3",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -568,13 +588,18 @@
     },
     {
       "file": "source/run_device_batch.py",
-      "sha256": "086fe5d068d67822eb0f5a193963081efb689617c53e859401b1b17ed35f968b",
+      "sha256": "2bcf0632b376d430b06e5caf4ef8eb47cc1044b11acfc66df5bf7c5b26c0f39e",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
       "file": "source/test_device_report_identity.py",
       "sha256": "760d74aa72f0eab0cd6c6e7d4446ae1cc0e7951d47b56a5742ac8be87f8d3fe3",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
+    },
+    {
+      "file": "source/test_escape_order.py",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "f53af2aa277702b10084f243f060c061a9fb57b71662e7f8808f0e4588fd421b"
     },
     {
       "file": "source/test_flight_audit.py",
@@ -622,6 +647,16 @@
       "sha256": "5153c48c775f08fd19a63059bc2e9319bcb4133dd20b86dfa9d04c022f8bf5c6"
     },
     {
+      "file": "tests/EscapeContextChecks.cs",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "2e3f2e58e06cae956c0fa6b10882d5137cfdcf9e3532b48bd80d7937783afe72"
+    },
+    {
+      "file": "tests/EscapeOrderChecks.cs",
+      "origin": "Project-authored platform adapter, narrow source hook or synthetic diagnostic; no recovered game implementation/assets",
+      "sha256": "5a70261fe4c1501fa7084a388b2b053096320abd071908d79ee5842f264e25f6"
+    },
+    {
       "file": "tests/InputPublicationChecks.cs",
       "origin": "Project-authored platform adapter, narrow source hook, source inventory or synthetic diagnostic; no recovered game implementation/assets",
       "sha256": "f352c587ad2215dab149624870d83355953e6755d53ec8f5af39a9a35ed07a6b"
@@ -649,7 +684,7 @@
     {
       "file": "tests/run_host_checks.py",
       "origin": "Project-authored platform adapter, narrow source hook, source inventory or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "c7c6f4f34f138446797e06c5af648d87af818fe24e7ca1d47a93ca9b21dd1d08"
+      "sha256": "6e1cc53b6ba8d9ed5c864f46cecf3793990cfdb002f27e7787d055974ba22abc"
     }
   ]
 }

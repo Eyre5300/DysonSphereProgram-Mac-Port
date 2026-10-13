@@ -142,3 +142,19 @@ def flight_audit_failures(state, report, keyboard):
     required=FLIGHT_KEY_CHECKS
     if len(checks)!=len(set(checks)) or any(not any(c.startswith('PASS '+name+':') for c in checks) for name in required) or any(c.startswith(('FAIL ','UNVERIFIED ')) for c in checks):result.append('Flight/warp checks missing or failed')
     return result
+
+
+ESCAPE_CHECKS = {'isolated world entered', 'high refresh without frame cap', 'C opens original window pair', 'picker fixture active', 'picker closes before inventory', 'inventory closes before mecha', 'mecha closes before build', 'six rapid taps preserve every original layer', 'held Esc cancels once', 'release then press leaves build', 'unconsumed Esc opens pause', 'options close before pause resumes', 'Esc resumes suspended simulation', 'technology fixture active', 'technology closes without pause', 'starmap fixture active', 'starmap closes without pause', 'blueprint fixture active', 'blueprint closes without pause', 'no delayed Esc remains', 'render frames without simulation covered'}
+ESCAPE_CHECKS |= {label+suffix for label in ['tool '+str(i) for i in (2301,2001,2011)]+['phase '+str(i) for i in range(12)]+['nested windows'] for suffix in (' cancels hand before pause',' leaves build before pause')}
+ESCAPE_CHECKS |= {'held Esc does not resume newly opened pause','fresh Esc resumes after long hold'}
+
+def escape_audit_failures(state, report):
+    result=process_failures(state)
+    if not report or report.get('batchIdentifier')!=state.get('batchIdentifier') or str(report.get('buildVersion'))!=state.get('expectedVersion'):
+        return result+['Escape audit missing or stale']
+    checks=report.get('checks',[])
+    if (not all(report.get(k) for k in ('completed','savePathRestored','optionsUnchanged')) or report.get('phase')!='passed' or report.get('errors') or report.get('measuredFPS',0)<=90 or report.get('framesWithoutLogic',0)<=100 or not ESCAPE_CHECKS.issubset({c.get('name') for c in checks}) or any(c.get('passed') is not True for c in checks)):
+        result.append('High-refresh Escape regression incomplete or failed')
+    if [t.get('state') for t in report.get('rapidTransitions',[])]!=[27,26,24,16,0,32,0]:
+        result.append('Rapid Escape close order missing or incorrect')
+    return result

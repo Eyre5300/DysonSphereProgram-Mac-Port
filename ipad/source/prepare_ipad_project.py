@@ -83,6 +83,7 @@ def main():
         text=starmap.read_text()
         if not text.startswith(alias):starmap.write_text(alias+text)
     run('apply_cursor_bridge.py','--file',game/'UICursor.cs','--report',a.report.with_name('cursor-adapter.json'))
+    run('apply_escape_order.py','--project',project,'--report',a.report.with_name('escape-order-adapter.json'))
     run('apply_dof_alpha_patch.py','--project',project)
     run('apply_verta_binding.py','--project',project)
     run('apply_performance_hud.py','--project',project)

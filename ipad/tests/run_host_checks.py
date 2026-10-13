@@ -39,6 +39,16 @@ def main():
                     subprocess.run([str(args.mono), str(executable), *map(str, mode)], check=True)
             else:
                 subprocess.run([str(args.mono), str(executable)], check=True)
+        executable=work/'EscapeOrderChecks.exe'
+        subprocess.run([str(args.mono), str(args.csc), '-nologo', '-out:'+str(executable),
+                        str(tests/'EscapeOrderChecks.cs'), str(source/'DSPPadEscapeSequence.cs'),
+                        str(source/'DSPPadKeyQueue.cs')],check=True)
+        subprocess.run([str(args.mono),str(executable)],check=True)
+        executable=work/'EscapeContextChecks.exe'
+        subprocess.run([str(args.mono), str(args.csc), '-nologo', '-out:'+str(executable),
+                        str(tests/'EscapeContextChecks.cs'), str(source/'DSPPadEscapeSequence.cs'),
+                        str(source/'DSPPadEscapeOrder.cs')],check=True)
+        subprocess.run([str(args.mono),str(executable)],check=True)
 
 
 if __name__ == '__main__':
