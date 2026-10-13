@@ -7,6 +7,7 @@ public static class DSPPadKeyboardRegression {
  [DllImport("@rpath/UnityFramework.framework/UnityFramework")]static extern int DSPAOTQueueTestPointer(float x,float y,int buttons,float dx,float dy,float wheel);
  [Serializable]sealed class Result{public string batchIdentifier=DSPPadDiagnosticLaunch.BatchIdentifier,buildVersion=DSPPadDiagnosticLaunch.BuildVersion;public string source="PROGRAMMATIC native transport; physical keyboard unverified";public bool completed;public List<string> checks=new List<string>();}
  static Result result;static Vector2 point;
+ public static bool Passed=>result!=null&&result.completed&&!result.checks.Exists(x=>x.StartsWith("FAIL ")||x.StartsWith("UNVERIFIED "));
  static void Note(string name,bool pass,string evidence){result.checks.Add((pass?"PASS ":"FAIL ")+name+": "+evidence);Write();}
  static void Write(){File.WriteAllText(Path.Combine(Application.persistentDataPath,"dsp-keyboard-regression.json"),JsonUtility.ToJson(result,true));}
  static void Key(KeyCode key,bool down){if(DSPAOTQueueTestKey(DSPPadKeyboard.HID(key),down?1:0)!=1)throw new Exception("Native test key rejected: "+key);}
@@ -25,6 +26,12 @@ public static class DSPPadKeyboardRegression {
   Key(KeyCode.R,true);yield return Wait(.2f);float held=click.yaw;yield return Wait(.35f);Note("plain R held preserves original no-repeat",Mathf.Abs(Mathf.DeltaAngle(held,click.yaw))<.1f,"yaw="+held+" -> "+click.yaw);Key(KeyCode.R,false);yield return Wait(.2f);
   before=click.yaw;Key(KeyCode.LeftShift,true);Key(KeyCode.R,true);yield return Wait(.2f);change=Mathf.Abs(Mathf.DeltaAngle(before,click.yaw));Note("Shift R original fine rotation",change>.1f,"yaw="+before+" -> "+click.yaw+" shift="+VFInput.shift);
   Key(KeyCode.LeftShift,false);yield return Wait(.15f);Note("Shift release during held R",!VFInput.shift&&DSPPadInput.GetKey(KeyCode.R),"shift="+VFInput.shift+" R="+DSPPadInput.GetKey(KeyCode.R));Key(KeyCode.R,false);yield return Wait(.2f);
+  if(DSPPadDiagnosticLaunch.FlightAuditRequested){
+   yield return Tap(KeyCode.R);before=click.yaw;
+   Key(KeyCode.LeftShift,true);Key(KeyCode.R,true);Key(KeyCode.R,false);Key(KeyCode.LeftShift,false);Key(KeyCode.R,true);Key(KeyCode.R,false);
+   yield return Wait(.8f);change=Mathf.Repeat(click.yaw-before,360);
+   Note("rapid Shift R then plain R keeps separate modifiers",Mathf.Abs(change-90)<.1f,"yaw="+before+" -> "+click.yaw+" expected fine step then original round to +90, not two coarse steps");
+  }
   yield return Tap(KeyCode.Escape);Note("original Esc cancels preview",p.inhandItemId==0,"hand="+p.inhandItemId);
   if(p.controller.cmd.type==ECommand.Build){yield return Tap(KeyCode.Escape);Note("second original Esc leaves build mode",p.controller.cmd.type!=ECommand.Build,"command="+p.controller.cmd.type);}
  }
@@ -108,7 +115,7 @@ public static class DSPPadKeyboardRegression {
   yield return Wait(.5f);
   Note("space fixture active",space&&player.sailing&&GameMain.localPlanet==null,"sawFly="+sawFly+" sawSail="+sawSail+" movement="+player.movementState+" planet="+player.planetId);
   if(space&&player.sailing&&GameMain.localPlanet==null){
-   Note("sailing original cursor request",Cursor.lockState==CursorLockMode.Locked&&DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&3)==3,"managed="+Cursor.lockState+" UIKitStatus="+DSPPadCursorBridge.NativeStatus);
+   Note("sailing original cursor request",UICursor.locked&&DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&15)==15,"managed="+Cursor.lockState+" UIKitStatus="+DSPPadCursorBridge.NativeStatus);
    yield return DSPPadRenderDiagnostics.Capture("23-space-cursor");
    yield return Tap(KeyCode.Tab);yield return Wait(.5f);Note("Tab releases sailing pointer",ui.disableLockCursor&&!DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&7)==0,"disabled="+ui.disableLockCursor+" status="+DSPPadCursorBridge.NativeStatus);
    yield return Tap(KeyCode.Tab);yield return Wait(.5f);Note("Tab restores sailing pointer",!ui.disableLockCursor&&DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&3)==3,"status="+DSPPadCursorBridge.NativeStatus);
@@ -116,13 +123,59 @@ public static class DSPPadKeyboardRegression {
    yield return Tap(KeyCode.Escape);yield return Wait(.5f);Note("first Esc closes inventory only and keeps sailing pointer released",!ui.inventoryWindow.active&&ui.mechaWindow.active&&ui.isCursorNeeded&&!DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&7)==0,"mecha="+ui.mechaWindow.active+" inventory="+ui.inventoryWindow.active+" needed="+ui.isCursorNeeded+" status="+DSPPadCursorBridge.NativeStatus);
    yield return Tap(KeyCode.Escape);yield return Wait(.5f);Note("second Esc closes mecha and restores sailing pointer",!ui.inventoryWindow.active&&!ui.mechaWindow.active&&!ui.isCursorNeeded&&DSPPadCursorBridge.Requested&&(DSPPadCursorBridge.NativeStatus&3)==3,"needed="+ui.isCursorNeeded+" status="+DSPPadCursorBridge.NativeStatus);
   }else{result.checks.Add("UNVERIFIED sailing cursor/Tab/C/Esc: natural flight fixture did not reach space; no downstream cursor verdict");Write();}
+  if(DSPPadDiagnosticLaunch.FlightAuditRequested&&space&&player.sailing)yield return WarpZoomSteering();
   result.checks.Add("LIMIT physical unlimited relative movement: no synthetic packet proves a connected mouse; native status bits requested1/preferred2/granted4/foreground8/GCMouse16="+DSPPadCursorBridge.NativeStatus);Write();
   DSPGame.StartGame(save);yield return null;float deadline=Time.realtimeSinceStartup+180;while((!GameMain.isRunning||GameMain.isLoading||GameMain.localPlanet==null||!GameMain.localPlanet.factoryLoaded)&&Time.realtimeSinceStartup<deadline)yield return Wait(1);
   yield return Wait(2);Note("flight fixture restored to ground",GameMain.localPlanet!=null&&!GameMain.mainPlayer.sailing&&!DSPPadCursorBridge.Requested,"status="+DSPPadCursorBridge.NativeStatus);
  }
+ static IEnumerator Motion(float dx,float dy,float wheel,int frames=12,int buttons=0){
+  for(int i=0;i<frames;i++){if(DSPAOTQueueTestPointer(.5f,.5f,buttons,dx,dy,wheel)!=1)throw new Exception("Pointer rejected");yield return null;}
+  yield return Wait(.4f);
+ }
+ static IEnumerator WarpZoomSteering(){
+  var p=GameMain.mainPlayer;var sail=GameCamera.instance.sailPoser;var ui=UIRoot.instance.uiGame;
+  if(ui.disableLockCursor)yield return Tap(KeyCode.Tab);
+  yield return Wait(.5f);DSPPadManagedInputTrace.DetailedFor(10);
+  var before=sail.targetURotWanted;yield return Motion(2,1,0);
+  Note("captured pointer rotates ordinary sail view",UICursor.locked&&Quaternion.Angle(before,sail.targetURotWanted)>2,"angle="+Quaternion.Angle(before,sail.targetURotWanted)+" native="+DSPPadCursorBridge.NativeStatus+" legacy="+Cursor.lockState);
+  Key(KeyCode.W,true);yield return Wait(2);Key(KeyCode.W,false);
+  Note("W follows changed sail heading",Vector3.Angle((Vector3)p.uVelocity,(Vector3)p.controller.fwdRayUDir)<35,"heading error="+Vector3.Angle((Vector3)p.uVelocity,(Vector3)p.controller.fwdRayUDir));
+  yield return Tap(KeyCode.Tab);before=sail.targetURotWanted;yield return Motion(2,1,0);
+  Note("released pointer does not rotate sail view",!UICursor.locked&&Quaternion.Angle(before,sail.targetURotWanted)<.1f,"angle="+Quaternion.Angle(before,sail.targetURotWanted));
+  before=sail.targetURotWanted;yield return Motion(2,1,0,12,4);
+  Note("middle drag rotates released sail view",Quaternion.Angle(before,sail.targetURotWanted)>2,"angle="+Quaternion.Angle(before,sail.targetURotWanted));
+  yield return Tap(KeyCode.Tab);
+  float distance=sail.distCoefWanted;yield return Motion(0,0,-1,16);float far=sail.distCoefWanted;
+  yield return Motion(0,0,1,16);float near=sail.distCoefWanted;
+  Note("ordinary sail wheel zoom works both ways",far>near&&far>distance,"start="+distance+" far="+far+" near="+near+" warp="+p.warpState);
+  // Only fixture inventory/technology/energy, never force warp state or camera.
+  p.mecha.thrusterLevel=Math.Max(3,p.mecha.thrusterLevel);p.mecha.coreEnergyCap=Math.Max(p.mecha.coreEnergyCap,1e13);p.mecha.coreEnergy=p.mecha.coreEnergyCap;
+  p.mecha.warpStorage.AddItem(1210,20,0,1,0,out var unused);
+  ulong caps=PortMacInput.NativeSequence;yield return Tap(KeyCode.CapsLock);yield return Wait(4);
+  Note("physical Caps identity starts original warp",PortMacInput.NativeSequence==caps+1&&p.warpCommand&&p.warping,"sequence="+caps+" -> "+PortMacInput.NativeSequence+" warp="+p.warpState);
+  if(p.warpCommand&&p.warping){
+   foreach(var key in new[]{KeyCode.W,KeyCode.E,KeyCode.Tab}){
+    caps=PortMacInput.NativeSequence;yield return Tap(key);
+    Note(key+" does not toggle warp after Caps",PortMacInput.NativeSequence==caps&&p.warpCommand,"caps="+PortMacInput.NativeSequence+" command="+p.warpCommand);
+    if(key==KeyCode.E&&ui.inventoryWindow.active)yield return Tap(KeyCode.Escape);
+    if(key==KeyCode.Tab)yield return Tap(KeyCode.Tab);
+   }
+   yield return Motion(0,0,1,16);
+   Note("stable warp retains original camera distance rule",p.warpState>.4f&&Mathf.Abs(sail.distCoefWanted-.1f)<.001f,"warp="+p.warpState+" distanceWanted="+sail.distCoefWanted);
+   caps=PortMacInput.NativeSequence;yield return Tap(KeyCode.CapsLock);yield return Wait(5);
+   Note("second Caps exits original warp",PortMacInput.NativeSequence==caps+1&&!p.warpCommand&&!p.warping,"warp="+p.warpState+" sequence="+PortMacInput.NativeSequence);
+   foreach(var key in new[]{KeyCode.W,KeyCode.E,KeyCode.Tab}){caps=PortMacInput.NativeSequence;yield return Tap(key);Note(key+" does not restart warp",PortMacInput.NativeSequence==caps&&!p.warpCommand,"sequence="+PortMacInput.NativeSequence);if(key==KeyCode.E&&ui.inventoryWindow.active)yield return Tap(KeyCode.Escape);if(key==KeyCode.Tab)yield return Tap(KeyCode.Tab);}
+   yield return Motion(0,0,-1,16);far=sail.distCoefWanted;yield return Motion(0,0,1,16);near=sail.distCoefWanted;
+   Note("zoom recovers after leaving warp",far>near,"far="+far+" near="+near+" warp="+p.warpState);
+  }
+  FlightTrace("warp-zoom-steering");
+ }
  static IEnumerator Sequence(){yield return Wait(.2f);yield return Rotate();yield return Fuel(KeyCode.LeftControl);yield return Fuel(KeyCode.RightControl);Key(KeyCode.LeftCommand,true);yield return Wait(.1f);Note("Command remains independent from Windows Ctrl",!VFInput.control,"control="+VFInput.control);Key(KeyCode.LeftCommand,false);yield return Wait(.1f);yield return Walking();yield return FlightCursor();}
- public static IEnumerator Run(){
-  if(!DSPPadDiagnosticLaunch.NativePointerTestAllowed)yield break;result=new Result();point=new Vector2(Screen.width*.5f,Screen.height*.5f);var stack=new Stack<IEnumerator>();stack.Push(Sequence());
+ public static IEnumerator Run()=>RunSequence(Sequence());
+ static IEnumerator FlightAndChords(){DSPPadBatchFixture.Prepare();yield return Wait(.3f);yield return Rotate();yield return Fuel(KeyCode.LeftControl);yield return Fuel(KeyCode.RightControl);yield return FlightCursor();}
+ public static IEnumerator RunFlightOnly()=>RunSequence(FlightAndChords());
+ static IEnumerator RunSequence(IEnumerator sequence){
+  if(!DSPPadDiagnosticLaunch.NativePointerTestAllowed)yield break;result=new Result();point=new Vector2(Screen.width*.5f,Screen.height*.5f);var stack=new Stack<IEnumerator>();stack.Push(sequence);
   try{while(stack.Count>0){bool more=false;object next=null;Exception error=null;try{more=stack.Peek().MoveNext();if(more)next=stack.Peek().Current;}catch(Exception e){error=e;}if(error!=null){Note("diagnostic exception",false,error.ToString());break;}if(!more){(stack.Pop() as IDisposable)?.Dispose();continue;}if(next is IEnumerator){stack.Push((IEnumerator)next);continue;}yield return next;}result.completed=stack.Count==0;}
   finally{DSPAOTEndTestKeyboard();Pointer(0);DSPPadInput.ResetInputAxes();while(stack.Count>0)(stack.Pop() as IDisposable)?.Dispose();Write();}
  }

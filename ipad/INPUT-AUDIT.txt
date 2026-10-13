@@ -1,0 +1,120 @@
+2026-10-13 — Pro keyboard build 44: Windows input review
+
+Scope and evidence
+Windows 0.10.35.29104; original Assembly-CSharp SHA256:
+6c122e5443e6843979b4064050dfcb5e0d75577a0b64f6ae4111290238b33c12.
+The untouched owned export was compared with the prepared iPad source.
+audit_input_parity.py inventories textual input/event consumers: 300 files;
+250 byte-identical after removing the platform Input alias, 50 differences
+reviewed. No qualified UnityEngine.Input read bypasses the alias in that set.
+InputManager.asset is unchanged. This is source review, not proof that every
+possible input/device/timing combination has been exercised.
+
+Reviewed paths
+- Walk, fly, drift and sail; jump/takeoff, steering, speed and warp; controller
+  pause/death/focus gates. PlayerMove_Sail is unchanged apart from the alias.
+- Normal, build, globe, starmap, galaxy, screenshot and camera modes; wheel,
+  middle/right drag, pointer capture and UI exclusions. Stable warp retains
+  the original fixed camera rule (distCoefWanted=0.1, distance target 11).
+- Click placement, belts, inserters, addons, upgrade/dismantle, reform and
+  blueprint copy/paste. BuildTool_Path/Inserter and PlayerAction_Build retain
+  original rules, modifier bindings, stages and cancellation.
+- Combat/manual targeting, RTS orders, inspection, picking and planting;
+  sandbox/creative actions. No action-binding or gameplay rewrite added.
+- Inventory/storage/fuel, production/research/logistics/statistics/power UI,
+  pickers, charts, drag handles, window priorities, menu and pause handling.
+- Blueprint browser, Dyson editor brushes/layers/swarm/painting, mecha editor
+  camera/bones/colors/curves and galaxy UI. Added Metal/resource hooks do not
+  replace their original key or click decisions.
+- CombineKey exact/non-exact Shift/Ctrl/Alt matching, default/custom bindings,
+  UIKeyEntry capture and serialization; original InputManager axes; original
+  UGUI dispatch, selection, submit/cancel/navigation and IME forwarding.
+
+The 50 modified consumers contain platform rendering/resource lifetime hooks,
+camera/touch alternatives gated by input mode, cursor capture readback, Caps
+transport, diagnostics, display presets, native file access, and previously
+accepted UI hit bounds/window placement changes. These were reviewed against
+the original methods. Touch29.3 and the accepted Mac App were not rebuilt.
+
+Corrections in 44
+1. GC mouse callback installation incorrectly treated a nil current callback
+   and a nil installed callback as equal/owned. A first connection could thus
+   install nothing. Require a nonnil installed callback for move, scroll and
+   buttons, including ownership telemetry. The actual Pro callback slots and
+   zero-delta delivery passed (probe mask 31); this is distinct from synthetic
+   pointer packets.
+2. Caps uses the explicit GCKeyboard key identity (USB usage 57) and a held
+   edge counter, not an arbitrary button callback's pressed value. Other keys
+   and repeat/hold/release cannot increment this counter in host tests. The
+   game still uses its original warp predicate and default/custom bindings.
+3. UICursor reads capture actually granted by UIKit, with focus/request gates;
+   a request alone cannot enable captured free look. Original Tab and window
+   policy is retained, including inventory before mecha on successive Esc.
+4. Consecutive presses of one key retain ordered modifier snapshots in native
+   and managed queues. Rapid Shift+R then R no longer overwrites the first
+   pending modifier. PC Menu usage 101 is mapped to the existing KeyCode.Menu.
+5. iPad render modes follow the actual display aspect ratio. On the tested
+   Pro: 2752x2064, 1920x1440, 1600x1200, 1376x1032, 1280x960. The original
+   preview/confirm/save path and startup selection preserve the chosen size.
+   No permanent frame cap, MSAA reduction or other graphics change was added.
+
+Device results and an original timing limitation
+44, first batch: missing OS mouse/keyboard connection stopped the callback gate;
+not counted as an input pass. Universal Control was reconnected via macOS.
+44, normal refresh batch: callbacks, rapid R/chords, natural takeoff/sailing,
+real UIKit capture grants, Tab/C/Esc window priority in space, steering, W
+heading, wheel both directions, Caps entry/exit and W/E/Tab negative controls
+passed. Ground Esc cancellation failed and left an item in hand, so subsequent
+Ctrl fuel transfers also failed. That whole batch remains FAILED.
+
+The trace showed approximately 120 rendered FPS, 60 logic UPS and two render
+updates without a logic tick at the failing Escape. The unchanged Windows
+VFInput delayedEscape -> GameMain.PausingInputLogic path pauses in that order,
+before BuildTool_Click.EscLogic can consume the key. A private host replay of
+those owned original methods reproduced both outcomes: with a logic tick in
+between, the item is cancelled; without it, the item remains and pause opens.
+This is a source-level Windows timing reproduction, not a Windows executable
+hardware test. Do not call it a fixed port defect or an unrestricted input pass.
+No closing-order change or permanent FPS limit was used to hide it.
+
+A separate explicitly temporary 60-FPS reference batch passed all 39 keyboard
+assertions and 10 display/callback/isolation checks, with normal exit and no
+reported runtime errors. The previous VSync/FPS preferences were restored
+afterwards. Both actual restart logs and the normal launch retained 1376x1032.
+All 48 existing .dsv files were byte-identical after the batches. The test's
+global achievement side effect was restored from the pre-test backup; options
+differed only in width/height. Always protect global profile files as well as
+redirecting test saves: GameConfig.gameSavePath does not redirect achievements.
+
+Host checks
+29 Python checks, native all-key/Caps/queue contracts, 21 managed queue checks,
+1033 sampler scheduling assertions (1024 schedules), 264 capture-state cases
+and 11 display-selection cases passed. Run tests/run_host_checks.py with the
+licensed Unity Mono and Roslyn compiler paths. The native queue keeps at most
+32 pending presses per key; overflow is counted rather than silently unbounded.
+
+Remaining equivalence limits
+- Physical USB/Bluetooth/Universal Control Caps timing, unlimited relative
+  travel, reconnect/background behavior and vendor-specific extra buttons need
+  broader real-device coverage. Synthetic native injection cannot certify them.
+- InputManager, CombineKey, rebinding UI and game consumers are source-reviewed;
+  all custom binding combinations and every battle/editor/modal state were not
+  dynamically retested. Earlier unaffected accepted batches remain historical
+  evidence, not evidence that every combination was tested on 44.
+- Cross-key sub-frame modifier overlap, OS-reserved shortcuts, keyboard layouts,
+  IME composition, extreme macros/queue overflow and arbitrary focus changes
+  are not exhaustively verified. Named Greater/Plus/SysReq retain the Unity
+  fallback rather than guessed HID aliases; ordinary plus paths also accept
+  the original Equals/KeypadPlus alternatives.
+- iPadOS owns capture grants, system shortcuts and Files/iCloud presentation.
+  Command remains separate from Windows Ctrl. File pickers use explicit import/
+  export rather than unrestricted Windows paths. Dyson paste is validated on
+  explicit paste to avoid passive clipboard permission reads. Existing Steam
+  service and performance limits remain documented in behavior-parity.txt.
+
+Reproduction of the source inventory (private output only)
+python3 ipad/source/audit_input_parity.py --original "$ORIGINAL_ASSEMBLY_CS" \
+  --prepared "$PREPARED_ASSEMBLY_CS" --report "$WORK/input-inventory.json"
+Both source directories are the owned Assembly-CSharp directories. The output
+contains names/API counts/hashes, not recovered method bodies. Review every
+difference separately; an unchanged-source count is not a gameplay certificate.

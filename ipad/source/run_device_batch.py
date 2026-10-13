@@ -8,7 +8,7 @@ import argparse,json,subprocess,time,uuid
 from device_report_identity import ReportIdentity
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--device',required=True);p.add_argument('--bundle',required=True);p.add_argument('--version',required=True)
-p.add_argument('--performance-audit',action='store_true',help='Only live simulation/render profiling; no repeated functional/UI suites');p.add_argument('--scene-audit',action='store_true',help='Focused scene/performance and changed file-button layout only; requires supplied scene-audit-fixture.dsv');p.add_argument('--power-audit',action='store_true',help='Include power overlays, original H clicks, warning states and performance HUD; requires --world-audit');p.add_argument('--world-audit',action='store_true',help='Validate vein GPU binding and original zoom/drag behavior, then shared files and keyboard/mouse');p.add_argument('--integration',action='store_true',help='Validate shared files, mode switching and keyboard/mouse, plus touch when applicable');p.add_argument('--touch',action='store_true',help='Validate the separate touch App first-phase report');p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
+p.add_argument('--flight-audit',action='store_true',help='Only saved display modes and space flight input');p.add_argument('--performance-audit',action='store_true',help='Only live simulation/render profiling; no repeated functional/UI suites');p.add_argument('--scene-audit',action='store_true',help='Focused scene/performance and changed file-button layout only; requires supplied scene-audit-fixture.dsv');p.add_argument('--power-audit',action='store_true',help='Include power overlays, original H clicks, warning states and performance HUD; requires --world-audit');p.add_argument('--world-audit',action='store_true',help='Validate vein GPU binding and original zoom/drag behavior, then shared files and keyboard/mouse');p.add_argument('--integration',action='store_true',help='Validate shared files, mode switching and keyboard/mouse, plus touch when applicable');p.add_argument('--touch',action='store_true',help='Validate the separate touch App first-phase report');p.add_argument('--allocation-events',action='store_true');p.add_argument('--memory-pressure-probe',action='store_true');p.add_argument('--restart-existing',action='store_true');p.add_argument('--output-dir',type=Path,required=True);a=p.parse_args()
 if a.power_audit and not a.world_audit:p.error('--power-audit requires --world-audit for a combined regression')
 out=a.output_dir or Path(__file__).resolve().parents[1]/'local-private/outputs/full-game-bridge'
 from private_paths import private_output
@@ -37,7 +37,8 @@ if a.world_audit:args+=['--dsp-world-audit']
 if a.power_audit:args+=['--dsp-power-audit']
 if a.scene_audit:args+=['--dsp-scene-audit']
 if a.performance_audit:args+=['--dsp-performance-audit']
-expected_flags=3|(64 if a.memory_pressure_probe else 0)|(128 if input_files_flag else 0)|(256 if a.world_audit else 0)|(512 if a.power_audit else 0)|(1024 if a.scene_audit else 0)|(2048 if a.performance_audit else 0)
+if a.flight_audit:args+=['--dsp-flight-audit']
+expected_flags=3|(64 if a.memory_pressure_probe else 0)|(128 if input_files_flag else 0)|(256 if a.world_audit else 0)|(512 if a.power_audit else 0)|(1024 if a.scene_audit else 0)|(2048 if a.performance_audit else 0)|(4096 if a.flight_audit else 0)
 state['command']=args;write();begin=time.monotonic();last_phase=None
 with (out/('console-'+version+'.log')).open('w') as console:
  child=subprocess.Popen(args,stdout=console,stderr=subprocess.STDOUT)
@@ -54,7 +55,13 @@ with (out/('console-'+version+'.log')).open('w') as console:
      phase=game.get('phase')
      if phase!=last_phase:
       last_phase=phase;state['phases'].append(phase);print('Phase:',phase,'tick:',game.get('tick'),'errors:',len(game.get('errors',[])),flush=True)
-     if identity.entered_world(game):state['enteredWorld']=True
+     if a.flight_audit:
+      # This phase starts in the options menu. Menu-demo ticks are not proof
+      # that the isolated gameplay world has actually loaded.
+      if not state['enteredWorld']:
+       flight=read_remote('flight-audit.json')
+       if (flight and flight.get('batchIdentifier')==batch_id and str(flight.get('buildVersion'))==version and 'PASS isolated world entered' in flight.get('checks',[])):state['enteredWorld']=True
+     elif identity.entered_world(game):state['enteredWorld']=True
      state['lastGameReport']=game
      if phase and phase.startswith('functional_batch_'):
       functional=read_remote('functional-batch-'+version+'/report.json')
@@ -90,6 +97,10 @@ with (out/('console-'+version+'.log')).open('w') as console:
     from batch_result import world_audit_failures
     state['worldReport']=read_remote('world-audit.json')
     state['validationFailures']=world_audit_failures(state,state['worldReport'])
+  elif a.flight_audit:
+   from batch_result import flight_audit_failures
+   state['flightReport']=read_remote('flight-audit.json');state['keyboardReport']=read_remote('dsp-keyboard-regression.json')
+   state['validationFailures']=flight_audit_failures(state,state['flightReport'],state['keyboardReport'])
   elif a.performance_audit:
    from batch_result import process_failures
    state['validationFailures']=process_failures(state)

@@ -123,3 +123,22 @@ def file_layout_failures(state, report):
     if not report.get('completed') or report.get('phase')!='passed' or report.get('errors') or {c.get('name') for c in checks}!=required or len(checks)!=4 or any(c.get('passed') is not True for c in checks):
         return ['Changed file-button layout incomplete or failed']
     return []
+
+
+FLIGHT_KEY_CHECKS = ['three R taps between render frames','plain R held preserves original no-repeat','Shift R original fine rotation','Shift release during held R','rapid Shift R then plain R keeps separate modifiers','LeftControl native click to fuel','RightControl native click to fuel','original double Space enters flight','space fixture active','sailing original cursor request','Tab releases sailing pointer','Tab restores sailing pointer','C opens mecha plus inventory and releases sailing pointer','first Esc closes inventory only and keeps sailing pointer released','second Esc closes mecha and restores sailing pointer','captured pointer rotates ordinary sail view','W follows changed sail heading','released pointer does not rotate sail view','middle drag rotates released sail view','ordinary sail wheel zoom works both ways','physical Caps identity starts original warp','stable warp retains original camera distance rule','second Caps exits original warp','zoom recovers after leaving warp','flight fixture restored to ground']
+FLIGHT_KEY_CHECKS += [key+suffix for key in ('W','E','Tab') for suffix in (' does not toggle warp after Caps',' does not restart warp')]
+
+def flight_audit_failures(state, report, keyboard):
+    result=process_failures(state)
+    for name,r in [('flight',report),('keyboard',keyboard)]:
+        if not r or r.get('batchIdentifier')!=state.get('batchIdentifier') or str(r.get('buildVersion'))!=state.get('expectedVersion') or not r.get('completed'):
+            result.append(name+': missing, stale or incomplete')
+    if not report or not report.get('savePathRestored') or report.get('phase')!='passed' or report.get('errors'):result.append('Flight isolation/phase failed')
+    checks=(keyboard or {}).get('checks',[])
+    display_checks=(report or {}).get('checks',[])
+    expected_display={'PASS '+prefix+str(width)+suffix for width in (1600,1376) for prefix,suffix in [('original options list contains ','x'+str(width*3//4)),('original preview applies ','x'+str(width*3//4)),('original resolution confirmation stores ','')]}
+    expected_display|={'PASS save path isolation available','PASS isolated world entered','PASS native move/scroll/button callbacks installed and zero-delta callback delivery works: 31','PASS flight transport assertions complete'}
+    if not expected_display.issubset(display_checks) or len(display_checks)!=len(set(display_checks)) or any(c.startswith('FAIL ') for c in display_checks):result.append('Display/callback/isolation checks missing or failed')
+    required=FLIGHT_KEY_CHECKS
+    if len(checks)!=len(set(checks)) or any(not any(c.startswith('PASS '+name+':') for c in checks) for name in required) or any(c.startswith(('FAIL ','UNVERIFIED ')) for c in checks):result.append('Flight/warp checks missing or failed')
+    return result

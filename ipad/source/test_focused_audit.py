@@ -19,5 +19,7 @@ class FocusedAuditTests(unittest.TestCase):
   for phase in ('file_layout_audit','scene_performance_audit'):
    self.assertTrue(ReportIdentity.entered_world({'phase':phase,'tick':150}))
    self.assertFalse(ReportIdentity.entered_world({'phase':phase,'tick':0}))
+ def test_flight_phase_starts_in_menu_not_world(self):
+  self.assertFalse(ReportIdentity.entered_world({'phase':'flight_display_audit','tick':500000}))
 
 if __name__=='__main__':unittest.main()

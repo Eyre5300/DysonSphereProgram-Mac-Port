@@ -20,6 +20,8 @@ public static class DSPPadManagedInputTrace {
   public Vector3 legacyPosition,wrappedPosition;
   public int keysHeld,keysDown,keysUp,modifier,modifierDown,flags,cursorLock;
   public bool cursorVisible;
+  public bool cursorRequested,cursorEffective,warpCommand,warping;public int nativeCursorStatus;
+  public float warpState,sailDistance,sailDistanceWanted,sailWeight;public Quaternion sailRotation;
   public Vector4 controllerInput;
   public Vector3 playerPosition,requestedVelocity,rigidVelocity;
   public bool grounded;public float groundDistance;
@@ -85,7 +87,9 @@ public static class DSPPadManagedInputTrace {
   if(VFInput.override_keys!=null&&VFInput.override_keys.Length>57){s.buildRotateCode=VFInput.override_keys[55].keyCode;s.buildRotateModifier=VFInput.override_keys[55].modifier;s.buildCounterCode=VFInput.override_keys[57].keyCode;s.buildCounterModifier=VFInput.override_keys[57].modifier;s.buildRotateDown=VFInput._rotate.onDown;s.buildCounterDown=VFInput._counterRotate.onDown;}
   s.modifier=CombineKey.currModifier;s.modifierDown=CombineKey.currModifierDown;
   s.flags=(Application.isFocused?1:0)|(DSPPadInput.PhysicalMouse?2:0)|(DSPPadInput.NativeMouseTransport?4:0)|(DSPSmartTouchFrame.KeyboardAndMouse?8:0)|(VFInput.inScreen?16:0)|(VFInput.inputing?32:0)|(VFInput.onGUI?64:0)|(VFInput.onGUIOperate?128:0)|(VFInput.inFullscreenGUI?256:0)|(VFInput.inCombatScreenGUI?512:0)|(VFInput.inScreenshotMode?1024:0)|(VFInput.inScrollView?2048:0)|(GameMain.isPaused?4096:0)|(DSPGame.IsMenuDemo?8192:0)|(GameMain.isRunning?16384:0)|(DSPSmartTouchFrame.Enabled?32768:0)|(DSPSmartTouchFrame.LookHeld?65536:0)|(VFInput.noModifier?131072:0)|(UIBlockZone.blocked?262144:0);
-  s.cursorLock=(int)Cursor.lockState;s.cursorVisible=Cursor.visible;s.touchMove=DSPSmartTouchFrame.Move;s.touchLook=DSPSmartTouchFrame.Look;
+  s.cursorLock=(int)Cursor.lockState;s.cursorVisible=Cursor.visible;s.cursorRequested=DSPPadCursorBridge.Requested;s.nativeCursorStatus=DSPPadCursorBridge.NativeStatus;s.cursorEffective=UICursor.locked;s.touchMove=DSPSmartTouchFrame.Move;s.touchLook=DSPSmartTouchFrame.Look;
+  if(GameMain.mainPlayer!=null){s.warpState=GameMain.mainPlayer.warpState;s.warpCommand=GameMain.mainPlayer.warpCommand;s.warping=GameMain.mainPlayer.warping;}
+  if(GameCamera.instance!=null&&GameCamera.instance.sailPoser!=null){var sail=GameCamera.instance.sailPoser;s.sailDistance=sail.distCoef;s.sailDistanceWanted=sail.distCoefWanted;s.sailWeight=sail.weight;s.sailRotation=sail.targetURot;}
   s.touchCount=Input.touchCount;s.finger0=s.finger1=-1;
   for(int i=0;i<s.touchCount;i++){var t=Input.GetTouch(i);s.touchPhases|=1<<(int)t.phase;s.touchTypes|=1<<(int)t.type;if(i==0){s.finger0=t.fingerId;s.touchPosition0=t.position;s.touchDelta0=t.deltaPosition;}else if(i==1){s.finger1=t.fingerId;s.touchPosition1=t.position;s.touchDelta1=t.deltaPosition;}}
   s.jumpHeld=DSPPadInput.GetKey(KeyCode.Space);s.jumpDown=DSPPadInput.GetKeyDown(KeyCode.Space);s.jumpUp=DSPPadInput.GetKeyUp(KeyCode.Space);

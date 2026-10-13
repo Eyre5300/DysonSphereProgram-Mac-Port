@@ -5,13 +5,14 @@
 #include <atomic>
 #include <string>
 #include <cstring>
+#include "DSPCapsPressCounter.hpp"
 #include <stdint.h>
 #import <Metal/Metal.h>
 #include <mach/mach.h>
 #include <os/proc.h>
 // Native process arguments are authoritative for this mixed-platform AOT host.
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTDiagnosticFlags(void){
- static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0)|([args containsObject:@"--dsp-world-audit"]?256:0)|([args containsObject:@"--dsp-power-audit"]?512:0)|([args containsObject:@"--dsp-scene-audit"]?1024:0)|([args containsObject:@"--dsp-performance-audit"]?2048:0);});return flags;
+ static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0)|([args containsObject:@"--dsp-world-audit"]?256:0)|([args containsObject:@"--dsp-power-audit"]?512:0)|([args containsObject:@"--dsp-scene-audit"]?1024:0)|([args containsObject:@"--dsp-performance-audit"]?2048:0)|([args containsObject:@"--dsp-flight-audit"]?4096:0);});return flags;
 }
 // The installed package can have a resource-only revision; Application.version
 // is the short marketing version and is not an evidence-directory identifier.
@@ -58,24 +59,15 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPointerLockStat
 }
 static NSString *DSPBatchIdentifier(void){for(NSString *arg in NSProcessInfo.processInfo.arguments)if([arg hasPrefix:@"--dsp-batch-id="])return [arg substringFromIndex:15];return @"";}
 extern "C" __attribute__((used,visibility("default"))) const char *DSPAOTBatchIdentifier(void){static std::string value;static dispatch_once_t once;dispatch_once(&once,^{value=DSPBatchIdentifier().UTF8String?:"";});return value.c_str();}
-// Same physical Caps Lock press rule as the validated Mac adapter.
+// Caps Lock identity comes from the profile event's explicit USB key code.
+// An element callback alone cannot distinguish a stale/aliased button state.
 static bool DSPHasUIKitPointer(void);
 static void DSPInstallUIKitPointerObservers(void);
-static GCDeviceButtonInput *capsButton;
-static GCControllerButtonValueChangedHandler previousHandler,installedHandler;
 static std::atomic<uint64_t> capsSequence{0};
+static bool DSPCapsEventsAvailable(void);
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTHasKeyboardAndMouse(void){return GCKeyboard.coalescedKeyboard!=nil&&(GCMouse.current!=nil||DSPHasUIKitPointer());}
-extern "C" __attribute__((used,visibility("default"))) uint64_t DSPPortCapsSequence(void){
- GCDeviceButtonInput *button=[GCKeyboard.coalescedKeyboard.keyboardInput buttonForKeyCode:GCKeyCodeCapsLock];
- if(button!=capsButton){
-  if(capsButton&&capsButton.pressedChangedHandler==installedHandler)capsButton.pressedChangedHandler=previousHandler;
-  capsButton=button;previousHandler=button.pressedChangedHandler;GCControllerButtonValueChangedHandler previous=previousHandler;
-  installedHandler=^(GCControllerButtonInput *key,float value,BOOL pressed){if(pressed)capsSequence.fetch_add(1,std::memory_order_relaxed);if(previous)previous(key,value,pressed);};
-  button.pressedChangedHandler=installedHandler;
- }
- return capsSequence.load(std::memory_order_relaxed);
-}
-extern "C" __attribute__((used,visibility("default"))) int DSPPortCapsAvailable(void){return capsButton!=nil;}
+extern "C" __attribute__((used,visibility("default"))) uint64_t DSPPortCapsSequence(void){return capsSequence.load(std::memory_order_relaxed);}
+extern "C" __attribute__((used,visibility("default"))) int DSPPortCapsAvailable(void){return DSPCapsEventsAvailable();}
 // Preserve physical modifier identities, including independent Command/GUI.
 // Original VFInput/CombineKey still decide each action.
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTModifierMask(void){
@@ -164,12 +156,7 @@ extern "C" __attribute__((used,visibility("default"))) void DSPPortFinishTest(vo
 // All physical keyboard edges, including complete taps between render frames.
 // The existing engine callback is chained; text/IME stays owned by Unity.
 #include <cstring>
-struct DSPKeyboardEvents {
- bool held[256]={};unsigned char down[256]={},up[256]={},mods[256]={};
- void reset(){std::memset(this,0,sizeof(*this));}
- void set(int code,bool pressed,int modifiers){if(code<0||code>=256||held[code]==pressed)return;held[code]=pressed;if(pressed){if(down[code]<255)down[code]++;mods[code]=modifiers;}else if(up[code]<255)up[code]++;}
- int take(int code,bool supported){int value=(held[code]?1:0)|(down[code]<<1)|(up[code]<<9)|(supported?1<<17:0)|(mods[code]<<18);down[code]=up[code]=0;return value;}
-};
+#include "DSPKeyboardEvents.hpp"
 static std::atomic<uint32_t> keyboardActivity{0};
 extern "C" __attribute__((used,visibility("default"))) uint32_t DSPAOTKeyboardActivity(){return keyboardActivity.load();}
 static std::mutex keyboardMutex;
@@ -177,6 +164,8 @@ static GCKeyboardInput *trackedKeyboard;
 static GCKeyboardValueChangedHandler priorKeyboardHandler,installedKeyboardHandler;
 static DSPKeyboardEvents keyboardEvents,testKeyboardEvents;
 static bool testKeyboardActive,testKeyboardClosed;
+static DSPCapsPressCounter physicalCaps,testCaps;
+static bool DSPCapsEventsAvailable(void){return testKeyboardActive||(trackedKeyboard&&[trackedKeyboard buttonForKeyCode:GCKeyCodeCapsLock]!=nil);}
 static int DSPKeyboardModifiers(GCKeyboardInput *input){
  const GCKeyCode codes[]={GCKeyCodeLeftShift,GCKeyCodeRightShift,GCKeyCodeLeftControl,GCKeyCodeRightControl,GCKeyCodeLeftAlt,GCKeyCodeRightAlt,GCKeyCodeLeftGUI,GCKeyCodeRightGUI};
  int mask=0;for(int i=0;i<8;i++)if([input buttonForKeyCode:codes[i]].pressed)mask|=1<<i;return mask;
@@ -186,7 +175,7 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollKeyboard(co
  GCKeyboardInput *input=GCKeyboard.coalescedKeyboard.keyboardInput;
  if(input!=trackedKeyboard){
   if(trackedKeyboard&&trackedKeyboard.keyChangedHandler==installedKeyboardHandler)trackedKeyboard.keyChangedHandler=priorKeyboardHandler;
-  {std::lock_guard<std::mutex> lock(keyboardMutex);trackedKeyboard=input;keyboardEvents.reset();}
+  {std::lock_guard<std::mutex> lock(keyboardMutex);trackedKeyboard=input;keyboardEvents.reset();physicalCaps.reset();}
   installedKeyboardHandler=nil;priorKeyboardHandler=nil;
  }
  if(input&&(!installedKeyboardHandler||input.keyChangedHandler!=installedKeyboardHandler)){
@@ -194,14 +183,14 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollKeyboard(co
   installedKeyboardHandler=^(GCKeyboardInput *profile,GCDeviceButtonInput *key,GCKeyCode code,BOOL pressed){
    if(pressed)keyboardActivity.fetch_add(1);
    int modifiers=DSPKeyboardModifiers(profile);
-   {std::lock_guard<std::mutex> lock(keyboardMutex);if(profile==trackedKeyboard)keyboardEvents.set((int)code,pressed,modifiers);}
+   {std::lock_guard<std::mutex> lock(keyboardMutex);if(profile==trackedKeyboard){keyboardEvents.set((int)code,pressed,modifiers);if(physicalCaps.keyChanged((int)code,pressed)&&!testKeyboardActive)capsSequence.fetch_add(1,std::memory_order_relaxed);}}
    if(previous)previous(profile,key,code,pressed);
   };input.keyChangedHandler=installedKeyboardHandler;
  }
  bool foreground=UIApplication.sharedApplication.applicationState==UIApplicationStateActive;
  int modifiers=DSPKeyboardModifiers(input);
  std::lock_guard<std::mutex> lock(keyboardMutex);
- if(!foreground){keyboardEvents.reset();testKeyboardEvents.reset();}
+ if(!foreground){keyboardEvents.reset();testKeyboardEvents.reset();physicalCaps.reset();testCaps.reset();}
  for(int i=0;i<count;i++){
   int code=codes[i];if(code<0||code>=256){packets[i]=0;continue;}
   if(testKeyboardActive){packets[i]=testKeyboardEvents.take(code,true);continue;}
@@ -214,9 +203,9 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTQueueTestKey(in
  if((DSPAOTDiagnosticFlags()&3)!=3||UIApplication.sharedApplication.applicationState!=UIApplicationStateActive||code<0||code>=256)return 0;
  std::lock_guard<std::mutex> lock(keyboardMutex);if(testKeyboardClosed)return 0;testKeyboardActive=true;
  const int mods[]={225,229,224,228,226,230,227,231};int mask=0;for(int i=0;i<8;i++)if(testKeyboardEvents.held[mods[i]])mask|=1<<i;
- testKeyboardEvents.set(code,pressed!=0,mask);return 1;
+ testKeyboardEvents.set(code,pressed!=0,mask);if(testCaps.keyChanged(code,pressed!=0))capsSequence.fetch_add(1,std::memory_order_relaxed);return 1;
 }
-extern "C" __attribute__((used,visibility("default"))) void DSPAOTEndTestKeyboard(){std::lock_guard<std::mutex> lock(keyboardMutex);testKeyboardActive=false;testKeyboardClosed=true;testKeyboardEvents.reset();keyboardEvents.reset();}
+extern "C" __attribute__((used,visibility("default"))) void DSPAOTEndTestKeyboard(){std::lock_guard<std::mutex> lock(keyboardMutex);testKeyboardActive=false;testKeyboardClosed=true;testKeyboardEvents.reset();keyboardEvents.reset();testCaps.reset();physicalCaps.reset();}
 static GCMouseInput *trackedMouse;
 static GCDeviceButtonInput *trackedButtons[7];
 static GCControllerButtonValueChangedHandler previousButtonHandlers[7],installedButtonHandlers[7];
@@ -267,8 +256,8 @@ static void DSPRecordInputSample(GCMouse *mouse,GCMouseInput *input,int mask,flo
  bool changed=mask!=lastTraceMask||keys!=lastTraceKeys||sampledProfileID!=lastTraceProfileID||sampledKeyboardID!=lastTraceKeyboardID;
  if(changed||now-lastTraceUptime>=.5){
   if(!inputTrace)inputTrace=[NSMutableArray new];
-  NSMutableArray *buttonHandlers=[NSMutableArray new];for(int i=0;i<7;i++)[buttonHandlers addObject:@{@"index":@(i),@"buttonID":@((uintptr_t)(__bridge void*)trackedButtons[i]),@"observedHandlerID":@(observedButtonHandlerIDs[i]),@"installedHandlerID":@((uintptr_t)(__bridge void*)installedButtonHandlers[i]),@"previousHandlerID":@((uintptr_t)(__bridge void*)previousButtonHandlers[i]),@"ownedAfterPoll":@(trackedButtons[i]&&trackedButtons[i].pressedChangedHandler==installedButtonHandlers[i])}];
-  NSDictionary *sample=@{@"syntheticDiagnostic":@((mask&(1<<24))!=0),@"testPacketsQueued":@(testPointer.queued),@"testPacketsConsumed":@(testPointer.consumed),@"buttonHandlers":buttonHandlers,@"downEdgeMask":@((mask>>10)&127),@"upEdgeMask":@((mask>>17)&127),@"uptime":@(now),@"poll":@(inputPolls),@"mouseID":@(sampledMouseID),@"profileID":@(sampledProfileID),@"keyboardID":@(sampledKeyboardID),@"heldMask":@(mask),@"keyMaskWASDModifiers":@(keys),@"keyboardPresent":@(keyboard!=nil),@"anyKeyPressed":@(keyboard.keyboardInput.anyKeyPressed),@"dx":@(dx),@"dy":@(dy),@"wheel":@(wheel),@"moveEvents":@(moveEvents),@"scrollEvents":@(scrollEvents),@"totalDX":@(totalRawDX),@"totalDY":@(totalRawDY),@"totalWheel":@(totalRawWheel),@"profileChanges":@(mouseProfileChanges),@"moveHandlerInstalls":@(moveRewraps),@"scrollHandlerInstalls":@(scrollRewraps),@"middleSupported":@(input.middleButton!=nil),@"rightSupported":@(input.rightButton!=nil),@"applicationState":@(UIApplication.sharedApplication.applicationState),@"buttonEvents":@(buttonEvents),@"buttonDownEvents":@(buttonDownEvents),@"buttonUpEvents":@(buttonUpEvents),@"buttonHandlerInstalls":@(buttonHandlerInstalls),@"GCButtonMask":@(sampledGCButtonMask),@"UIKitButtonMask":@(pointerState.buttons),@"pointerLocked":@(pointerState.locked),@"UIKitObserved":@(pointerState.observed),@"UIKitPositionValid":@(pointerState.valid),@"observedMoveHandlerID":@(observedMoveID),@"installedMoveHandlerID":@((uintptr_t)(__bridge void*)installedMove),@"previousMoveHandlerID":@((uintptr_t)(__bridge void*)previousMove),@"observedScrollHandlerID":@(observedScrollID),@"installedScrollHandlerID":@((uintptr_t)(__bridge void*)installedScroll),@"previousScrollHandlerID":@((uintptr_t)(__bridge void*)previousScroll),@"moveOwnedAfterPoll":@(input&&input.mouseMovedHandler==installedMove),@"scrollOwnedAfterPoll":@(input&&input.scroll.valueChangedHandler==installedScroll),@"callbackMoveProfileID":@(callbackMoveProfileID),@"callbackScrollProfileID":@(callbackScrollProfileID),@"moveCallbackMainThread":@(moveCallbackMain),@"scrollCallbackMainThread":@(scrollCallbackMain),@"GCHandlerQueue":mouse.handlerQueue?@(dispatch_queue_get_label(mouse.handlerQueue)):@"none",@"mouseVendor":mouse.vendorName?:@"none",@"mouseCategory":mouse.productCategory?:@"none"};
+  NSMutableArray *buttonHandlers=[NSMutableArray new];for(int i=0;i<7;i++)[buttonHandlers addObject:@{@"index":@(i),@"buttonID":@((uintptr_t)(__bridge void*)trackedButtons[i]),@"observedHandlerID":@(observedButtonHandlerIDs[i]),@"installedHandlerID":@((uintptr_t)(__bridge void*)installedButtonHandlers[i]),@"previousHandlerID":@((uintptr_t)(__bridge void*)previousButtonHandlers[i]),@"ownedAfterPoll":@(trackedButtons[i]&&installedButtonHandlers[i]&&trackedButtons[i].pressedChangedHandler==installedButtonHandlers[i])}];
+  NSDictionary *sample=@{@"syntheticDiagnostic":@((mask&(1<<24))!=0),@"testPacketsQueued":@(testPointer.queued),@"testPacketsConsumed":@(testPointer.consumed),@"buttonHandlers":buttonHandlers,@"downEdgeMask":@((mask>>10)&127),@"upEdgeMask":@((mask>>17)&127),@"uptime":@(now),@"poll":@(inputPolls),@"mouseID":@(sampledMouseID),@"profileID":@(sampledProfileID),@"keyboardID":@(sampledKeyboardID),@"heldMask":@(mask),@"keyMaskWASDModifiers":@(keys),@"keyboardPresent":@(keyboard!=nil),@"anyKeyPressed":@(keyboard.keyboardInput.anyKeyPressed),@"dx":@(dx),@"dy":@(dy),@"wheel":@(wheel),@"moveEvents":@(moveEvents),@"scrollEvents":@(scrollEvents),@"totalDX":@(totalRawDX),@"totalDY":@(totalRawDY),@"totalWheel":@(totalRawWheel),@"profileChanges":@(mouseProfileChanges),@"moveHandlerInstalls":@(moveRewraps),@"scrollHandlerInstalls":@(scrollRewraps),@"middleSupported":@(input.middleButton!=nil),@"rightSupported":@(input.rightButton!=nil),@"applicationState":@(UIApplication.sharedApplication.applicationState),@"buttonEvents":@(buttonEvents),@"buttonDownEvents":@(buttonDownEvents),@"buttonUpEvents":@(buttonUpEvents),@"buttonHandlerInstalls":@(buttonHandlerInstalls),@"GCButtonMask":@(sampledGCButtonMask),@"UIKitButtonMask":@(pointerState.buttons),@"pointerLocked":@(pointerState.locked),@"UIKitObserved":@(pointerState.observed),@"UIKitPositionValid":@(pointerState.valid),@"observedMoveHandlerID":@(observedMoveID),@"installedMoveHandlerID":@((uintptr_t)(__bridge void*)installedMove),@"previousMoveHandlerID":@((uintptr_t)(__bridge void*)previousMove),@"observedScrollHandlerID":@(observedScrollID),@"installedScrollHandlerID":@((uintptr_t)(__bridge void*)installedScroll),@"previousScrollHandlerID":@((uintptr_t)(__bridge void*)previousScroll),@"moveOwnedAfterPoll":@(input&&installedMove&&input.mouseMovedHandler==installedMove),@"scrollOwnedAfterPoll":@(input&&installedScroll&&input.scroll.valueChangedHandler==installedScroll),@"callbackMoveProfileID":@(callbackMoveProfileID),@"callbackScrollProfileID":@(callbackScrollProfileID),@"moveCallbackMainThread":@(moveCallbackMain),@"scrollCallbackMainThread":@(scrollCallbackMain),@"GCHandlerQueue":mouse.handlerQueue?@(dispatch_queue_get_label(mouse.handlerQueue)):@"none",@"mouseVendor":mouse.vendorName?:@"none",@"mouseCategory":mouse.productCategory?:@"none"};
   [inputTrace addObject:sample];while(inputTrace.count>512)[inputTrace removeObjectAtIndex:0];
   lastTraceMask=mask;lastTraceKeys=keys;lastTraceProfileID=sampledProfileID;lastTraceKeyboardID=sampledKeyboardID;lastTraceUptime=now;
  }
@@ -406,11 +395,11 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollPointer(flo
   previousMove=nil;installedMove=nil;previousScroll=nil;installedScroll=nil;
   std::lock_guard<std::mutex> lock(mouseMutex);trackedMouse=input;for(int i=0;i<7;i++)trackedButtons[i]=nil;pointerState.gcButtons=0;mouseDX=mouseDY=mouseWheel=0;mouseProfileChanges++;
  }
- if(input&&input.mouseMovedHandler!=installedMove){
+ if(input&&(!installedMove||input.mouseMovedHandler!=installedMove)){
   previousMove=input.mouseMovedHandler;GCMouseMoved saved=previousMove;
   installedMove=^(GCMouseInput *m,float x,float y){{std::lock_guard<std::mutex> lock(mouseMutex);if(m==trackedMouse){mouseDX+=x;mouseDY+=y;}moveEvents++;totalRawDX+=x;totalRawDY+=y;lastMoveUptime=NSProcessInfo.processInfo.systemUptime;callbackMoveProfileID=(uintptr_t)(__bridge void*)m;moveCallbackMain=NSThread.isMainThread;}if(saved)saved(m,x,y);};input.mouseMovedHandler=installedMove;{std::lock_guard<std::mutex> lock(mouseMutex);moveRewraps++;}
  }
- if(input&&input.scroll.valueChangedHandler!=installedScroll){
+ if(input&&input.scroll&&(!installedScroll||input.scroll.valueChangedHandler!=installedScroll)){
   previousScroll=input.scroll.valueChangedHandler;GCControllerDirectionPadValueChangedHandler saved=previousScroll;
   installedScroll=^(GCControllerDirectionPad *s,float x,float y){{std::lock_guard<std::mutex> lock(mouseMutex);if(s==trackedMouse.scroll)mouseWheel+=y;scrollEvents++;totalRawWheel+=y;callbackScrollProfileID=(uintptr_t)(__bridge void*)s;scrollCallbackMain=NSThread.isMainThread;}if(saved)saved(s,x,y);};input.scroll.valueChangedHandler=installedScroll;{std::lock_guard<std::mutex> lock(mouseMutex);scrollRewraps++;}
  }
@@ -418,7 +407,7 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollPointer(flo
   GCDeviceButtonInput *button=i==0?input.leftButton:i==1?input.rightButton:i==2?input.middleButton:((NSUInteger)(i-3)<input.auxiliaryButtons.count?input.auxiliaryButtons[i-3]:nil);
   observedButtonHandlerIDs[i]=(uintptr_t)(__bridge void*)button.pressedChangedHandler;
   if(button!=trackedButtons[i]){if(trackedButtons[i]&&trackedButtons[i].pressedChangedHandler==installedButtonHandlers[i])trackedButtons[i].pressedChangedHandler=previousButtonHandlers[i];{std::lock_guard<std::mutex> lock(mouseMutex);trackedButtons[i]=button;}previousButtonHandlers[i]=installedButtonHandlers[i]=nil;}
-  if(button&&button.pressedChangedHandler!=installedButtonHandlers[i]){
+  if(button&&(!installedButtonHandlers[i]||button.pressedChangedHandler!=installedButtonHandlers[i])){
    GCControllerButtonValueChangedHandler saved=button.pressedChangedHandler;previousButtonHandlers[i]=saved;GCMouseInput *expected=input;int index=i;
    installedButtonHandlers[i]=^(GCControllerButtonInput *key,float value,BOOL pressed){{std::lock_guard<std::mutex> lock(mouseMutex);buttonEvents++;if(pressed)buttonDownEvents++;else buttonUpEvents++;if(trackedMouse==expected&&trackedButtons[index]==key)pointerState.addGCButtonEdge(index,pressed);}if(saved)saved(key,value,pressed);};
    button.pressedChangedHandler=installedButtonHandlers[i];{std::lock_guard<std::mutex> lock(mouseMutex);buttonHandlerInstalls++;}
@@ -431,3 +420,19 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollPointer(flo
  DSPRecordInputSample(mouse,input,packet.state,packet.dx,packet.dy,packet.wheel);return packet.state;
 }
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollMouse(float *dx,float *dy,float *wheel){return DSPAOTPollPointer(dx,dy,wheel,nullptr,nullptr);}
+// Opt-in zero-displacement callback probe. Unlike synthetic pointer packets,
+// this verifies that the production GC callback slots really are installed.
+extern "C" __attribute__((used,visibility("default"))) int DSPAOTVerifyMouseCallbacks(void){
+ if((DSPAOTDiagnosticFlags()&3)!=3||!NSThread.isMainThread)return 0;
+ GCMouseInput *input=GCMouse.current.mouseInput;if(!input)return 0;int result=0;
+ bool move=installedMove&&input.mouseMovedHandler==installedMove;
+ bool scroll=installedScroll&&input.scroll.valueChangedHandler==installedScroll;
+ if(move)result|=1;if(scroll)result|=2;
+ bool buttons=true;for(int i=0;i<7;i++)if(trackedButtons[i]&&(!installedButtonHandlers[i]||trackedButtons[i].pressedChangedHandler!=installedButtonHandlers[i]))buttons=false;
+ if(buttons&&trackedButtons[0]&&trackedButtons[1]&&trackedButtons[2])result|=4;
+ uint64_t moves,scrolls;{std::lock_guard<std::mutex> lock(mouseMutex);moves=moveEvents;scrolls=scrollEvents;}
+ if(move)input.mouseMovedHandler(input,0,0);
+ if(scroll)input.scroll.valueChangedHandler(input.scroll,0,0);
+ {std::lock_guard<std::mutex> lock(mouseMutex);if(moveEvents==moves+1)result|=8;if(scrollEvents==scrolls+1)result|=16;}
+ return result;
+}

@@ -30,14 +30,48 @@ public static class PortDisplayPresets {
   if(Application.platform!=RuntimePlatform.OSXPlayer&&Application.platform!=RuntimePlatform.IPhonePlayer)return;
   Resolution native;
   if(!TryGetNativeResolution(out native))return;
-  option.resolution=native;
+  var selected=native;
+#if UNITY_IOS || DSP_EMU_IPAD
+  // The window remains fullscreen; its rendering resolution is a saved option.
+  var choices=GameResolutions.GetResolutions(EOptionDisplayMode.BorderlessFullScreenWithCursorConfined);
+  if(choices!=null)foreach(var item in choices)
+   if(item.width==option.resolution.width&&item.height==option.resolution.height&&SameAspect(item.width,item.height,native)){
+    selected=item.ToEngineResolution();break;
+   }
+#endif
+  option.resolution=selected;
   option.displayMode=EOptionDisplayMode.BorderlessFullScreenWithCursorConfined;
-  StartupResolution=native;StartupConfigured=true;startupPending=true;
-  Debug.Log("DSP_PORT_STARTUP_NATIVE_FULLSCREEN "+native.width+"x"+native.height);
+  StartupResolution=selected;StartupConfigured=true;startupPending=true;
+  Debug.Log("DSP_PORT_STARTUP_RENDER_FULLSCREEN "+selected.width+"x"+selected.height);
  }
 
+ static bool SameAspect(int width,int height,Resolution native){
+  // Accept at most one pixel of rounding for non-4:3 iPad displays.
+  return width>0&&height>0&&width<=native.width&&height<=native.height&&
+   System.Math.Abs((long)width*native.height-(long)height*native.width)<=native.width;
+ }
+ static void AddRenderSize(List<GameResolutions.Resolution> list,Resolution native,int width,int height,string label){
+  if(!SameAspect(width,height,native))return;
+  var item=new GameResolutions.Resolution{width=width,height=height,rawRefreshRate=native.refreshRateRatio,formattedRefreshRate=native.refreshRateRatio,displayName=label};
+  int index=list.FindIndex(r=>r.width==width&&r.height==height);
+  if(index<0)list.Add(item);else list[index]=item;
+ }
  public static void Add(List<GameResolutions.Resolution> list,bool windowed){
   Resolution native;bool hasNative=TryGetNativeResolution(out native);
+#if UNITY_IOS || DSP_EMU_IPAD
+  if(hasNative){
+   // Only the connected display's aspect ratio; names of other devices do not
+   // represent usable render modes on this iPad. Refresh rate remains native.
+   list.Clear();
+   AddRenderSize(list,native,native.width,native.height,"原生分辨率");
+   foreach(int width in new[]{1920,1600,1376,1280}){
+    if(width>=native.width)continue;
+    int height=Mathf.RoundToInt((float)width*native.height/native.width);
+    AddRenderSize(list,native,width,height,"渲染分辨率");
+   }
+   return;
+  }
+#endif
   foreach(var p in Devices){
    int index=list.FindIndex(r=>r.width==p.width&&r.height==p.height);
    if(index<0){list.Add(new GameResolutions.Resolution{width=p.width,height=p.height,rawRefreshRate=GameResolutions.DoubleToRefreshRate(60),formattedRefreshRate=GameResolutions.DoubleToRefreshRate(60),displayName=p.name});}

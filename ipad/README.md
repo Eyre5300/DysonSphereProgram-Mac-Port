@@ -4,9 +4,13 @@
 
 本目录提供原创的平台适配、构建和验证工具。使用者必须自行准备已购买的 Windows 游戏、Unity 工具链和自己的 Apple 签名。仓库不包含游戏源码、资产、SDK 对象、App/IPA、测试存档或蓝图。
 
-当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。键鼠37.1已用公开工具独立重建并完成限定综合自动测试，最终设备保留42版，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
+当前目标是 **iPad Pro + 实体键盘鼠标**。mini 支持已停止，不提供 mini 分辨率预设或低画质替代包。键鼠37.1已用公开工具独立重建并完成限定综合自动测试，设备现更新为44版，本次结果见 [验证记录](VALIDATION.md)。自动输入不能证明真实 Universal Control、USB 或蓝牙手感；也没有宣称 Windows 全功能/逐像素等价。
 
-这是一套开发者复现入口，**不是向导式一键 iPad 安装器**。公开入口已在本机的全新工作区完成原始输入恢复、全新缓存构建、签名安装与 Pro 回归；尚未在另一台全新配置的 Mac 上复验。法线编码造成的地表暗区已在限定场景修复；低帧率尚未解决，项目现已阶段收尾。Mac 的 `start.command` 不会自动完成 iPad 部署。
+这是一套开发者复现入口，**不是向导式一键 iPad 安装器**。公开入口已在本机的全新工作区完成原始输入恢复、全新缓存构建、签名安装与 Pro 回归；尚未在另一台全新配置的 Mac 上复验。法线编码造成的地表暗区已在限定场景修复；低帧率尚未全面解决；追加的输入/保存分辨率修复已完成限定回归。Mac 的 `start.command` 不会自动完成 iPad 部署。
+
+## 本轮输入与分辨率
+
+44新增按实际显示器宽高比生成的分辨率档，并保留原版确认保存的选择。Pro13可选2752×2064、1920×1440、1600×1200、1376×1032、1280×960；不改画质开关或永久限帧。键鼠适配和全量源码审查范围、原版高帧率Esc时序边界以及真实外设未验证项见 [INPUT-AUDIT.txt](INPUT-AUDIT.txt)。不要把源码一致或模拟输入通过当作完整Windows等价。
 
 ## 架构
 
@@ -58,7 +62,7 @@ DSP_MAC_AOT_OUTPUT="$MAC_AOT" "$UNITY" -batchmode -quit \
   -executeMethod DSPFullGameBridgeBuild.BuildMacAOT -logFile "$WORK/mac-export.log"
 
 DSP_IOS_BRIDGE_OUTPUT="$ENGINE" DSP_IOS_BUNDLE_ID="$BUNDLE" \
-DSP_IOS_BUILD_NUMBER=42 "$UNITY" -batchmode -quit \
+DSP_IOS_BUILD_NUMBER=44 "$UNITY" -batchmode -quit \
   -projectPath "$PROJECT" -buildTarget iOS \
   -executeMethod DSPFullGameBridgeBuild.ExportIOS -logFile "$WORK/ios-export.log"
 ```
@@ -151,3 +155,16 @@ python3 ipad/source/run_device_batch.py \
 普通准备流程不生成实验着色器。仅复查历史专项时，在导出前额外运行 `prepare_scene_shader_probe.py --project "$PROJECT" --report "$WORK/reports/scene-shader-probe.json"`，或在低层准备入口传 `--render-probes`；随后才可使用 `run_device_batch.py` 的 `--scene-audit` / `--performance-audit`。这些模式需要本人存档副本 `scene-audit-fixture.dsv`，会隔离保存目录、暂改测试场景，并在退出时恢复设置。测试执行成功不表示达到60FPS或画质等价。候选着色器仅限显式诊断，不替换普通游戏材质。
 
 项目按用户要求在42版收尾；未验收的43版实验不纳入交付。清理时可删除Unity Library/Temp、AOT中间包、Xcode DerivedData、旧平台导出及旧测试包；应先归档最终签名App、源工程、存档和构建报告。不要删除自己的原始游戏、签名凭据或存档。
+
+## 输入专项与主机检查
+
+```sh
+python3 ipad/tests/run_host_checks.py --mono "$MONO" --csc "$CSC_EXE"
+python3 -m unittest discover -s ipad/source -p 'test_*.py'
+python3 ipad/source/run_device_batch.py --device "$DEVICE" --bundle "$BUNDLE" \
+  --version 44 --flight-audit --restart-existing --output-dir "$WORK/flight-results"
+```
+
+Python使用已安装项目依赖的虚拟环境。专项先在主菜单验证两个渲染档，再创建隔离存档目录、进入世界、自然起飞并检查曲速/鼠标。需要实际连接的鼠标才能检查真实回调槽和UIKit捕获；只有模拟包或停在菜单均不合格。显示选择最后停在1376×1032，其他选项恢复。专项不是全功能测试，也不会再次运行文件/渲染/生产综合套件。
+
+开始设备测试前先退出游戏并备份整个App用户数据目录；测试后核对用户存档及全局profile。仅重定向GameConfig.gameSavePath不足以隔离Achievement等全局文件。已连接现有用户数据的测试结束后，应在进程退出时恢复测试引起的全局成就变更，保留用户明确要求的显示设置；不要在游戏运行时覆盖它们。不要将备份、完整报告、存档或提取的Windows方法提交此仓库。

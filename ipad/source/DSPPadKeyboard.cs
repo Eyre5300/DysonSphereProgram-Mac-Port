@@ -10,7 +10,7 @@ public static class DSPPadKeyboard {
  static DSPPadKeyboard(){
   for(int i=0;i<indices.Length;i++)indices[i]=-1;var kk=new System.Collections.Generic.List<KeyCode>();var cc=new System.Collections.Generic.List<int>();
   Action<int,int> add=(key,code)=>{indices[key]=kk.Count;kk.Add((KeyCode)key);cc.Add(code);};
-  for(int i=0;i<26;i++)add(97+i,4+i);for(int i=0;i<9;i++)add(49+i,30+i);add(48,39);add(301,57);
+  for(int i=0;i<26;i++)add(97+i,4+i);for(int i=0;i<9;i++)add(49+i,30+i);add(48,39);add(301,57);add(319,101);
   int[] a={13,27,8,9,32,45,61,91,93,92,59,39,96,44,46,47};int[] b={40,41,42,43,44,45,46,47,48,49,51,52,53,54,55,56};for(int i=0;i<a.Length;i++)add(a[i],b[i]);
   for(int i=0;i<12;i++)add(282+i,58+i);
   a=new[]{316,302,19,277,278,280,127,279,281,275,276,274,273,300,267,268,269,270,271,256,266,272,294,295,296};b=new[]{70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,98,99,103,104,105,106};for(int i=0;i<a.Length;i++)add(a[i],b[i]);for(int i=0;i<9;i++)add(257+i,89+i);

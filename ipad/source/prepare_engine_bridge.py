@@ -78,6 +78,8 @@ shutil.copytree(mac/'Contents/Resources/Data/il2cpp_data',project/'Data/Managed'
 shutil.copy2(source/'DSPAOTDeviceInput.mm',project/'DSPAOTDeviceInput.mm')
 shutil.copy2(source/'DSPPadDocuments.mm',project/'DSPPadDocuments.mm')
 shutil.copy2(source/'DSPPointerState.hpp',project/'DSPPointerState.hpp')
+shutil.copy2(source/'DSPCapsPressCounter.hpp',project/'DSPCapsPressCounter.hpp')
+shutil.copy2(source/'DSPKeyboardEvents.hpp',project/'DSPKeyboardEvents.hpp')
 shutil.copy2(source/'DSPMetalCensus.m',project/'DSPMetalCensus.m')
 subprocess.run(['python3',str(source/'apply_pointer_view.py'),'--view',str(project/'Classes/UI/UnityView+iOS.mm'),'--plist',str(project/'Info.plist'),'--report',str(reports/'pointer-view-patch.json')],check=True)
 subprocess.run(['python3',str(source/'apply_scene_lifecycle.py'),str(project)],check=True)
