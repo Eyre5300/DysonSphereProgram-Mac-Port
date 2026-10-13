@@ -83,12 +83,14 @@ def main():
         text=starmap.read_text()
         if not text.startswith(alias):starmap.write_text(alias+text)
     run('apply_cursor_bridge.py','--file',game/'UICursor.cs','--report',a.report.with_name('cursor-adapter.json'))
-    run('apply_escape_order.py','--project',project,'--report',a.report.with_name('escape-order-adapter.json'))
     run('apply_dof_alpha_patch.py','--project',project)
     run('apply_verta_binding.py','--project',project)
     run('apply_performance_hud.py','--project',project)
     run('apply_power_shader_safety.py','--project',project)
     run('apply_remaining_adapters.py','--project',project)
+    # Match the accepted incremental build: diagnostic sampling precedes the
+    # Escape scheduling hook in both original VFInput method tails.
+    run('apply_escape_order.py','--project',project,'--report',a.report.with_name('escape-order-adapter.json'))
     if a.render_probes:run('prepare_scene_shader_probe.py','--project',project,'--report',a.report.with_name('scene-shader-probe.json'))
     run('apply_milkyway_memoryless.py','--original',original/'Assets/Scripts/Assembly-CSharp/UIMilkyWay.cs','--target',game/'UIMilkyWay.cs','--report',a.report.with_name('milkyway-adapter.json'))
     run('apply_textasset_stream.py','--original',original/'Assets/Scripts/Assembly-CSharp/HashSystem.cs','--target',game/'HashSystem.cs','--report',a.report.with_name('hash-adapter.json'))

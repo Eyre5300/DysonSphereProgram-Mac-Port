@@ -543,7 +543,7 @@
     },
     {
       "file": "source/prepare_ipad_project.py",
-      "sha256": "cbe77984711e51d653466fd2f496a4a2adf23cee1964f3803d683674e0aac6d3",
+      "sha256": "b8e500087f925347cc6d371aae135b0f2db5d6b7c4fbc3858d0088c882867de6",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
