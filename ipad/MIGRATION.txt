@@ -1,0 +1,57 @@
+配置后连续迁移到 iPad Pro
+
+入口：在项目根目录双击 start-ipad.command。
+第一次填写本机配置，保存在 ~/.dsp-port-ipad.json；以后再次运行使用同一配置。
+命令行也可运行：
+  start-ipad.command --config /本地私有目录/config.json --check
+  start-ipad.command --config /本地私有目录/config.json
+
+此入口串联原始源码/资源恢复、两平台Unity导出、BC采样包、正式包、数据
+备份、设备安装、短冒烟检查和普通启动。它不是游戏安装包，也不代办游戏
+购买、Unity许可、Apple开发签名、设备信任或开发者模式确认。
+
+前置条件
+- Apple Silicon Mac；Python 3.12；Unity 2022.3.62f3c1及Mac/iOS构建模块。
+- 完整Xcode、已设置的签名identity和Team ID、已信任并启用开发者模式的Pro。
+- 自己购买的Windows DSP 0.10.35.29104，保持原文件不变。
+- AssetRipper 2.0未修改导出；命令行配置也可用assetripper可执行文件替代。
+- spirv-cross、vkd3d-compiler及README固定提交的emu；均需本机可用。
+- 新的工作目录应放在云同步之外，路径包含local-private；首次至少预留
+  65 GiB磁盘空间，实际峰值依SDK/缓存而异。不要用源码仓库或游戏原目录。
+- 启动脚本为独立Python虚拟环境安装固定依赖；不会删除或升级Unity/Xcode。
+
+配置字段
+game                Windows游戏目录（含DSPGAME.exe、DSPGAME_Data、Locale等）
+workspace           新的私有工作目录，后续所有阶段及日志在此处
+unity               Unity.app路径（不是Unity Hub或Unity可执行文件）
+upstream            固定版本emu仓库
+exported_project    未修改的AssetRipper ExportedProject
+assetripper         可选；与exported_project二选一
+spirv_cross         spirv-cross可执行文件路径
+vkd3d               vkd3d-compiler可执行文件路径
+team                自己的Apple Team ID
+bundle              自己的键鼠App Bundle ID；不要填其他App的标识
+device              iPad Pro UDID
+identity            钥匙串中有效签名identity名称或SHA
+version             整数构建号，例如47
+replace_existing    默认false；明确允许停止并升级同一Bundle时设true
+
+数据与恢复
+- 在首次替换既有App之前，先停止该App并备份LocalPortData。备份失败即停止。
+- 测试另建存档目录；不会对用户存档做测试。若既有存档或Options.xml发生
+  意外变化，验收失败并保留完整备份，不静默覆盖。测试造成的既有全局成就/
+  属性变更从备份恢复并复核。
+- 每阶段记录状态和关键输出哈希；配置/工具不变且关键输出吻合时才复用。
+  删除或改动已完成输出会停止流程；清理前先归档最终包、报告与用户数据。
+- 未完成的受支持生成阶段重试时保留.failed-*目录，不覆盖失败证据。
+  Unity导出等可在原生成目录中继续；异常需查logs中的对应阶段日志。
+- 修改转换代码或配置时使用新工作目录。不要手改migration.json绕过检查。
+- 同一Bundle升级保留App容器；免费签名限制、到期、设备锁定或配额不足会
+  明确报错。个人签名包不等于别人可直接安装的公共发行包。
+
+验证边界
+短冒烟只验证进入真实世界、模拟/渲染推进、分辨率保留、矿脉数据及隔离
+保存重载；不能证明所有矿石/阴影逐像素一致、所有游戏规则、真实云传输或
+实体键鼠。实际BC采样有独立门槛，不能用旧报告或“没有崩溃”代替。
+设备普通启动不启用自动测试；实体Esc专项按当前用户安排延期。
+完整新流程的本机结果及其他机器未验证项见VALIDATION.md。

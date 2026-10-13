@@ -1,8 +1,8 @@
 from pathlib import Path
-import subprocess,json,hashlib,shutil,plistlib,argparse
+import subprocess,json,hashlib,shutil,plistlib,argparse,sys
 parser=argparse.ArgumentParser();parser.add_argument('--project',required=True,type=Path);parser.add_argument('--mac-app',required=True,type=Path);parser.add_argument('--upstream',required=True,type=Path);parser.add_argument('--output-reports',required=True,type=Path);parser.add_argument('--team',required=True);parser.add_argument('--bundle',required=True);parser.add_argument('--resource-clone',action='store_true',help='Finalize Data using finalize_resource_clone.py after Xcode build; avoids redundant resource allocation');parser.add_argument('--bc-archive',type=Path,help='Explicit independently validated private BC candidate archive; no automatic activation');args=parser.parse_args();project=args.project.resolve();mac=args.mac_app.resolve();source=Path(__file__).resolve().parent;reports=args.output_reports.resolve();reports.mkdir(parents=True,exist_ok=True)
 lib=mac/'Contents/Frameworks/GameAssembly.dylib';sha=hashlib.sha256(lib.read_bytes()).hexdigest()
-subprocess.run(['python3',str(source/'retarget_mono.py'),'--source',str(lib),'--output',str(project/'Vendor/MacAOT.framework'),'--upstream',str(args.upstream),'--name','MacAOT','--sha256',sha,'--report',str(reports/'mac-aot-retarget.json')],check=True)
+subprocess.run([sys.executable,str(source/'retarget_mono.py'),'--source',str(lib),'--output',str(project/'Vendor/MacAOT.framework'),'--upstream',str(args.upstream),'--name','MacAOT','--sha256',sha,'--report',str(reports/'mac-aot-retarget.json')],check=True)
 pbx=project/'Unity-iPhone.xcodeproj/project.pbxproj';backup=project/'Unity-iPhone.xcodeproj/project.before-mac-aot.pbxproj'
 if not backup.exists():shutil.copy2(pbx,backup)
 d=json.loads(subprocess.check_output(['plutil','-convert','json','-o','-',str(backup)],text=True));o=d['objects'];targets={x['name']:(k,x) for k,x in o.items() if x.get('isa')=='PBXNativeTarget'};ufid,uf=targets['UnityFramework'];appid,app=targets['Unity-iPhone']
@@ -81,8 +81,8 @@ shutil.copy2(source/'DSPPointerState.hpp',project/'DSPPointerState.hpp')
 shutil.copy2(source/'DSPCapsPressCounter.hpp',project/'DSPCapsPressCounter.hpp')
 shutil.copy2(source/'DSPKeyboardEvents.hpp',project/'DSPKeyboardEvents.hpp')
 shutil.copy2(source/'DSPMetalCensus.m',project/'DSPMetalCensus.m')
-subprocess.run(['python3',str(source/'apply_pointer_view.py'),'--view',str(project/'Classes/UI/UnityView+iOS.mm'),'--plist',str(project/'Info.plist'),'--report',str(reports/'pointer-view-patch.json')],check=True)
-subprocess.run(['python3',str(source/'apply_scene_lifecycle.py'),str(project)],check=True)
+subprocess.run([sys.executable,str(source/'apply_pointer_view.py'),'--view',str(project/'Classes/UI/UnityView+iOS.mm'),'--plist',str(project/'Info.plist'),'--report',str(reports/'pointer-view-patch.json')],check=True)
+subprocess.run([sys.executable,str(source/'apply_scene_lifecycle.py'),str(project)],check=True)
 (project/'Memory.entitlements').write_bytes(plistlib.dumps({'com.apple.developer.kernel.increased-memory-limit':True}))
 p=project/'Info.plist';info=plistlib.loads(p.read_bytes());info['UIFileSharingEnabled']=True;info['LSSupportsOpeningDocumentsInPlace']=True;info['UIRequiresFullScreen']=True;p.write_bytes(plistlib.dumps(info))
 r={'MacAOTInputSha256':sha,'originalMacTextUnchanged':True,'iOSGameCppCompiled':False,'iOSRuntimeArchiveLinked':False,'nativePlatformGlue':['UnityClassRegistration.cpp','UnityICallRegistration.cpp','DSPAOTDeviceInput.mm'],'BCFormatCandidate':bool(args.bc_archive),'requiresResourceCloneFinalization':args.resource_clone,'fullGameTest':False,'engineStarted':False}

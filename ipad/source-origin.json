@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "904459b3651ac89c025e64c3c1cf9b14dd557ca9a1c33a91fc955428c2fb464a",
+      "sha256": "64048b724fa1c51ab282902422dd6fb2f81407569d900916b8f05ca977a91907",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "42ee1ea08debc26589a2aa158f728074b182599ffd0135b62676cc59d12ec245",
+      "sha256": "a55db98c10d14d5ce771b65eadbf1e65010cf79fe24faedea8cd507cfb12d93c",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "65e00b7db3c60a32c8a69ff0bd9acf31252b944c598e8d5207fc72b679c5db1f",
+      "sha256": "9934886f47f63a58e5a18cbc38a05d3da26552034e8298d7a58095e544ba8965",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -498,7 +498,7 @@
     },
     {
       "file": "source/build_bridge.py",
-      "sha256": "61da015972a792e960d20e607a9f64d69ddf2939130875ba50d21e322974e214",
+      "sha256": "d833f4d41387b8beef1b633f0322f5daac33df06855a2b5fe1b57c8ae5404b25",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -533,7 +533,7 @@
     },
     {
       "file": "source/prepare_engine_bridge.py",
-      "sha256": "de0e53d860c3e2c174b72de04b7f09a6d86b24efb751d6251ca2bdba81b8cfe6",
+      "sha256": "e11fa41871cd7bc5853bef32e1710abf2e779a0bc2b6a739fc4fd0ed446d889d",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -563,7 +563,7 @@
     },
     {
       "file": "source/rebuild_mobile_audio_bindings.py",
-      "sha256": "3bb22192815518ddcda3df93f3c61216569e72aa9fe3d192e35b542374148bf4",
+      "sha256": "4782009a57ae1617c35b9266ed1738028be3853a29f0e509af1110deea072cdb",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -685,6 +685,31 @@
       "file": "tests/run_host_checks.py",
       "origin": "Project-authored platform adapter, narrow source hook, source inventory or synthetic diagnostic; no recovered game implementation/assets",
       "sha256": "6e1cc53b6ba8d9ed5c864f46cecf3793990cfdb002f27e7787d055974ba22abc"
+    },
+    {
+      "file": "source/DSPPadReleaseSmoke.cs",
+      "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
+      "sha256": "4895f2f412961bce20dc10be36674b2e498e1fa02d9e314caef78e1c03450a4e"
+    },
+    {
+      "file": "source/test_release_workflow.py",
+      "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
+      "sha256": "bdd170677d9baa7b72662353938ff787a96d2bdcdf1b87c54b7f8f61609ac916"
+    },
+    {
+      "file": "source/run_release_smoke.py",
+      "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
+      "sha256": "64b08ef23049f2cf037ce59211c4f92bad5369f1659caf6f1a66aa4dd1d123c3"
+    },
+    {
+      "file": "source/unity_paths.py",
+      "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
+      "sha256": "35ff69b59030869f5715f39ebfbf09e8187366180f3d2a3f94642c76399944ce"
+    },
+    {
+      "file": "source/migrate.py",
+      "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
+      "sha256": "e531ad209f2bf0526478df7193b0feb63ba52332663783f4d4626e324385c742"
     }
   ]
 }

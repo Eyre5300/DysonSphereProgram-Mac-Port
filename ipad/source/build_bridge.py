@@ -5,6 +5,7 @@ No installation/upload is performed by this command.
 import argparse,hashlib,json,os,plistlib,shutil,subprocess,sys
 from pathlib import Path
 from private_paths import private_output
+from unity_paths import ios_support
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -26,7 +27,7 @@ def main():
     mac=work/'MacAOT.app';framework=mac/'Contents/Frameworks';framework.mkdir(parents=True);shutil.copy2(aot/'GameAssembly.dylib',framework/'GameAssembly.dylib');shutil.copytree(aot/'data',mac/'Contents/Resources/Data/il2cpp_data')
     info=engine/'Info.plist';data=plistlib.loads(info.read_bytes());data['CFBundleVersion']=a.version;data['CFBundleDisplayName']='DSP Touch' if '.touch.' in a.bundle else '戴森球计划';info.write_bytes(plistlib.dumps(data))
     tool('prepare_engine_bridge.py','--project',engine,'--mac-app',mac,'--upstream',a.upstream,'--output-reports',reports/'prepare','--team',a.team,'--bundle',a.bundle,'--resource-clone','--bc-archive',a.bc_archive)
-    sdk=a.unity.resolve().parent/'PlaybackEngines/iOSSupport/Trampoline/Libraries/libiPhone-lib.a'
+    sdk=ios_support(a.unity)/'Trampoline/Libraries/libiPhone-lib.a'
     tool('augment_engine_icalls.py','--cpp',aot/'cpp','--registration',engine/'Il2CppOutputProject/Source/il2cppOutput/UnityICallRegistration.cpp','--ios-library',sdk,'--report',reports/'icalls.json')
     if a.original_exe:tool('configure_ipad_branding.py','--exe',a.original_exe,'--catalog',engine/'Unity-iPhone/Images.xcassets/AppIcon.appiconset')
     run('xcode',['xcodebuild','-project',engine/'Unity-iPhone.xcodeproj','-scheme','Unity-iPhone','-configuration','Release','-sdk','iphoneos','-destination','id='+a.device,'-derivedDataPath',derived,'COPY_PHASE_STRIP=NO','STRIP_INSTALLED_PRODUCT=NO','-allowProvisioningUpdates','-allowProvisioningDeviceRegistration','build'])

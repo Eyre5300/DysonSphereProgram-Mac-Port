@@ -1,2 +1,4 @@
 UnityPy==1.25.4
 texture2ddecoder==1.0.6
+pefile==2024.8.26
+Pillow==12.3.0
