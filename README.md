@@ -1,6 +1,6 @@
 # Dyson Sphere Program - Mac / iPad Pro Port Tools
 
-> 2026-10-13：本分支提供 Mac 与 iPad Pro 键鼠迁移工具。Pro 当前安装版本60，射线接收站光柱修复通过限定实机验证；通用控制间歇性鼠标锁定仍待真实输入复核。触控暂停，不作为交付版本。详见 [验证范围](ipad/VALIDATION.md)。
+> 2026-10-13：本分支提供 Mac 与 iPad Pro 键鼠迁移工具。Pro 当前安装版本60，射线接收站光柱修复通过限定实机验证；用户已确认本轮真实通用控制的方向跟随和中键均正常。触控暂停，不作为交付版本。详见 [验证范围](ipad/VALIDATION.md)。
 
 用自己购买的 Windows 版《戴森球计划》，在本机生成 macOS App；iPad Pro 开发者路线见 [迁移指南](ipad/README.md)。此仓库只提供 **MIT 许可的原创转换工具与平台适配代码**，不提供原游戏、恢复后的游戏代码、资产、游戏 App、存档或蓝图。
 

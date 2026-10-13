@@ -9,7 +9,10 @@ current-mouse return and permits coalesced main-thread observer refresh from any
 polling thread. Telemetry no longer initializes observers. 58's measured polls
 were all on the main thread, so off-thread refresh is not a demonstrated cause.
 Original game policy is unchanged. Host transport/build checks passed; focused
-physical Universal Control recurrence check is pending. Physical Escape remains
+physical Universal Control check passed by user report on 2026-10-13: after the
+requested hidden-cursor flight and Mac-to-Pro return sequence, following and
+middle-button rotation were both normal. This is scoped human confirmation,
+not an exhaustive recurrence guarantee or proof of the original cause. Physical Escape remains
 postponed separately. The following 46/44 sections are historical scoped evidence,
 not a statement of current unresolved high-refresh Escape scheduling.
 
