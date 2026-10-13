@@ -12,7 +12,7 @@
 #include <os/proc.h>
 // Native process arguments are authoritative for this mixed-platform AOT host.
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTDiagnosticFlags(void){
- static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0)|([args containsObject:@"--dsp-world-audit"]?256:0)|([args containsObject:@"--dsp-power-audit"]?512:0)|([args containsObject:@"--dsp-scene-audit"]?1024:0)|([args containsObject:@"--dsp-performance-audit"]?2048:0)|([args containsObject:@"--dsp-flight-audit"]?4096:0)|([args containsObject:@"--dsp-escape-audit"]?8192:0)|([args containsObject:@"--dsp-release-smoke"]?16384:0);});return flags;
+ static int flags=0;static dispatch_once_t once;dispatch_once(&once,^{NSArray<NSString*> *args=NSProcessInfo.processInfo.arguments;flags=([args containsObject:@"--dsp-port-test-batch"]?1:0)|([args containsObject:@"--dsp-native-pointer-test"]?2:0)|([args containsObject:@"--dsp-human-handoff"]?4:0)|([args containsObject:@"--dsp-diagnostics-only"]?16:0)|([args containsObject:@"--dsp-bc-probe-only"]?32:0)|([args containsObject:@"--dsp-memory-pressure-probe"]?64:0)|([args containsObject:@"--dsp-input-files-test"]?128:0)|([args containsObject:@"--dsp-world-audit"]?256:0)|([args containsObject:@"--dsp-power-audit"]?512:0)|([args containsObject:@"--dsp-scene-audit"]?1024:0)|([args containsObject:@"--dsp-performance-audit"]?2048:0)|([args containsObject:@"--dsp-flight-audit"]?4096:0)|([args containsObject:@"--dsp-escape-audit"]?8192:0)|([args containsObject:@"--dsp-release-smoke"]?16384:0)|([args containsObject:@"--dsp-ray-receiver-audit"]?32768:0)|([args containsObject:@"--dsp-ray-probes"]?65536:0);});return flags;
 }
 // The installed package can have a resource-only revision; Application.version
 // is the short marketing version and is not an evidence-directory identifier.
@@ -43,6 +43,12 @@ static bool DSPTelemetryEnabled(void){return (DSPAOTDiagnosticFlags()&17)!=0;}
 // UIKit can decline it; never treat a requested lock as a granted lock.
 #import "Classes/UI/UnityViewControllerBase.h"
 static std::atomic<bool> dspPointerLockWanted{false};
+static void DSPInvalidatePointerLockPreference(void){
+ for(UIScene *scene in UIApplication.sharedApplication.connectedScenes)
+  if([scene isKindOfClass:UIWindowScene.class])
+   for(UIWindow *w in ((UIWindowScene*)scene).windows)
+    [w.rootViewController setNeedsUpdateOfPrefersPointerLocked];
+}
 @interface UnityViewControllerBase (DSPPointerLock)
 @end
 @implementation UnityViewControllerBase (DSPPointerLock)
@@ -50,7 +56,7 @@ static std::atomic<bool> dspPointerLockWanted{false};
 @end
 extern "C" __attribute__((used,visibility("default"))) void DSPAOTSetPointerLock(int value){
  bool wanted=value!=0;if(dspPointerLockWanted.exchange(wanted)==wanted)return;
- dispatch_async(dispatch_get_main_queue(),^{for(UIScene *scene in UIApplication.sharedApplication.connectedScenes)if([scene isKindOfClass:UIWindowScene.class])for(UIWindow *w in ((UIWindowScene*)scene).windows)[w.rootViewController setNeedsUpdateOfPrefersPointerLocked];});
+ dispatch_async(dispatch_get_main_queue(),^{DSPInvalidatePointerLockPreference();});
 }
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTPointerLockStatus(void){
  int result=dspPointerLockWanted.load()?1:0;
@@ -85,7 +91,7 @@ extern bool _unityAppReady;
 extern "C" void *il2cpp_resolve_icall(const char *);
 static void DSPWriteInputTelemetry(void);
 static void DSPWriteDeviceStatus(void){
- DSPInstallUIKitPointerObservers();
+ // Diagnostics must not initialize or repair production input state.
  id<MTLDevice> device=MTLCreateSystemDefaultDevice();task_vm_info_data_t vm={};mach_msg_type_number_t count=TASK_VM_INFO_COUNT;bool valid=task_info(mach_task_self(),TASK_VM_INFO,(task_info_t)&vm,&count)==KERN_SUCCESS;
  typedef bool (*TextureSupport)(int);
  TextureSupport support=_unityAppReady?(TextureSupport)il2cpp_resolve_icall("UnityEngine.SystemInfo::SupportsTextureFormatNative(UnityEngine.TextureFormat)"):nullptr;
@@ -229,7 +235,7 @@ extern "C" UIView *UnityGetGLView(void);
 static bool DSPHasUIKitPointer(void){std::lock_guard<std::mutex> lock(mouseMutex);return pointerState.foreground&&pointerState.observed;}
 
 // Diagnostic counters only. All original input delivery/chaining stays intact.
-static uint64_t inputPolls,moveEvents,scrollEvents,mouseProfileChanges,moveRewraps,scrollRewraps;
+static uint64_t inputPolls,pollsOnMainThread,pollsOffMainThread,moveEvents,scrollEvents,mouseProfileChanges,moveRewraps,scrollRewraps;
 static double totalRawDX,totalRawDY,totalRawWheel,lastMoveUptime,lastPollUptime,lastTraceUptime;
 static int sampledMask,sampledKeyMask,sampledGCButtonMask,lastTraceMask=-1,lastTraceKeys=-1;
 static uintptr_t sampledMouseID,sampledProfileID,sampledKeyboardID,lastTraceProfileID,lastTraceKeyboardID;
@@ -265,7 +271,7 @@ static void DSPRecordInputSample(GCMouse *mouse,GCMouseInput *input,int mask,flo
 static void DSPWriteInputTelemetry(void){
  NSDictionary *report;
  {std::lock_guard<std::mutex> lock(mouseMutex);
-  report=@{@"uptime":@(NSProcessInfo.processInfo.systemUptime),@"inputPolls":@(inputPolls),@"lastPollUptime":@(lastPollUptime),@"lastMoveUptime":@(lastMoveUptime),@"heldMask":@(sampledMask),@"keyMaskWASDModifiers":@(sampledKeyMask),@"mouseID":@(sampledMouseID),@"profileID":@(sampledProfileID),@"keyboardID":@(sampledKeyboardID),@"moveEvents":@(moveEvents),@"scrollEvents":@(scrollEvents),@"totalDX":@(totalRawDX),@"totalDY":@(totalRawDY),@"totalWheel":@(totalRawWheel),@"profileChanges":@(mouseProfileChanges),@"moveHandlerInstalls":@(moveRewraps),@"scrollHandlerInstalls":@(scrollRewraps),@"samples":inputTrace?[inputTrace copy]:@[],@"testPointer":@{@"queued":@(testPointer.queued),@"consumed":@(testPointer.consumed),@"pending":@(testPointer.pending),@"closed":@(testPointer.closed)},@"UIKit":@{@"hoverEvents":@(hoverEvents),@"scrollEvents":@(uiScrollEvents),@"pointerTouchEvents":@(pointerTouchEvents),@"fingerTouchEvents":@(fingerTouchEvents),@"observerInstalls":@(uiObserverInstalls),@"lifecycleResets":@(lifecycleResets),@"lastUptime":@(lastUIUptime),@"lastScrollUptime":@(lastScrollUptime),@"totalScrollPoints":@(totalUIScrollPoints),@"wheelPointsPerNativeUnit":@(pointerState.wheelPointsPerUnit),@"lastEventType":@(lastUIEventType),@"lastTouchType":@(lastUITouchType),@"lastPhase":@(lastUIPhase),@"lastRawButtons":@(lastUIRawButtons),@"lastModifiers":@(lastUIModifiers),@"observed":@(pointerState.observed),@"valid":@(pointerState.valid),@"foreground":@(pointerState.foreground),@"pointerLocked":@(pointerState.locked),@"normalizedX":@(pointerState.nx),@"normalizedY":@(pointerState.ny),@"samples":uiInputTrace?[uiInputTrace copy]:@[]}};
+  report=@{@"uptime":@(NSProcessInfo.processInfo.systemUptime),@"inputPolls":@(inputPolls),@"pollsOnMainThread":@(pollsOnMainThread),@"pollsOffMainThread":@(pollsOffMainThread),@"lastPollUptime":@(lastPollUptime),@"lastMoveUptime":@(lastMoveUptime),@"heldMask":@(sampledMask),@"keyMaskWASDModifiers":@(sampledKeyMask),@"mouseID":@(sampledMouseID),@"profileID":@(sampledProfileID),@"keyboardID":@(sampledKeyboardID),@"moveEvents":@(moveEvents),@"scrollEvents":@(scrollEvents),@"totalDX":@(totalRawDX),@"totalDY":@(totalRawDY),@"totalWheel":@(totalRawWheel),@"profileChanges":@(mouseProfileChanges),@"moveHandlerInstalls":@(moveRewraps),@"scrollHandlerInstalls":@(scrollRewraps),@"samples":inputTrace?[inputTrace copy]:@[],@"testPointer":@{@"queued":@(testPointer.queued),@"consumed":@(testPointer.consumed),@"pending":@(testPointer.pending),@"closed":@(testPointer.closed)},@"UIKit":@{@"hoverEvents":@(hoverEvents),@"scrollEvents":@(uiScrollEvents),@"pointerTouchEvents":@(pointerTouchEvents),@"fingerTouchEvents":@(fingerTouchEvents),@"observerInstalls":@(uiObserverInstalls),@"lifecycleResets":@(lifecycleResets),@"lastUptime":@(lastUIUptime),@"lastScrollUptime":@(lastScrollUptime),@"totalScrollPoints":@(totalUIScrollPoints),@"wheelPointsPerNativeUnit":@(pointerState.wheelPointsPerUnit),@"lastEventType":@(lastUIEventType),@"lastTouchType":@(lastUITouchType),@"lastPhase":@(lastUIPhase),@"lastRawButtons":@(lastUIRawButtons),@"lastModifiers":@(lastUIModifiers),@"observed":@(pointerState.observed),@"valid":@(pointerState.valid),@"foreground":@(pointerState.foreground),@"pointerLocked":@(pointerState.locked),@"normalizedX":@(pointerState.nx),@"normalizedY":@(pointerState.ny),@"samples":uiInputTrace?[uiInputTrace copy]:@[]}};
  }
  NSString *doc=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES).firstObject;
  [[NSJSONSerialization dataWithJSONObject:report options:NSJSONWritingPrettyPrinted error:nil] writeToFile:[doc stringByAppendingPathComponent:@"emu-native-input-report.json"] atomically:YES];
@@ -349,13 +355,19 @@ extern "C" __attribute__((used,visibility("default"))) NSSet<UITouch*> *DSPPortF
 }
 @end
 static DSPPointerObserver *pointerObserver;
+static std::atomic<bool> pointerRefreshQueued{false};
 static void DSPRefreshPointerLifecycle(void){
  UIView *view=pointerView;bool foreground=UIApplication.sharedApplication.applicationState==UIApplicationStateActive&&view.window.windowScene.activationState==UISceneActivationStateForegroundActive;
  bool locked=view.window.windowScene.pointerLockState.locked;
  std::lock_guard<std::mutex> lock(mouseMutex);if(pointerState.foreground!=foreground||pointerState.locked!=locked){lifecycleResets++;mouseDX=mouseDY=mouseWheel=0;}pointerState.setForeground(foreground);pointerState.setLocked(locked);
 }
 static void DSPInstallUIKitPointerObservers(void){
- if(!NSThread.isMainThread){dispatch_async(dispatch_get_main_queue(),^{DSPInstallUIKitPointerObservers();});return;}
+ if(!NSThread.isMainThread){
+  // The mixed-platform player can poll outside UIKit's main thread. Always
+  // refresh there too, without queuing one UIKit block per rendered frame.
+  if(!pointerRefreshQueued.exchange(true))dispatch_async(dispatch_get_main_queue(),^{pointerRefreshQueued.store(false);DSPInstallUIKitPointerObservers();});
+  return;
+ }
  UIView *view=UnityGetGLView();if(!view)return;
  if(pointerView!=view){
   [pointerObserver.hover.view removeGestureRecognizer:pointerObserver.hover];[pointerObserver.scroll.view removeGestureRecognizer:pointerObserver.scroll];
@@ -366,6 +378,10 @@ static void DSPInstallUIKitPointerObservers(void){
   {std::lock_guard<std::mutex> lock(mouseMutex);pointerState.reset();uiObserverInstalls++;}
   static bool notificationsInstalled=false;if(!notificationsInstalled){notificationsInstalled=true;
    for(NSNotificationName name in @[UIApplicationWillResignActiveNotification,UIApplicationDidEnterBackgroundNotification,UIApplicationDidBecomeActiveNotification,UISceneWillDeactivateNotification,UISceneDidActivateNotification,UIPointerLockStateDidChangeNotification])[[NSNotificationCenter defaultCenter] addObserverForName:name object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note){if([note.name isEqualToString:UIApplicationWillResignActiveNotification]||[note.name isEqualToString:UIApplicationDidEnterBackgroundNotification]||[note.name isEqualToString:UISceneWillDeactivateNotification]){std::lock_guard<std::mutex> lock(mouseMutex);pointerState.setForeground(false);mouseDX=mouseDY=mouseWheel=0;lifecycleResets++;}else DSPRefreshPointerLifecycle();}];
+   // A retained Tab request can outlive focus / the current physical mouse.
+   // Re-evaluate it on return; do not toggle the game's original request.
+   for(NSNotificationName name in @[UIApplicationDidBecomeActiveNotification,UISceneDidActivateNotification,UIWindowDidBecomeKeyNotification,GCMouseDidBecomeCurrentNotification])
+    [[NSNotificationCenter defaultCenter] addObserverForName:name object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note){DSPInvalidatePointerLockPreference();DSPInstallUIKitPointerObservers();}];
   }
  }
  DSPRefreshPointerLifecycle();
@@ -385,7 +401,7 @@ extern "C" __attribute__((used,visibility("default"))) void DSPAOTSetUIKitWheelP
 extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollPointer(float *dx,float *dy,float *wheel,float *normalizedX,float *normalizedY){
  // The host invokes this once per Unity frame. Installation / scene queries are
  // UIKit main-thread operations; all mutable transport state is mutex-protected.
- if(NSThread.isMainThread)DSPInstallUIKitPointerObservers();
+ DSPInstallUIKitPointerObservers();
  GCMouse *mouse=GCMouse.current;GCMouseInput *input=mouse.mouseInput;
  observedMoveID=(uintptr_t)(__bridge void*)input.mouseMovedHandler;observedScrollID=(uintptr_t)(__bridge void*)input.scroll.valueChangedHandler;
  if(input!=trackedMouse){
@@ -415,7 +431,7 @@ extern "C" __attribute__((used,visibility("default"))) int DSPAOTPollPointer(flo
  }
  int gcButtons=input?(input.leftButton.pressed?1:0)|(input.rightButton.pressed?2:0)|(input.middleButton.pressed?4:0):0;
  for(NSUInteger i=0;i<MIN(input.auxiliaryButtons.count,4);i++)if(input.auxiliaryButtons[i].pressed)gcButtons|=1<<(i+3);
- DSPPointerPacket packet;{std::lock_guard<std::mutex> lock(mouseMutex);sampledGCButtonMask=gcButtons;packet=pointerState.poll(input!=nil,gcButtons,mouseDX,mouseDY,mouseWheel);mouseDX=mouseDY=mouseWheel=0;if(pointerState.foreground)testPointer.consume(packet);else testPointer.cancel();}
+ DSPPointerPacket packet;{std::lock_guard<std::mutex> lock(mouseMutex);if(NSThread.isMainThread)pollsOnMainThread++;else pollsOffMainThread++;sampledGCButtonMask=gcButtons;packet=pointerState.poll(input!=nil,gcButtons,mouseDX,mouseDY,mouseWheel);mouseDX=mouseDY=mouseWheel=0;if(pointerState.foreground)testPointer.consume(packet);else testPointer.cancel();}
  if(dx)*dx=packet.dx;if(dy)*dy=packet.dy;if(wheel)*wheel=packet.wheel;if(normalizedX)*normalizedX=packet.nx;if(normalizedY)*normalizedY=packet.ny;
  DSPRecordInputSample(mouse,input,packet.state,packet.dx,packet.dy,packet.wheel);return packet.state;
 }

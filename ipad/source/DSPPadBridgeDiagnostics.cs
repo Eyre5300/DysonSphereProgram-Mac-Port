@@ -47,6 +47,10 @@ public sealed class DSPPadBridgeDiagnostics:MonoBehaviour {
   float limit=Time.realtimeSinceStartup+300;while(!VFPreload.done&&Time.realtimeSinceStartup<limit){var p=FindObjectOfType<VFPreload>();if(p!=null&&p.languageSelectGroup.gameObject.activeSelf)p.SelectLanguageZHCN();yield return new WaitForSecondsRealtime(1);}
   if(!VFPreload.done){Stage("preload_timeout");busy=false;DSPGame.ExitProgram();yield break;}
   Stage("main_menu");yield return new WaitForSecondsRealtime(3);yield return Capture("emu-full-game-menu.png");
+  if(DSPPadDiagnosticLaunch.RayReceiverAuditRequested){
+   Stage("ray_receiver_audit");yield return DSPRayReceiverRegression.Run();if(!DSPRayReceiverRegression.Passed)r.errors.Add("Ray receiver capture failed");
+   r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;
+  }
   if(DSPPadDiagnosticLaunch.ReleaseSmokeRequested){
    Stage("release_smoke");yield return DSPPadReleaseSmoke.Run();if(!DSPPadReleaseSmoke.Passed)r.errors.Add("Release smoke failed");
    r.autoTestCompleted=true;busy=false;Stage("batch_finished_normal_exit");DSPGame.ExitProgram();yield break;

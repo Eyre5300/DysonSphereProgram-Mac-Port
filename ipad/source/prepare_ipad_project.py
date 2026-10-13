@@ -87,6 +87,7 @@ def main():
     run('apply_verta_binding.py','--project',project)
     run('apply_performance_hud.py','--project',project)
     run('apply_power_shader_safety.py','--project',project)
+    run('apply_ray_receiver_register_fix.py','--project',project,'--report',a.report.with_name('ray-receiver-register-fix.json'))
     run('apply_remaining_adapters.py','--project',project)
     # Match the accepted incremental build: diagnostic sampling precedes the
     # Escape scheduling hook in both original VFInput method tails.

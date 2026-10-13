@@ -3,7 +3,7 @@
   "files": [
     {
       "file": "source/DSPAOTDeviceInput.mm",
-      "sha256": "64048b724fa1c51ab282902422dd6fb2f81407569d900916b8f05ca977a91907",
+      "sha256": "271e8ee665bc6530655082a813c157a97834a57aa0b46c135aca96b488bdc444",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "file": "source/DSPPadBridgeDiagnostics.cs",
-      "sha256": "a55db98c10d14d5ce771b65eadbf1e65010cf79fe24faedea8cd507cfb12d93c",
+      "sha256": "c55e8113e39e03e6e4fa207c2c44bf4d783042704f53bc5db841c5f822d8ebcc",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "file": "source/DSPPadDiagnosticLaunch.cs",
-      "sha256": "9934886f47f63a58e5a18cbc38a05d3da26552034e8298d7a58095e544ba8965",
+      "sha256": "d9491e4f5ce900988f64a5a90350ed442f1d15555c85c706bc2bce7dd578f276",
       "origin": "Existing project-authored platform adapter, patch tool or synthetic test harness; not copied from recovered game export"
     },
     {
@@ -543,7 +543,7 @@
     },
     {
       "file": "source/prepare_ipad_project.py",
-      "sha256": "b8e500087f925347cc6d371aae135b0f2db5d6b7c4fbc3858d0088c882867de6",
+      "sha256": "d9d7dc1f455e6e9bf9bd54560cec09d716e17d76d8e013402c586b10a27bd862",
       "origin": "New original public wrapper, safety check or compatibility stub authored for this release"
     },
     {
@@ -710,6 +710,21 @@
       "file": "source/migrate.py",
       "origin": "Original local workflow, platform adapter or synthetic validation; no recovered game source or assets",
       "sha256": "e531ad209f2bf0526478df7193b0feb63ba52332663783f4d4626e324385c742"
+    },
+    {
+      "file": "source/DSPRayReceiverRegression.cs",
+      "origin": "Project-authored platform adapter or bounded diagnostic; no recovered game implementation/assets",
+      "sha256": "6b813df2ebf714f97337888c97223ac8d622a37ae926fb7222214295015fe592"
+    },
+    {
+      "file": "source/prepare_ray_receiver_probe.py",
+      "origin": "Project-authored bounded diagnostic and transformation helper; generated game-derived assets remain private",
+      "sha256": "7154fbdbc1ac9d00e707c8f432675304a32b197477f42e24dcf1389aeb7ca0c4"
+    },
+    {
+      "file": "source/apply_ray_receiver_register_fix.py",
+      "origin": "Project-authored platform conversion or bounded diagnostic; no recovered game assets/code published",
+      "sha256": "d9fe6f1863bfce6007d13c3cc80173048d6670532e65302535720f02730faa84"
     }
   ]
 }

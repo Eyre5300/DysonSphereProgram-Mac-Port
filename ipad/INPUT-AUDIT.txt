@@ -1,3 +1,18 @@
+2026-10-13 — Current keyboard60 pointer lifecycle follow-up
+
+Same-version original UICursor, SailPoser, UIZScreen and PlayerController were
+reviewed: locked free look depends on actual capture and original camera gates.
+47 failed for the user, but the diagnostic restart worked before this change;
+the human trace contains locked rotation. The intermittent failure is not proven
+fixed. 60 re-evaluates the retained capture request on foreground/key-window/
+current-mouse return and permits coalesced main-thread observer refresh from any
+polling thread. Telemetry no longer initializes observers. 58's measured polls
+were all on the main thread, so off-thread refresh is not a demonstrated cause.
+Original game policy is unchanged. Host transport/build checks passed; focused
+physical Universal Control recurrence check is pending. Physical Escape remains
+postponed separately. The following 46/44 sections are historical scoped evidence,
+not a statement of current unresolved high-refresh Escape scheduling.
+
 2026-10-13 — Pro keyboard build 46: high-refresh Escape follow-up
 
 The 44 source review below remains the broad inventory. This change reviews

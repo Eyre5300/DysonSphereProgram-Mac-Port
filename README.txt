@@ -1,4 +1,4 @@
-2026-10-12: iPad Pro developer tools added. See ipad/README.md and ipad/VALIDATION.md. Mini support is retired. Historical iPad status below is superseded by these documents.
+2026-10-13：公开支持 Mac / iPad Pro 键鼠迁移；当前 iPad 安装版本60。触控暂停、Mini终止。当前证据及未验收项见 ipad/VALIDATION.md，iPad独立入口见 ipad/MIGRATION.txt。
 
 戴森球计划 Mac 版迁移工具（本轮已验证工具；新机器验收待进行）
 
@@ -6,7 +6,7 @@
 
 支持的输入：DSP 0.10.35.29104，Steam Windows depot 1366541。
 Assembly-CSharp.dll SHA256：6c122e5443e6843979b4064050dfcb5e0d75577a0b64f6ae4111290238b33c12
-未知版本会被拒绝，不能靠删除校验来宣称兼容。当前目标是 Apple Silicon Mac / Metal / Mono。iPad/emu 仍需独立验证。
+未知版本会被拒绝，不能靠删除校验来宣称兼容。Mac 目标是 Apple Silicon / Metal / Mono。iPad采用独立AOT/原生引擎路线，37.1及47已在本机新目录完成独立迁移；另一台全新Mac尚未验收。
 
 交互式入口：双击 start.command，或用 Python 3.12 运行 wizard.py。会提示依赖安装、路径选择和本人许可激活；输入 q 暂停，再次运行继续。完整说明见 docs/用户操作指南.txt。向导与恢复流程目前 79 项检查通过，尚未在新机器完成全流程。
 

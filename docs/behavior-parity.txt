@@ -1,150 +1,77 @@
-2026-10-13 当前 / 键鼠47：公开连续入口已在本机从未修改Windows导出、新工作目录完成资源恢复、编译、签名、Pro安装及限定冒烟。3,113个游戏C#与46一致，5,662个正式shader/hlsl/compute一致；本轮仅新增显式启用的隔离保存重载冒烟及构建入口，不重写游戏规则/输入，不限帧。两轮新BC采样、正式资源/指令/元数据核对、真实世界模拟和隔离保存重载通过。66份原用户文件恢复校验一致，普通启动1376x1032、自动测试关闭。模块目录和Python环境继承修复已进入原创工具。
-差异/限制：实验测试细分材质仍有Metal编辑器诊断，未宣称完整恢复；真实iCloud异常、所有场景逐像素一致、多小时和最大工厂、其他Mac环境没有新增证明。实体Esc待用户回到现场；既有46程序化专项不等于实体通过。Mac独立复现未执行。完整证据边界见ipad/VALIDATION.md和NONINPUT-AUDIT.txt。下方“当前46/原包不变”等为历史阶段记录。
+Windows行为对齐与差异记录（2026-10-13；当前iPad键鼠60）
 
-2026-10-13 追加：用户当前远程，实体键鼠Esc连按/长按/关窗次序补测明确延期，等能现场操作时继续；不得计为通过或继续要求用户远程按实体键。公开源码准备复核已修正全新入口与46增量工程的输入日志/Esc挂钩先后差异，生成的VFInput、GameMain、UIEscMenu与46工程逐字节一致；原安装包不变。该差异未被认定为游戏行为故障，源码重放不等于再次完整构建或新机器复现。范围见ipad/VALIDATION.md及ipad/REMAINING-AUDIT.txt。
+范围与准则
+同版本Windows DSP 0.10.35.29104；先核对原始实现，优先修平台适配。
+保留原版输入、关窗顺序、模型、功能和游戏规则。未验证不等于完全等效。
+仅交付Mac及iPad键鼠工具；Touch57暂停且真实手感未验收，Mini停止。
+Mac已阶段性交付，本次只更改iPad适配，不替换Mac正式App。
 
-2026-10-13 当前 / 键鼠46：高帧率 Esc 已完成限定专项修复与回归。
+当前60：接收站重力透镜光柱
+2-8副本172座接收站，50座有透镜且接收功率。GPU状态与CPU一致。
+同一运行中：原shader无光柱；仅取消深度淡出仍无；整数临时寄存器位表示
+恢复光柱/粒子；恢复原shader再次消失。转换已接入iPad公开准备入口，
+只改临时值表示，原始规则、数值、纹理、混合与深度保持。正式60三视角
+检查通过，批次错误0，67份用户文件不变。初始镜头无透镜接收站没有此
+光柱属于正常条件。未证明所有接收站状态、所有渲染效果逐像素等价。
 
-根因一：Windows 原方法的 delayedEscape 只等一个渲染帧，高刷新率下可能在建造逻辑采样前暂停。iPad 适配改为等待原版 UI／逻辑消费者得到机会；未消费才交给原版暂停方法。此处主动修复已重现的原始时序边界，不声称复刻该竞态缺陷；原版按键、窗口优先级和所有关闭／取消动作保留。
-根因二：原版暂停菜单 ResetAllAxes 清理当前输入时，平台队列连尚未投递的后续 Esc 一并丢弃。限定在暂停菜单初始化作用域保留未投递 Esc，仍清理当前状态与其他输入，阻止旧长按被重新解释成一次按下。退出场景、重生、输入文字、失焦等上下文不会留下待处理的暂停请求；真实外设失焦重连的所有组合仍未验证。
+当前60：通用控制鼠标锁定仍待真实复核
+用户47出现Tab隐藏后自由转向/中键同时失效。47诊断重启后用户确认恢复，
+真实输入日志含锁定转向，因此没有捕获原间歇故障。60增加前台/窗口/
+当前鼠标恢复时的UIKit捕获重评估，跨线程轮询可刷新主线程观察器，遥测
+不再初始化输入。实际捕获授权与原Tab/相机规则保留。58轮询全部主线程，
+不能认定线程就是故障根因。宿主/构建通过不等于实体通用控制已修复。
 
-Pro 批次 10f6d887-8528-48a2-a489-1f2b7d4fa277：119.04FPS、73 项检查、1585 个无游戏逻辑推进的渲染帧，全部通过，正常退出且运行错误0。覆盖3种工具取消、12个帧时机、多窗口先后、六连按完整层次、长按、设置页／暂停恢复、科技／星图／蓝图。未降低帧率或画质；1376x1032和帧率配置保留。48个存档逐字节未变。完整报告见 ipad/VALIDATION.md。源码审查与合成原生输入不等于 Windows 二进制实机或所有实体键鼠已完全等效。下方44高帧率失败及临时60FPS记录为历史，不能当作46使用限帧的证据。
+已核对的键鼠行为与修复范围
+- Caps默认曲速：按下边沿切换，松开/其他键不计数。44核验GC按键身份、
+  修复首次鼠标回调未安装与连续同键修饰键快照覆盖；保留Windows改键规则。
+- Tab切换航行捕获；UICursor使用系统实际授权，不能把请求当成已锁定。
+  航行相机依原版锁定/中键/滚转条件转动，稳定曲速固定镜头属于原版。
+- C原版打开背包与机甲；Esc先背包后机甲。46适配等待原UI/建造消费者后
+  才允许未消费Esc暂停，限定暂停菜单Reset保留尚未投递Esc，不重发旧长按。
+  这是修复原方法高刷新竞态，保留关闭方法及顺序，不复制该竞态、不限帧。
+  119.04FPS的73项程序化专项通过；实体快速/长按Esc依用户安排延期。
+- 普通地面缩放到边界不会自动进星球；M打开星球，原版星球/星图旋转默认
+  中键，星球继续缩远进入星图。已核对原版消费者并做限定程序化验证。
+- 矿点图标由原dfVeinOn控制，悬停提示是另一条路径，不能强制常显。
+- Command与Ctrl保持分开。OS保留快捷键、IME、全部改键、跨键亚帧修饰键
+  重叠未穷尽；Greater/Plus/SysReq保留Unity回退。每键队列32事件有上限。
 
-2026-10-13 追加任务 / 键鼠44：完成本轮曲速、鼠标捕获与保存分辨率修复，并审查同版本 Windows 的300个输入相关文件（250个仅入口别名不同；50个差异逐项审查）。完整范围和限制见 ipad/INPUT-AUDIT.txt。
+资源/显示修复及保留差异
+- 矿石缺绘制：31修复移除Mini实验时遗漏的VertaBuffer材质长度绑定，原版
+  全量上传/游戏数据不变。31.3综合通过604矿脉/22模型及限定星球图标验证。
+- 电力显示：36保留H菜单/电力子按钮规则和PowerSystem，修复四shader的
+  Metal角点位转换，覆盖/供电点/缺电警告五阶段验证通过，非所有设施证明。
+- 地表暗区：39恢复372张法线原始AG编码与payload，纠正iOS重导出RG与
+  原shader解码不符。限定星球/111黑雾地表检查通过，不声称全场景根治。
+- BC保留原始压缩块、尺寸和mip；回收游戏原图标为私有生成结果，公开只
+  提取工具。iPad DIN使用原游戏STXihei回退，字宽/外观可能与桌面不同。
+- 用户指定常驻原版FPS/实际UPS，增加iPadOS phys_footprint GiB/秒显示；
+  不是托管堆或GPU统计求和，不把理论逻辑帧估算当实际UPS。不代表性能提升。
+  移除键鼠版额外屏幕Esc，实体顺序不变。App使用原名和原始图标。
+- iPad按实际原生比例生成原生/1920/1600/1376/1280宽度档，跳过放大档，
+  保留刷新率和原版确认保存；41项宿主检查通过，仅当前Pro有整机证据。
+  Air/其他Pro分辨率适配不保证内存、BC或运行兼容。Mini无专用预设。
+- Mac启动按屏幕选择无边框全屏，与Windows沿用保存启动显示设置有差异；
+  iPad保留已保存分辨率。动态全场景性能和画质一致未证明。
+- Mac分拣器光带按用户要求严格LEqual遮挡，取消原版约0.3单位背面容差；
+  原运输/模型/色彩不变。普通已建光带与预览区分，限定对照通过。
+- Mac H详情面板绘制/命中层级提高；恢复原圆环Sprite矩形/轴心/透明边距。
+- Mac小地图旧缓冲延至帧提交/GPU读回后回收；四UI临时MSAA存储保留参数，
+  最大RGBA差0.000488低于0.001，不是逐位一致。等价对称投影只限Mac路径。
+- Mac CargoPath仅延后分配导入时全零预留尾部，全部有效样本和存档精度
+  不变，编辑前恢复容量；不承诺内存硬上限，不套用到iPad。
 
-本轮确认：原生鼠标首次连接的空回调注册缺陷；Caps不核验事件身份导致其他键误计数；快速连续同键组合的修饰键覆盖。44的适配层已修复。实际Pro回调注册/投递、UIKit捕获及程序化飞行专项通过；Caps进退曲速后W/E/Tab负对照、普通航行和退出曲速缩放通过。稳定曲速固定镜头距离属于原版规则，未改。1376x1032/1600x1200经原版设置预览确认保存，1376x1032普通重启保留。
+存档、蓝图、平台服务
+Mac目录用Finder；iPad系统Files选择iCloud/本机/第三方，协调复制后原版
+解析，同名保留两份；导出快照，不改原件，不自动云同步。蓝图64MiB上限，
+存档仅头部/长度预检，不保证任意外部文件可完整加载；大文件可短暂停顿。
+本机URL委托的复制/取消/重名/解析通过，不代替真实云下载/离线/空间不足。
+Steam服务未接入，成就/Steam云同步不与Windows等效；个人签名不是公开发行。
 
-保留的原版时序边界：约120渲染FPS/60逻辑UPS，Esc发生在两次Update之间没有逻辑tick时，Windows原方法的delayedEscape可能先打开暂停菜单，建筑仍在手里。44实机出现，原方法私有时序重放可复现；尚非Windows二进制实机复验，不宣称已修复。受此影响的高帧率批次保留FAILED。临时60FPS参考批次39项键鼠断言和10项显示/回调/隔离检查全部通过，随后恢复用户原有VSync/FPS设置；未通过永久限帧掩盖。
-
-未全面等效/未验证：真实USB、蓝牙、Universal Control全时序，全部改键组合、跨键同帧修饰键重叠、任意失焦/重连、系统保留快捷键和IME。32事件队列/超时是平台输送边界，不承诺任意宏无限速无损。Greater/Plus/SysReq保留Unity回退；Command不映射为Ctrl。Files/iCloud采用系统导入导出，平台权限和文件路径语义与Windows不同；Dyson粘贴按钮延迟到显式操作才验证剪贴板，避免被动读取权限请求。代码审查与程序化测试不能被表述为所有操作均已实机验证。无Mini/触控更新，无Mac正式版变动，无新性能优化。
-
-2026-10-13 早先收尾状态（已被下述追加任务取代）：用户停止优化，键鼠42为最终已安装版本；43未验收实验撤回。372张原始法线编码恢复及文件按钮布局在39通过限定实机检查。40-42正常模拟性能诊断证实原生分辨率约19-21FPS；1376x1032/MSAA2约57.23FPS，未达到60FPS，诊断降分辨率/关闭效果配置未采用。当前启动仍采用既有原生分辨率策略；43的保存分辨率保持实验未验收，不宣称已修复。Mac独立迁移验证延期。历史“进行中/后续”全部停止，未经用户新指令不继续。真实物理键鼠、真实云传输、全场景渲染/战斗及长期稳定性未全面验证。
-
-2026-10-12 历史问题记录：iPad普通地面约24FPS/48UPS、行星视角左侧大片异常暗区及用户黑雾位置暗地表。独立重建37.1同样可见，不能因功能回归通过而称画质一致。顶部实际UPS与性能页“理论逻辑帧”口径不同，同版本Windows源码已核对；低FPS根因尚未确定。专项定量诊断进行中。
-
-Windows 原版行为对齐记录（持续更新，非完整验收报告）
-
-修改准则
-每个问题先核对同版本 Windows 输入的原始实现，再判断是否为移植缺陷。
-优先修改平台输入、资源和图形适配层。保留原版按键、窗口关闭顺序、游戏规则、模型和功能。
-无法对齐时记录原版行为、Mac 差异、原因、替代操作和验证范围，不以“基本可玩”代表完全一致。
-
-已核对：航行输入与窗口规则
-Caps Lock：默认曲速键；一次按下进入，再一次按下退出。松开不得触发新操作。
-Tab：切换航行鼠标锁定/释放。
-C：同时打开机甲信息和背包，再按 C 关闭。
-Esc：按原版优先级逐层关闭。C 打开的窗口先关闭背包，再关闭机甲信息。
-只有无窗口需要光标且航行锁定开启时才隐藏光标。主动 Tab 释放的状态应保留。
-依据：该支持版本原始 VFInput、PlayerMove_Sail、UIGame、UICursor 的调用路径。
-曾尝试一次 Esc 同时关闭两个窗口，因改变原版操作已撤回，未纳入公开转换流程。
-Mac Caps Lock 已通过 GCKeyboard 物理按下事件接入原版曲速逻辑。用户确认两轮进入/退出正常；日志显示松开事件不增加按下次数。仅大小写/输入法状态变化的候选曾导致退出后重入，已弃用。
-重新点击窗口后光标保留符合原版失焦释放逻辑；用户确认按 Tab 恢复正常。未修改为点击自动锁定。
-
-已知未等效或未完成验收
-1. Steam 服务集成禁用；不能宣称成就、云同步或其他 Steam 服务与 Windows 等效。
-2. 新机器完整转换流程未验证；本机已完成自有输入的独立重建与部分功能回归。
-3. 跨恒星物流已在独立世界验证两趟曲速运输、途中保存重载和返航；已在预置资源/框架下验证实际火箭/太阳帆发射、到达/吸收，以及自然地面敌人的炮塔战斗。大型网络、完整战斗、全资源建造链及长期稳定性尚未全面验收。
-4. 大型存档的帧率和内存仍有瓶颈。只确认特定测试中的改进，不代表所有场景。
-5. iPad Pro 27 已完成限定综合实机验证；具体范围及未验收项见 ipad/VALIDATION.md，不能推广为完整 Windows 等价。
-
-这些条目不是全部潜在问题的清单；每项实际修复都需要相应运行证据。
-
-小地图 Metal 缓冲区：Windows 原版在扩容/销毁时立即释放，Mac 综合测试出现缺缓冲区跳过绘制；结合调用顺序推断为队列中的绘制仍引用被释放的缓冲区。适配层保留旧缓冲区到帧提交及 GPU 读回完成，保留原池内容、容量规则、绘制和战斗逻辑。三次战斗/保存重载、15页切换验证未再出现此前的缺缓冲区跳过绘制，28个待释放缓冲区全部回收。
-
-UI多重采样存储：仅四个已测试目标在AppleMetalMac使用临时MSAA存储；原版图像的自然帧/重复/负对照及初建、尺寸切换、保存重载通过。最大绝对RGBA差0.000488低于0.001阈值，未证明逐位完全一致；不改分辨率/颜色格式/深度/抗锯齿数、游戏规则或模型。银河界面及主相机不改。
-
-分拣器光带：修正遗漏的原版 SOFTPARTICLES_ON 场景深度分支。原版 softParticles=1，普通箭头材质 ZMin=-0.3、ZMax=0、XRay=1；只看 ZTestOff 的旧分析不完整。当前按用户明确要求，普通已建分拣器的派生着色器另外使用严格 LEqual，让实体完全遮挡光带。这会取消原版约0.3游戏单位的背面容差，是已记录的显示差异；不改运输逻辑、材质色彩/动画/混合、模型、建造/蓝图预览。130/55MB副本各三视角、9统计页及科技/星图/戴森球/机甲/蓝图/背包、运行和保存重载通过；受控深度前/后/可见区域正反对照通过。截图中光带不再穿过伊卡洛斯和建筑；界面提示和部分时间驱动灯光仍变化，不作为逐像素一致声明。
-
-2026-10-11 Mac 界面修复已交付（verification-ui-production-20261011）：
-同一 Windows 输入的环形 Sprite 原始矩形/轴心/透明边距与导出资源不一致。转换工具从用户原始文件恢复元数据，保留图片、贴图引用和其他对象；禁止把恢复结果放进发布目录。
-H 按键、菜单切换、点击逻辑和弹窗位置保持原版；按用户最新要求，只提高活动详情弹窗的绘制和鼠标命中层级，覆盖中间工具栏。此前自动移动位置的候选未交付，已撤回。五种 iPad 比例窗口的8个按钮均在屏幕内，并通过最前方命中检查；弹窗背景原始矩形部分低于屏幕边缘，不影响按钮，本次未移动位置。iPad尚未验证。
-查看蓝图／存档目录通过 macOS NSWorkspace 的本地文件URL打开Finder；其他平台保留原版 Application.OpenURL。iPad文件管理交互尚未验证。
-
-最终 Mac 适配（2026-10-11）
-CargoPath原逻辑与存档精度保持；仅AppleMetalMac在Import时不先分配全零预留坐标尾部，所有有效样本完整，五种几何变更前恢复原容量。Windows/iPad分支不改；43成对导出、完整有效读取、GPU/存读/综合玩法通过。大规模后续编辑可恢复原内存成本，不承诺硬上限。
-GameCamera对称投影仅在AppleMetalOSX由引擎计算，60组原主/GPU矩阵一致；原正负偏轴路径、真实蓝图视角、FOV/裁剪/位置不改。修复原版巨大坐标旅行帧在Mac引擎角点错误，两个最大工厂综合UI旅行未再复现。固定输入图像一致；完整动态世界逐像素一致未建立，原版重复Render自身差异的失败证据保留。
-以上均已进入最终生产包；不能把普通自检或有限批次扩展成全部Windows功能/新机器/多小时/iPad证明。
-
-用户要求的启动显示变化：Mac每次启动按当前屏幕尺寸/刷新率选择无边框全屏，覆盖上次保存的窗口设置；之后本次运行中正常手动修改保留，按键/画质/游戏规则不变。与Windows原版沿用保存的启动显示设置存在明确差异。iOS横向原生分支未真机验证。Mac3840×2160、原设置切窗口/恢复、多UI与保存重载通过。
-
-
-iPad Pro developer preview (2026-10-12)
-Pro only; mini deployment and its named resolution preset are retired. Build27 completed 14 functional stages, 31 keyboard and 25 mouse programmatic checks, large-save captures and normal exit; see ipad/VALIDATION.md. Production Mac remains unchanged.
-Original Windows bindings, modifiers and close order are retained. Left/Right Control are independent from Command. Platform queues keep quick down/up transitions until original Update publication and Fixed sampling. Synthetic packets do not prove physical Universal Control/USB/Bluetooth behavior.
-Walking: long routes passed except the original landing-capsule collision; the previously reported unknown location remains unreproduced.
-Graphics: HDR Bloom/DoF, shadow tiers and exact original BC blocks adapted.2234 compatible textures restored;361 differing normal encodings excluded. DIN Chinese fallback uses bundled STXihei, not pixel-identical OS font fallback. Dynamic lighting/animation time is not fully controlled; no all-scene pixel parity claim.
-Animation: Pro retains original VertaBuffer loading/upload. The unfinished mini lazy/chunked upload experiment is excluded from the public production path; legacy report counters are zero compatibility fields.
-Bounded tests cover supplied large saves, production/logistics/science/blueprints, sphere/launch, warp/interstellar logistics, limited ground combat and five-minute stability. Not all weapons, space combat, maximum factories, real hardware input or multi-hour play.
-Public files contain authored tools and adapters only. Users supply their own game, Unity SDK and signing. Public entry points undergo source preparation/compile and local archive/manifest checks; a clean new-machine end-to-end installation is still unverified. This is not a ready-made game or guaranteed one-click installer. See ipad/README.md.
-
-
-2026-10-12 独立触控首期（codex/ipad-pro-touch）
-仅 Bundle ID 含 .touch. 的独立 App 开启新触控适配。Pro27 安装及存档保持独立。
-变化：左侧移动、右侧视角、世界定位后显式确认施工、屏幕距离微调、工具修饰键按钮锁定、触控显示期间隐藏右侧键盘提示。这些是有意的触控交互差异，不宣称与鼠标手势相同。
-保留：建筑吸附与合法性、采矿机原版精细旋转、传送带路径和高度、分拣器源/目标接口选择、原版逐级取消。3113 原游戏源码文件与 Pro27 私人项目逐字节相同。
-限制：微调不是固定一格；球面锚点尚未覆盖复杂地形和远景；仍有原版键盘教程文字；尚未完成蓝图、批量拆除升级、物品快捷分配、战斗及太空飞行的专用触控交互。
-测试使用实际 iPad Pro，但输入由程序送入同一触控路由/经射线核对的按钮回调；无法证明实际手指、所有系统多指手势、人体工学或长时间操作。分拣器测试尚未覆盖全部接口组合与实际货物流通。详细版本结果见 ipad/VALIDATION.md。
-
-
-2026-10-12 输入自动切换与系统文件访问
-同版本 Windows VFInput 的原始键位/修饰键、UIBlueprintBrowser 的目录打开、GameSave.ReadHeader 和 BlueprintData.LoadBlueprintData 已检查；不改变原游戏源码与解析格式。
-.touch. App 增加真实输入活动自动选择、拖拽释放后交接以及自动/固定输入偏好；3像素累计鼠标移动阈值是防抖适配，不是 Windows 原有逻辑。触控施工仍为预览后确认。
-键鼠与触控共用 UIDocumentPicker：系统选择 iCloud Drive/本机/第三方文件，NSFileCoordinator 协调读取并复制到本机，再原版校验；同名保留两份。导出快照不改变原件；取消不导入，不触发自动云同步。
-存档只预检原版头部及长度，不保证完整内容/版本兼容；蓝图设置64MiB导入上限以限制全量解析开销。大量文件的本机复制/解析可造成短暂停顿。未知格式和无效内容显示错误。
-测试中通过原生委托送入本机文件 URL 验证复制、取消、重名和原版解析；不能把该结果当作 iCloud 实际上传/下载或第三方提供商验证。自动模式的程序化回归也不代替实体键鼠/手指与系统合成事件验证。具体版本及安装限制见 ipad/VALIDATION.md。
-
-2026-10-12 Pro keyboard world rendering correction (31/31.1)
-Touch work is paused by the user. Independent keyboard fixes branch; no mini work.
-Original comparison: Windows 0.10.35.29104 VertaBuffer storage, full upload,
-Import/Export and frame data retained exactly. Only SetToAnimMaterial's buffer
-binding calls PortSetBuffer, matching the established Mac Metal adapter.
-Regression cause: restoring original VertaBuffer while removing the mini lazy
-upload experiment also removed required _PortWords_VertaBuffer metadata.
-Device30 had 604 live veins, correct CPU/GPU instances and animation upload,
-and nonzero indirect draw counts, but both animated vein materials had length0.
-Device31 restored lengths27510/19362 and visible ground/globe ore geometry.
-All108 referenced vein shader dependencies matched Mac; no shader/asset downgrade.
-This is a platform metadata fix, not a change to original game data or behavior.
-Device31 generated diagnostic-only absent-material-property errors and ended the
-test input transport before the following keyboard phase. It is NOT accepted as
-a clean batch.31.1 was built but not installed.31.2 addresses both test-driver
-issues and additionally tests the original vein-distribution toggle. Game fix
-is identical across31/31.1/31.2; final status below.
-Original input: RTS ordinary zoom clamps at maximum distance, M opens globe;
-original cameraRTSRotateButton defaults to middle mouse in globe/starmap.
-Both30 and31: normal zoom stayedNormal at1; left globe drag0 degrees,
-middle19.14178 degrees; globe continued zoom enteredStarmap. Keep original logic.
-UIVeinDetail/UIVeinDetailNode/UIZoomWatcher/StarmapCamera match Windows exactly
-(after platform Input alias where applicable). RTSPoser/PlanetPoser only retain
-an existing gated touch-look alternative; keyboard rotation branch unchanged.
-Vein distribution icons are controlled by dfVeinOn, false at original initialization;
-hover information is a separate original path. Do not force the overlay always on.
-Scope: initial-world rendered veins and active renderer batches, automated native
-input queue, shared document picker/integration and keyboard/mouse regression.
-Not a claim of all planets/models, physical keyboard timing, cloud-provider actual
-transfer, or complete visual parity. Mac final and installed Touch29.3 are unchanged.
-
-31.2 combined batch: ore models, 36 enabled globe icons, both original camera
-paths, 20 file and25 mouse checks passed with no runtime errors. Keyboard flight
-fixture reachedFly/Sail but returned to ground before leaving the planet, so the
-strict combined gate FAILED (24keyboard PASS, downstream space checks unverified).
-31.2 isolated integration batch: same installed game, without the preceding view
-audit, passed20files/31keyboard/25mouse and enteredSail with planet0, normalexit0.
-Original UIGlobemap.FadeOut changes both RTS/build camera yaw/pitch/distance.
-31.3 test-only cleanup restores both camera parameter triples saved before the
-view audit, records before/after equality, then executes the existing full keyboard
-and mouse sequences. Production camera/flight logic is not patched.31.3 final
-batch result is recorded in ipad/VALIDATION.md; prior failed batches remain evidence.
-Complete3113-file comparison with Pro27: only VertaBuffer differs, by the one
-required material-binding call. Original full resource payload/quality retained.
-
-31.3 FINAL: combined world/icon/input/files batch passed; 604veins/22active models,
-29visible globe icons,20files/31keyboard/25mouse, errors0 and originalexit0.
-Camera before/after equality verified; screenshots reviewed. Scope limits above remain.
-
-2026-10-12 键鼠36：电力显示与用户指定的HUD差异
-Windows原版H仅展开细节菜单，电力子按钮切换powerGraphOn；断电/缺电状态由原PowerSystem生成。本次不改按键、开关回调、功率和判定阈值。修复四个恢复后的着色器中Metal优化造成的角点位转换错误，仍使用原DrawProceduralNow与全部原始材质。Pro五阶段GPU数据与截图证明覆盖/供电点/警告恢复；未验证全部发电设施、复杂工厂和所有视角。
-按用户要求删除键鼠版额外屏幕Esc，实体Esc关闭顺序不变；常驻原版FPS/UPS属于用户指定的显示差异。新增App物理内存为iPadOS phys_footprint，每秒更新，GiB单位，不是托管堆或GPU与Unity统计之和；不宣称性能改善。原始游戏图标从本人文件私有提取，公开仅包含提取工具，名称“戴森球计划”。
-36同一批次完成电力/世界/20文件/31键盘/25鼠标自动验证、无错误、正常退出。真实键鼠无限相对位移、实际云文件传输、全场景视觉等价与长时间性能仍未验证。Mac已验收正式版不动，Touch29.3保留，mini不再部署。
-
-2026-10-13 focused audit: Reuse accepted input/power/files tests unless affected.372 original normal maps were previously converted AG->RG on iOS while recovered shaders decode AG.Original payload+encoding restoration implemented and byte-verified; build39 limited globe/fog-base visual checks passed; full-scene parity unverified.38 native~20FPS versus temporary half-width/height~54FPS points to rendering bottleneck, not proof of measuredGPUtime.38 fog closeups and parent-only file-button overlap gate INVALID; targeted diagnostics corrected.
+验证边界
+47在本机新目录从未修改Windows导出运行公开连续入口完成构建/采样/部署/
+世界模拟/隔离保存重载；60为其增量修复。其他干净Mac完整流程未验收，
+Mac独立复现延期。测试用细分材质仍有编辑器Metal诊断，不宣称全部恢复。
+历史限定生产/研究/蓝图/物流/戴森球/地面战斗及大存档验证不覆盖全部武器、
+太空战斗、所有工厂/编辑器/多小时运行。真实外设组合另行记录，不用注入
+冒充实体。具体批次、失败与范围见ipad/VALIDATION.md及INPUT-AUDIT.txt。
