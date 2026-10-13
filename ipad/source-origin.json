@@ -644,7 +644,7 @@
     {
       "file": "tests/DisplayPresetsHarness.cs",
       "origin": "Project-authored platform adapter, narrow source hook, source inventory or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "5153c48c775f08fd19a63059bc2e9319bcb4133dd20b86dfa9d04c022f8bf5c6"
+      "sha256": "abfca1397e57c5edfce40cea412ab62d4b94b65a944f3247cebdbab9049d0c3b"
     },
     {
       "file": "tests/EscapeContextChecks.cs",
@@ -684,7 +684,7 @@
     {
       "file": "tests/run_host_checks.py",
       "origin": "Project-authored platform adapter, narrow source hook, source inventory or synthetic diagnostic; no recovered game implementation/assets",
-      "sha256": "6e1cc53b6ba8d9ed5c864f46cecf3793990cfdb002f27e7787d055974ba22abc"
+      "sha256": "377c51743e46060a0e0332ea0cae07e9a4ab3d3cad4877b1bc995ddb480a9a33"
     },
     {
       "file": "source/DSPPadReleaseSmoke.cs",
