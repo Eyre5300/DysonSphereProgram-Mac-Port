@@ -77,3 +77,23 @@ Mac独立复现延期。测试用细分材质仍有编辑器Metal诊断，不宣
 历史限定生产/研究/蓝图/物流/戴森球/地面战斗及大存档验证不覆盖全部武器、
 太空战斗、所有工厂/编辑器/多小时运行。真实外设组合另行记录，不用注入
 冒充实体。具体批次、失败与范围见ipad/VALIDATION.md及INPUT-AUDIT.txt。
+
+2026-10-15 录制环境新增观察（待复核）
+连接 QuickTime 且使用缩放渲染时，录制控制读取 Screen.currentResolution /
+PortDisplayPresets.TryGetNativeResolution 得到 1280×960，而设备物理像素为
+2752×2064。不能把此返回值直接当作原生分辨率的证据。常规启动及重新打开
+设置列表是否受同样影响尚未复核，本轮未改正式60显示逻辑。视频比较使用
+指定设备的2752×2064和1376×1032，并核对实际渲染及截图尺寸。
+
+2026-10-15 Mac / iPad 输入修复范围复核（仅代码与既有记录）
+- Mac 的 tools/runtime/apply_mac_input.py 已接入 runtime/PortMacInput.cs
+  和 port_mac_input.c：物理 Caps 按下计数驱动默认曲速，保持原改键回退；
+  是已交付的 Mac 适配，不是本轮新增修改。Mac 其余键鼠走桌面 Unity 输入。
+- iPad 原生事件桥、快速按键队列、修饰键快照、高刷新 Esc 调度及 UIKit
+  捕获生命周期属于 ipad/source 路径；Esc 补丁显式以 DSP_EMU_IPAD 隔离，
+  不能把 iPad 的通过记录当作 Mac 已同步修复或已实测的证据。
+- Mac 的 Caps 按钮回调仍是独立实现，未迁入 iPad 后续按键身份/状态去重
+  方案；没有本轮 Mac 实体输入复现，不能据此确认或排除其他键误触曲速。
+- Mac 高刷新 Esc 快速/长按、关窗与暂停竞态，以及失焦重进后的航行转向，
+  未按 iPad 后续专项在 Mac 重新实测。阶段验收结论保持，不声称全按键无bug。
+  后续若启动 Mac 专项，优先补这些受影响范围；本轮未替换正式Mac App。

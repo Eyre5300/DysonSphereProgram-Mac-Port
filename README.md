@@ -8,11 +8,11 @@
 
 ## 开始使用
 
-1. 下载 Releases 中的 **纯工具 ZIP**，解压到本地目录。也可使用 GitHub 的 Code → Download ZIP。
-2. 阅读 [用户操作指南](docs/用户操作指南.txt)，安装所列依赖并准备自己购买的完整 Windows 游戏文件。
-3. 在工具目录启动 `start.command`。若下载后没有执行权限，在终端运行 `bash start.command`。
-4. 向导会提示依赖、游戏/工具路径和本人 Unity 许可操作。完成后继续；可以暂停并恢复，日志和生成文件保存在另一个私有工作目录。
-5. 构建完成后，按向导进行可选静音自检，再用自己的存档和蓝图试玩。构建成功不代表所有功能均无问题。
+1. 切换到 **`codex/ipad-pro-keyboard-fixes` 分支**，使用 Code → Download ZIP，解压到本地非云同步目录。也可[直接下载该分支的纯工具 ZIP](https://github.com/Eyre5300/DysonSphereProgram-Mac-Port/archive/refs/heads/codex/ipad-pro-keyboard-fixes.zip)。不要把旧 Mac 工具归档当作当前 iPad 入口。
+2. 按 [Steam 游戏文件准备](docs/Steam游戏文件准备.txt) 登录自己的已购账号、下载固定 Windows 版本并找到完整游戏目录；无需先在 Mac 上运行 Windows 游戏。
+3. **生成 iPad App**：阅读 [iPad 连续迁移指南](ipad/MIGRATION.txt) 和 [依赖/构建说明](ipad/README.md)，准备工具链与自己的签名，在根目录启动 `start-ipad.command`。**生成 Mac App**：阅读 [Mac 用户操作指南](docs/用户操作指南.txt)，启动 `start.command`。两者独立，不必先生成 Mac App。
+4. 若下载后没有执行权限，在工具目录的终端运行 `bash start-ipad.command` 或 `bash start.command`。按对应入口填写路径和配置，完成本人许可/签名准备，日志和生成文件保存在另一个私有工作目录。
+5. 构建完成后查看对应验证结果，再用存档副本试玩。构建成功不代表所有功能均无问题。
 
 首次运行仍需人工准备依赖，不是现成游戏的一步安装器。工具不收集密码、不代替本人接受 Unity 许可，也不上传游戏或私人文件。
 

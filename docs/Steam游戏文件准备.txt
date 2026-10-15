@@ -1,0 +1,64 @@
+从 Steam 准备本项目所需的 Windows 游戏文件（Mac / iPad 共用）
+
+本项目只发布原创迁移工具。每位使用者需要自己拥有《戴森球计划》，用自己的
+Steam 账号下载。工具不提供游戏文件，也不需要你的 Steam 密码或验证码。
+当前固定输入为 Windows 0.10.35.29104，不能用任意最新版代替。
+
+1. 安装 Steam 并确认游戏所有权
+   从 https://store.steampowered.com/about/ 安装 Mac 版 Steam，启动并登录。
+   在自己的库中确认已拥有游戏；未购买时可通过游戏商店页购买：
+   https://store.steampowered.com/app/1366540/Dyson_Sphere_Program/
+   购买与登录由本人完成。下载 Windows 文件不要求在 Mac 上运行 Windows。
+
+2. 打开 Steam 客户端控制台
+   保持 Steam 运行，在浏览器地址栏输入 steam://open/console 并回车，
+   允许浏览器打开 Steam。也可在 Mac“终端”执行：
+     open 'steam://open/console'
+   之后在 Steam 的 Console/控制台页输入下一步命令，而不是输入到终端。
+   这是客户端控制台，不是游戏内控制台，也不需要先启动游戏。
+
+3. 下载项目已验证的完整版本
+   在 Steam 控制台中输入一整行：
+     download_depot 1366540 1366541 8688761953740169502
+   三个数字分别是游戏 App ID、Windows depot ID 和固定版本 manifest ID。
+   等待出现 Depot download complete；复制该完成提示给出的实际目录。
+   下载可能需要较长时间；不要把没有显示完成的目录交给迁移工具。
+   这是项目历史验证过的输入，能否下载仍取决于 Steam 对当前账号的授权
+   和该 manifest 是否继续可用；本次文档整理未重新下载游戏。
+
+4. 找到正确文件夹
+   在 Finder 按 Command+Shift+G，粘贴上一步的实际目录并前往。
+   选择同时包含 DSPGAME.exe、DSPGAME_Data、Locale 的游戏根目录。
+   不要只选 exe、Managed 子目录、Steam.app，也不要只复制其中一个 DLL。
+   默认下载位置可能随 Steam 安装变化，以控制台成功提示为准。
+   也可以从自己的 Windows 电脑复制相同版本的完整目录作为输入。
+
+5. 交给对应迁移入口
+   下载本项目 codex/ipad-pro-keyboard-fixes 分支的工具代码并解压。
+   iPad：先阅读 ipad/MIGRATION.txt 和 ipad/README.md；准备指定 Unity、
+   完整 Xcode、自己的 Apple 签名、设备信任与开发者模式，再运行根目录
+   start-ipad.command。game 配置填写上述游戏根目录。
+   Mac：阅读 docs/用户操作指南.txt，准备依赖后运行 start.command。
+   两个入口独立；生成 iPad App 不要求先生成或运行 Mac App。
+   输入游戏保持原样，另建本地、非云同步的私有工作目录。iPad 工作路径
+   需包含 local-private，首次至少预留 65 GiB；Mac 建议至少 50 GiB。
+   这些是准备空间建议，不能保证所有环境的峰值。不要使用 Steam 原目录
+   作为工作目录；也不要用 iCloud Drive、OneDrive 或工具源码目录。
+
+常见问题
+- Mac 的 Steam 库不能直接安装 Windows 版：使用上面的 depot 下载流程，
+  目的是取得转换输入，不是安装可直接在 Mac 启动的官方版本。
+- 控制台没有打开：先确认 Steam 已运行且浏览器允许协议跳转，再尝试上面
+  的 open 命令。不要把 download_depot 当作 macOS shell 命令。
+- No subscription / Access denied：确认当前登录的是拥有游戏的账号，
+  检查 Steam 登录与下载权限。不要共享账号、密码或绕过访问限制。
+- Manifest unavailable / 下载失败：检查 Steam 网络和完整错误提示。
+  若该版本已不可取得，可使用自己已保存的同版完整游戏备份；没有匹配输入
+  时应停止，提交错误信息反馈，不能换成其他版本后删除工具的校验。
+- 哈希或版本不匹配：重新检查版本、目录是否完整、是否混入 Mod 或旧文件。
+  工具以 Assembly-CSharp.dll 的固定哈希识别输入，不只相信文件夹名称。
+- 转换成功后是否自动用 Steam 云存档：当前未接入 Steam 服务。iPad 使用
+  系统 Files/iCloud Drive 手动导入导出；这不等于 Steam 自动云同步。
+
+反馈时附工具提交、系统/设备型号、失败阶段和相关错误日志；隐藏个人路径、
+账号与签名信息，不上传游戏、存档、私钥或完整私有构建目录。

@@ -1,5 +1,11 @@
 配置后连续迁移到 iPad Pro
 
+第一次接触项目：先阅读 docs/Steam游戏文件准备.txt（相对仓库根目录），
+其中包含在 Mac Steam 登录已购账号、下载固定 Windows 版本、找到完整
+游戏目录及失败处理。下载 codex/ipad-pro-keyboard-fixes 分支，使用下面
+的 iPad 入口；无需先构建 Mac 游戏。依赖来源和版本见 ipad/README.md
+及 docs/dependencies.txt。
+
 入口：在项目根目录双击 start-ipad.command。
 第一次填写本机配置，保存在 ~/.dsp-port-ipad.json；以后再次运行使用同一配置。
 命令行也可运行：

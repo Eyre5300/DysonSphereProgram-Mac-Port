@@ -34,6 +34,7 @@ iOS 原生引擎负责 Metal、窗口、音频和输入；游戏仍采用原按�
 
 ## 固定输入与准备
 
+- 初次使用先读 [Steam 游戏文件准备](../docs/Steam游戏文件准备.txt)：在 Mac 上从自己的已购账号下载指定 Windows 版本，包含控制台命令、目录选择及错误处理。
 - 游戏：Windows DSP **0.10.35.29104**。使用下述独立入口恢复资源；可以提供 AssetRipper 2.0 可执行文件，或它未修改的导出。
 - Unity **2022.3.62f3c1**，Mac 和 iOS 构建支持，以及本人适用的 Unity 许可。
 - Apple Silicon Mac、完整 Xcode、连接并开启开发者模式的 iPad Pro。需要自己的 Team ID、Bundle ID、签名 identity 和设备 ID；工具没有内置开发者账号。

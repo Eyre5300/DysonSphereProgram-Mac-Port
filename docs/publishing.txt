@@ -14,7 +14,7 @@ Mac App 与工具的区别
 
 发布前的具体状态
 转换和已发现Mac问题的修复均已接入prepare/recover/build及平台helper；基本运行、旧存档、蓝图和若干复杂功能已在开发机验证，详细差异见behavior-parity.txt。
-新机器完整流程、全部武器/太空战斗、大型复杂网络、多小时稳定性未全面验证。Steam服务未实现；iPad/emu仍是未验证路线。发布说明应标明开发者预览和固定输入版本，不能宣传Windows完全等效或已验证iPad。
+新机器完整流程、全部武器/太空战斗、大型复杂网络、多小时稳定性未全面验证。Steam服务未实现；iPad已有独立迁移入口并完成当前Pro的限定实机验证，详见ipad/VALIDATION.md。发布说明应标明开发者预览和固定输入版本，不把限定测试推广为Windows完全等效或所有iPad均可运行。
 项目拥有者已明确选择MIT，原创工具许可证见根目录LICENSE；游戏文件和外部依赖不纳入这份许可。第三方工具各自保留上游许可，未捆绑第三方二进制；仍应核对来源，转换工具不会自行上传用户游戏或私人数据。
 GitHub官方许可说明：https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository
 
@@ -24,4 +24,4 @@ GitHub官方许可说明：https://docs.github.com/en/repositories/managing-your
 
 分辨率
 Mac启动时读取游戏窗口所在屏幕的尺寸/刷新率，覆盖上次保存的窗口尺寸为全屏；这次运行中仍可正常选择窗口模式，下一次启动再次检测屏幕。主场景启动后通过原版设置Apply执行，首次引擎窗口建立过程可能短暂采用既存配置。
-iOS代码分支读取设备报告的横向尺寸，设置原生全屏，不按预设名称猜测设备。iPadOS窗口管理和emu宿主提供的屏幕由实际部署路线决定；仅有此代码不能证明emu移植或iPad全屏真机适配已完成。
+iPad按设备报告的原生比例生成多档分辨率并保存选择；当前Pro有实机证据，其他尺寸有宿主预设检查，具体范围见ipad/README.md。分辨率适配不代表其他设备的内存、纹理或整机兼容性已经验收。

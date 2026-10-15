@@ -17,7 +17,9 @@ Vulkan-Headers： https://github.com/KhronosGroup/Vulkan-Headers
 Python 3.12；UnityPy 1.25.4 / PyYAML 6.0.3 固定在 requirements.txt。
 
 依赖在另一台 Mac 的安装流程仍需实测。不自动下载、安装或公开这些第三方内容；遵守各自上游许可。
-emu（后续 iPad 路线评估）： https://github.com/brolnickij/emu
+emu（iPad 独立迁移使用）： https://github.com/brolnickij/emu
+iPad 固定提交、完整 Xcode、Mac/iOS Unity 模块及签名准备见 ipad/README.md；
+连续入口为 start-ipad.command。Steam 文件获取步骤见 docs/Steam游戏文件准备.txt。
 
 Apple Command Line Tools 或完整 Xcode：提供 xcrun、clang、macOS SDK。缺失时可执行 xcode-select --install；安装和条款由用户本人确认。prepare 会在私有工程中从随工具提供的原创 C 文件编译 GameController 键盘适配库，不捆绑预编译游戏内容。
 
